@@ -9,8 +9,8 @@
 ## Goal
 Handoff 002 changed several assumptions in the plans. Some of the fixes are decisions only you can make. Some need a source that web Claude cannot read. This task lists them in priority order. Each item says why it matters.
 
-## 1. Confirm or change seven decisions (10 minutes)
-Read D-016 to D-023 in `docs/DECISIONS.md`. In the "By" column, write your name next to each one you accept. Change the ones you don't accept. Most important:
+## 1. Confirm or change the overnight decisions (15 minutes)
+Read D-016 to D-033 in `docs/DECISIONS.md`. D-028 to D-033 are proposals web Claude added later in the night: the B2 test, the real-time axis, Evenki candidate forms, the Study A re-scope and TAM groups. In the "By" column, write your name next to each one you accept. Change the ones you don't accept. Most important:
 - **D-017.** Keep the GitHub repo **private** while it holds corpus sentences, because speakers' names occur inside the transcripts.
 - **D-020.** Study A codes every word the corpus already tags as evidential (89 Dolgan, 29 Evenki), plus a **sample** of the ambiguous forms (`TAK` glossed `COND1`, `PST2`). Exhaustive coding would be about 3,000 items.
 - **D-023.** The speaker table keeps **sex** as a covariate. CLAUDE.md rule 9 lists only speaker ID and birth year, so this needs your yes or no.
@@ -24,7 +24,7 @@ Web Claude does not edit your folder. What 002 found, to fold in:
 - The codebook dropdowns come from `shared/config/evid_codebook.json`. When you change the codebook, change that file too, or ask web Claude.
 
 ## 3. Read three sources (each is the input for a decision)
-- **First, and most important: Skribnik and Aikhenvald (2024), "Evidentiality in Northern Asia", pp. 1016-1022.** Free PDF: https://aikhenvaldlinguistics.com/pdfs/2024/Skribnik-Aikhenvald-Evidentiality-in-Northern-Asia.pdf. Web Claude found it overnight. **It already compares Dolgan, Sakha and Evenki evidentials qualitatively and mentions Evenki influence on Dolgan.** So Study A can no longer claim to be the first comparison. It can be the first **quantitative, corpus-based** test of that description (D-031, ledger). Read the pages, check the quotes in `docs/LITERATURE_LEDGER.md`, and decide whether the narrower study is still worth doing. Web Claude thinks it is, because the chapter gives no frequencies and no variation by genre, speaker or period, but that is your call.
+- **First, and most important: Skribnik and Aikhenvald (2024), "Evidentiality in Northern Asia", pp. 1016-1022.** Free PDF: https://aikhenvaldlinguistics.com/pdfs/2024/Skribnik-Aikhenvald-Evidentiality-in-Northern-Asia.pdf. Web Claude found it overnight and read it through an automated text extraction, not by eye. According to that extraction, **it already compares Dolgan, Sakha and Evenki evidentials qualitatively and mentions Evenki influence on Dolgan.** So Study A can no longer claim to be the first comparison. It can be the first **quantitative, corpus-based** test of that description (D-031, ledger). Read the pages, check the quotes in `docs/LITERATURE_LEDGER.md`, and decide whether the narrower study is still worth doing. Web Claude thinks it is, because the chapter gives no frequencies and no variation by genre, speaker or period, but that is your call.
 - **Däbritz (2022), *A Grammar of Dolgan*, §6.6 (evidentiality) and the tense chapter.** Skribnik and Aikhenvald (2024: 1018) already say that `-TI` is the neutral past and that *e-bit* contracts to *e:t*. That supports D-022 and the `eːt` reading. Check that the grammar agrees. Check whether the book is open access (a Zenodo record was found earlier, unverified).
 - **Siegl (2015)** on Dolgan secondary predication, the source of the dative-to-instrumental claim. Study B1 cannot run without a way to recognise a secondary predicate, and the corpus has no tag for one (D-021). Note the examples and criteria Siegl uses. Web Claude turns them into a candidate filter.
 
@@ -39,7 +39,7 @@ Four questions only they can answer cleanly. Send it from your own address.
 >
 > Dear INEL team,
 >
-> We are two linguists at UC Berkeley starting a study of Dolgan with the INEL Dolgan Corpus 2.0 and the INEL Evenki Corpus 2.0. Thank you for making them available. While preparing the data we ran into four questions that we could not resolve from the documentation:
+> We are two linguists at UC Berkeley [check: is this how you want to describe yourselves?] starting a study of Dolgan with the INEL Dolgan Corpus 2.0 and the INEL Evenki Corpus 2.0. Thank you for making them available. While preparing the data we ran into four questions that we could not resolve from the documentation:
 >
 > 1. Counts. The documentation gives 14,193 utterances and 97,625 tokens for Dolgan 2.0. Counting the files, we get 14,076 `ref` events (14,078 `HIAT:u` in the .exs files) and 97,652 `tx` events (97,757 `HIAT:w`). Which counting rule do the documented figures use? (For Evenki 2.0, the `# INEL:w` and `ref` counts match the website exactly.)
 > 2. Anabar. The documentation says Anabar Dolgan is not included, but the .coma marks three texts (AnKA_2009_Games_nar, AnKA_2009_Story_nar, ChAPa_NN1_2009_Taboo_nar) and two speakers with the dialect "Anabar". Which is correct?
