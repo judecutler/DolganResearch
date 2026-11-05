@@ -2,7 +2,7 @@
 
 - **From:** web Claude
 - **To:** desktop Claude
-- **Status:** blocked
+- **Status:** done
 - **Created:** 2026-11-04
 - **Depends on:** none
 
@@ -41,43 +41,38 @@ Fill in Results below. Then update the table in `handoff/README.md` and `PLAN.md
 
 ## Results
 
-- **Date finished:** not finished. Blocked at the download (steps 2 to 3). Last updated 2026-11-05.
-- **Environment (step 1 done; nothing installed):**
+- **Date finished:** 2026-11-05
+- **Environment (step 1; nothing installed):**
   - Desktop host is Windows x64. All commands ran in the Linux VM the desktop app provides (Ubuntu 22.04.5). The package list below is that VM's, not the Windows host's. Python on the Windows host was not checked.
   - Free disk on the drive holding the repo folder: about 722 GB of 953 GB.
   - git 2.34.1, Python 3.10.12.
   - Installed: pandas 2.3.3, numpy 2.2.6, matplotlib 3.10.9, lxml 6.1.3.
   - Not installed: pyarrow, statsmodels, scipy.
   - R: not installed (`R` and `Rscript` not found), so lme4 and brms were not checked.
-- **Dolgan (read from the repository page; NOT downloaded):**
-  - Version 2.0, published 2022-11-30. Page: `https://www.fdr.uni-hamburg.de/record/11165` (the handle `https://hdl.handle.net/11022/0000-0007-F9A7-4` redirects there). DOI `10.25592/uhhfdm.11165`.
-  - Wanted package: `dolgan-2.0-noaudio.zip`, listed as 40.4 MB, md5 `6f85f1a09811f07606caf6747744eef2`. The page gives only a rounded size, so the exact `size_bytes` is not known (UNVERIFIED until a file is in hand).
-  - Other files on the page (not wanted): `dolgan-2.0-documentation.pdf` 1.0 MB md5 `ec3647edf1b70e222e25ff62482a9ff8`; `dolgan-2.0-mp3only.zip` 2.1 GB; `dolgan-2.0.zip` 11.7 GB.
-  - Licence shown on the page for the files: Creative Commons Attribution Non Commercial Share Alike 4.0 International.
-  - Citation string on the page: Däbritz, Chris Lasse; Kudryakova, Nina; Stapert, Eugénie. 2022. INEL Dolgan Corpus. Version 2.0. Publication date 2022-11-30. https://hdl.handle.net/11022/0000-0007-F9A7-4. Archived at Universität Hamburg. In: The INEL corpora of indigenous Northern Eurasian languages. https://hdl.handle.net/11022/0000-0007-F45A-1.
-- **Evenki (read from the repository page; NOT downloaded):**
-  - Version 2.0, published 2024-12-31. Page: `https://www.fdr.uni-hamburg.de/record/16605`. DOI `10.25592/uhhfdm.16605`. Handle `https://hdl.handle.net/11022/0000-0007-FE38-D`.
-  - **No package is named `noaudio`.** The page lists: `evenki-2.0-lite.zip` 61.5 MB md5 `395717280876078cd33d54382b9717e1`; `evenki-2.0-standard.zip` 2.0 GB md5 `e578975ec4c2517a30e7aed597338e15`; `evenki-2.0-mp3.zip` 1.0 GB md5 `1476fa0e1374563b41e2c32850d2d4aa`; `evenki-2.0-documentation.pdf` 2.5 MB md5 `8c3472ec27035d8d56c70d50b57dc55d`.
-  - Which of these is the transcripts-only package is UNVERIFIED. `lite` is the likely candidate by size, but nothing on the page says what it contains. The documentation PDF would probably say; it did not load (see below).
-  - Licence on the page: Creative Commons Attribution Non Commercial Share Alike 4.0 International.
-  - Citation string on the page: Däbritz, Chris Lasse; Gusev, Valentin; Stoynova, Natalia. 2024. INEL Evenki Corpus. Version 2.0. Publication date 2024-12-31. Archived at Universität Hamburg. https://hdl.handle.net/11022/0000-0007-FE38-D. In: The INEL corpora of indigenous Northern Eurasian languages. https://hdl.handle.net/11022/0000-0007-F45A-1
-  - Figures stated on the page: 612 texts, 19,931 sentences, 93,264 tokens; 3 h 58 min of audio in 69 texts.
-- **Newer Dolgan version found?** No. The page's version list shows only Version 2.0 (2022-11-30) and Version 1.0 (2019-08-31), as read on 2026-11-05. The same check for Evenki shows only 2.0 and 1.0.
-- **Count reconciliation:** not done, no data.
-- **Exactly what was seen:** every request to the three hosts below failed with `HTTP 403 from proxy after CONNECT` (curl exit 56, no HTTP response from the site itself). This means the connection was refused by the network egress allowlist before reaching the site. Whether the sites are up was not determined.
-  - `https://hdl.handle.net/11022/0000-0007-F9A7-4`
-  - `https://www.fdr.uni-hamburg.de/record/16605`
-  - `https://inel.corpora.uni-hamburg.de/`
-  - The same 403 came from the desktop VM and from the cloud workspace. GitHub is reachable.
-  - No workaround was attempted (no mirrors, no other fetch methods).
-- **Download attempt, 2026-11-05:** the shell on this computer and the cloud workspace are still refused (403). The desktop app's built-in browser can open the repository pages after the site is approved, so the two record pages above were read there. Clicking Download for `dolgan-2.0-noaudio.zip` in that browser did not produce a file in the Downloads folder (checked for any new file in the last hour). The documentation PDF link for Evenki failed to load. No other method was tried.
-- **Needs from Jude:**
-  1. Download `dolgan-2.0-noaudio.zip` yourself from `https://www.fdr.uni-hamburg.de/record/11165` into the Downloads folder (desktop Claude has been given access to that folder). Expected: 40.4 MB, md5 `6f85f1a09811f07606caf6747744eef2`.
-  2. For Evenki, decide which package to use. Either confirm from the Evenki documentation PDF which zip is text-only (probably `evenki-2.0-lite.zip`, 61.5 MB), or say to use that one. Download it to the same folder.
-  3. Desktop Claude then does steps 4 to 7 (md5, unzip into `data/raw/`, `MANIFEST.json`, counts) and task 002.
-  Alternative to 1 and 2: allow the egress domains `hdl.handle.net`, `www.fdr.uni-hamburg.de`, `fdr.uni-hamburg.de`, `inel.corpora.uni-hamburg.de` for the shell, and desktop Claude downloads.
+- **Dolgan:** INEL Dolgan Corpus **version 2.0**, published 2022-11-30. Source `https://www.fdr.uni-hamburg.de/record/11165` (handle `https://hdl.handle.net/11022/0000-0007-F9A7-4` redirects there). Package `dolgan-2.0-noaudio.zip`, 40,432,276 bytes (page: 40.4 MB), md5 `6f85f1a09811f07606caf6747744eef2`. **md5 matches the page.** Licence and citation are in `data/MANIFEST.json`, copied from the page.
+- **Evenki:** INEL Evenki Corpus **version 2.0**, published 2024-12-31. Source `https://www.fdr.uni-hamburg.de/record/16605`. Package `evenki-2.0-lite.zip`, 61,537,332 bytes (page: 61.5 MB), md5 `395717280876078cd33d54382b9717e1`. **md5 matches the page.**
+  - **Naming discrepancy:** the record has no package named `noaudio`. The files are `lite` (61.5 MB), `standard` (2.0 GB), `mp3` (1.0 GB) and the documentation PDF. The Evenki documentation PDF says: the "lite" package does not include any sound, video or PDF files; "standard" has WAV and PDF; "mp3" has MP3 and PDF. So `lite` is the transcripts-only package. I used it. Please confirm this is what you intended.
+  - The Evenki documentation PDF itself was also downloaded (md5 `8c3472ec27035d8d56c70d50b57dc55d`, matches the page) and kept locally in `data/raw/docs/`. It is not committed.
+- **Newer version found?** No. The Dolgan page's version list shows only 2.0 (2022-11-30) and 1.0 (2019-08-31). The Evenki page shows only 2.0 (2024-12-31) and 1.0 (2021-12-31). Checked 2026-11-05.
+- **File counts (counted in the unzipped folders):**
+
+| | `.exb` | `.exs` | `.coma` | other |
+|---|---|---|---|---|
+| Dolgan | 136 | 136 | 1 | 136 `_tei.xml`, 3 `.eaf`, 1 documentation PDF |
+| Evenki | 612 | 612 | 1 | 614 `.xml`, 612 `.eaf`, 1 `coma-overview.html`, 1 documentation PDF |
+
+  - Dolgan communication folders per genre folder (folders / `.exb` files): `conv` 17 / 17, `flk` 51 / 51, `misc` 1 / 1, `nar` 64 / 61, `sng` 2 / 2, `transl` 4 / 4. That is 139 folders and 136 `.exb`.
+  - The 3 extra `nar` folders each contain only one `.eaf` file and no `.exb`. I did not look inside them (task 002 may). They are not counted as transcripts.
+  - Evenki top-level folders (subfolders / `.exb`): `conv` 9 / 9, `flk` 198 / 198, `misc` 40 / 40, `nar` 347 / 347, `song` 18 / 18 (Dolgan calls its song folder `sng`, Evenki calls it `song`). Plus `corpus-utilities` and `documentation`, with no texts. That is 612 texts.
+- **Count reconciliation:**
+  - Dolgan: 136 `.exb` files against the documentation's 136 glossed transcripts. Same. (I counted files, not the contents of the files. Whether each `.exb` is a glossed transcript is for task 002.)
+  - Evenki: 612 `.exb` files against the website's 612 texts. Same.
+- **Where the files are (local only, git-ignored):** `data/raw/dolgan-2.0/`, `data/raw/evenki-2.0/`, the two zips in `data/raw/_packages/`, the Evenki documentation PDF in `data/raw/docs/`. The unzipped folders were compared file by file (md5 of every file) with a fresh extraction of each verified zip: no differences. `git status` shows only `data/MANIFEST.json` and the task, README and PLAN files as changes.
+- **How the download worked (for next time):** the shell on this computer and the cloud workspace are refused by the network allowlist (HTTP 403 from the proxy for `hdl.handle.net`, `www.fdr.uni-hamburg.de`, `inel.corpora.uni-hamburg.de`). The desktop app's built-in browser can open those sites after the person approves them, and a file link opened there is saved into the connected repo folder. That is how both zips came in. Nothing else was used to get around the block.
 - **Surprises:**
-  - The folder already held an empty git repo with the remote set, and `master` was its branch name. The remote branch is `main`.
-  - Delete permission was declined, so git left lock files and `tmp_obj_*` files, which are objects git had not finished writing. Some were deleted by hand, which corrupted the local object store. It was rebuilt: the damaged `.git` was renamed to a `.git-corrupt-*` folder (ignored locally, safe to delete by hand), a fresh `.git` was made and fetched from GitHub. `git status` showed the working files identical to `origin/main` and `git fsck` was clean. Nothing was lost.
-  - Because delete is not allowed, git may leave stale `.lock` and `tmp_obj_*` files in `.git` on this machine. Rename a stale lock rather than deleting it.
-- **Questions for web Claude:** (1) The Evenki record has no `noaudio` package, only `lite`, `standard` and `mp3`. Should the task and `docs/CORPUS_NOTES.md` name `lite`? (2) Please check the Evenki documentation PDF for what `lite` contains. Task 002 cannot start until 001 is done.
+  - The Evenki record has no `noaudio` package (see above).
+  - The three Dolgan `nar` folders with only a `.eaf`.
+  - The repo folder already held an empty git repo with the remote set, and `master` was its branch name. The remote branch is `main`.
+  - Delete permission was first declined, so git left lock files and `tmp_obj_*` files, which were objects git had not finished writing. Deleting them by hand corrupted the local object store. It was rebuilt by fetching from GitHub (`git fsck` clean, working files identical to `origin/main`). The damaged `.git` was renamed `.git-corrupt-*` (ignored locally).
+  - Writing thousands of small files to the connected folder is slow, and an unzip straight into it timed out and left a partial copy. The fix was to extract on local disk and `rsync` into the folder. Worth knowing before task 002 writes many small outputs.
+- **Questions for web Claude:** (1) The task and `docs/CORPUS_NOTES.md` say "no-audio package" for Evenki. The package is called `lite`. Please update the wording. (2) Do the 3 Dolgan `.eaf`-only folders matter for the 136-transcript count?

@@ -34,8 +34,8 @@ Neither Claude can wake the other. Jude is the trigger each time.
 
 | ID | Task | Assignee | Status |
 |---|---|---|---|
-| 001 | [Environment check and corpus download](001-environment-and-download.md) | desktop Claude | blocked |
-| 002 | [Inspect real corpus structure](002-inspect-structure.md) | desktop Claude | blocked-by-001 |
+| 001 | [Environment check and corpus download](001-environment-and-download.md) | desktop Claude | done |
+| 002 | [Inspect real corpus structure](002-inspect-structure.md) | desktop Claude | in-progress |
 
 Update this table whenever a status changes.
 

@@ -1,0 +1,27 @@
+[
+  {
+    "corpus": "INEL Dolgan Corpus",
+    "version": "2.0",
+    "doi_or_handle": "DOI 10.25592/uhhfdm.11165; handle https://hdl.handle.net/11022/0000-0007-F9A7-4",
+    "source_url": "https://www.fdr.uni-hamburg.de/record/11165",
+    "download_date": "2026-11-05",
+    "package_filename": "dolgan-2.0-noaudio.zip",
+    "size_bytes": 40432276,
+    "md5": "6f85f1a09811f07606caf6747744eef2",
+    "licence": "Creative Commons Attribution Non Commercial Share Alike 4.0 International (as stated on the repository page, 'License (for files)')",
+    "citation": "Däbritz, Chris Lasse; Kudryakova, Nina; Stapert, Eugénie. 2022. INEL Dolgan Corpus. Version 2.0. Publication date 2022-11-30. https://hdl.handle.net/11022/0000-0007-F9A7-4. Archived at Universität Hamburg. In: The INEL corpora of indigenous Northern Eurasian languages. https://hdl.handle.net/11022/0000-0007-F45A-1."
+  },
+  {
+    "corpus": "INEL Evenki Corpus",
+    "version": "2.0",
+    "doi_or_handle": "DOI 10.25592/uhhfdm.16605; handle https://hdl.handle.net/11022/0000-0007-FE38-D",
+    "source_url": "https://www.fdr.uni-hamburg.de/record/16605",
+    "download_date": "2026-11-05",
+    "package_filename": "evenki-2.0-lite.zip",
+    "size_bytes": 61537332,
+    "md5": "395717280876078cd33d54382b9717e1",
+    "package_note": "The Evenki record has no package named noaudio. The corpus documentation (section on download packages) says the 'lite' package does not include any sound, video or PDF files, so lite is the transcripts-only package.",
+    "licence": "Creative Commons Attribution Non Commercial Share Alike 4.0 International (as stated on the repository page, 'License (for files)')",
+    "citation": "Däbritz, Chris Lasse; Gusev, Valentin; Stoynova, Natalia. 2024. INEL Evenki Corpus. Version 2.0. Publication date 2024-12-31. Archived at Universität Hamburg. https://hdl.handle.net/11022/0000-0007-FE38-D. In: The INEL corpora of indigenous Northern Eurasian languages. https://hdl.handle.net/11022/0000-0007-F45A-1"
+  }
+]
