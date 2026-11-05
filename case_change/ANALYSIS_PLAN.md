@@ -30,20 +30,20 @@ Gate 0 may drop B1 or B2. A dropped question is reported as dropped, with the co
 ## Variables
 
 **Outcome B1:** case on the secondary-predicate nominal: instrumental, dative/locative, other.
-**Outcome B2:** object marking: nominative (unmarked), accusative, partitive. Evenki: nominative, accusative, indefinite accusative (`ACC.INDEF`). Mapping in `shared/config/gloss_map.yaml`.
+**Outcome B2:** object marking: nominative (unmarked), accusative, partitive. Evenki: nominative, accusative, indefinite accusative (`ACC.INDF`). Case labels per corpus are in `shared/inel/config.py`. Dolgan has only 23 partitive objects (handoff 002), so a three-way model may not be estimable. Plan for accusative versus not, and report partitive descriptively.
 
 **Predictor of interest:** speaker cohort (birth-year bins fixed after looking at the speaker distribution, before any outcome). Also try birth year as a continuous variable.
 
-**Covariates (B2):** clause TAM context (grouping from the gloss map, matching Sheifer and Bolshakova's contrasts); referent properties from tags (`IST` information status, possession, demonstrative, animacy from `SyF`/`SeR`); source collection; genre; dialect.
+**Covariates (B2):** borrowing (`BOR` tag on the object: several zero-marked objects in 002 are Russian loans, so loan status must be controlled or the analysis restricted to native nouns); clause TAM context (from `pred_labels` in the object table, grouped to match Sheifer and Bolshakova's contrasts; the grouping needs human sign-off); referent properties from tags (`IST` information status, possession, demonstrative, animacy from `SyF`/`SeR`); source collection; genre; dialect.
 **Covariates (B1):** source, genre, dialect.
 
 **Grouping variables (random effects):** speaker; text.
 
 ## Extraction
 
-**B2 objects:** main-clause tokens whose `SyF` ends `:O`. The verb's TAM comes from the clause predicate in the same utterance. SyF is tagged only in main clauses and is optional, so coverage is measured per text and per source before anything else. If many speakers or sources lack SyF, the object sample is biased and we say so.
+**B2 objects:** words with an overt `SyF` item of function `O` (D-025). Built by `case_change/extract_objects.py`. Dolgan has about 1,307, all in the 50 texts with `SyF`. The verb's TAM comes from the clause predicate in the same utterance. SyF is tagged only in main clauses and is optional, so coverage is measured per text and per source before anything else. If many speakers or sources lack SyF, the object sample is biased and we say so.
 
-**B1 candidates:** nominals marked INSTR or DAT/LOC that are not arguments by `SeR` and `SyF`. Hypothesis to check in handoff 002: `SeR` role `St`. Because the candidate list is small, a human reads every item and codes whether it is a secondary predicate (depictive or resultative). The vetting sheet lists the reading and the free translation.
+**B1 candidates:** nominals marked INSTR or DAT/LOC that are not arguments by `SeR` and `SyF`. Handoff 002 showed that `SeR` role `St` is the stimulus of perception verbs, not a secondary predicate, so there is no tag to start from (D-021). The filter will be designed from Siegl (2015)'s criteria, and humans vet every hit. Because the candidate list is small, a human reads every item and codes whether it is a secondary predicate (depictive or resultative). The vetting sheet lists the reading and the free translation.
 
 Both extractors write a `rule_hit` column so that every row can be traced.
 
@@ -56,6 +56,7 @@ Tokens from one speaker are not independent, so every model has speaker structur
 - **Software:** Python for extraction. R (`lme4`, `brms`) for models (decision D-005, open).
 
 ## Robustness checks (fixed in advance)
+0. Native nouns only (objects with no `BOR` tag).
 1. Leave one speaker out, repeated for every speaker. Does the result survive losing the most prolific speaker?
 2. Restrict to one source (for example Stapert fieldwork only) and to one genre.
 3. Restrict to texts with complete SyF coverage.

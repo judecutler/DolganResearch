@@ -37,6 +37,9 @@ Each stage writes to `data/derived/` and can be re-run from `data/raw/` plus a c
 ## Stage 1 to 2: acquire and inspect
 See `handoff/001` and `handoff/002`. Output: `data/MANIFEST.json`, `handoff/outputs/002/*`.
 
+## Status (2026-11-05)
+Stages 3 to 8 are built (`shared/README.md`) and tested on synthetic files. They have not yet run on the real corpora: that is handoff 003. Parquet is dropped; everything is CSV (stdlib).
+
 ## Stage 3: parse
 
 Reads `.exb` (transcripts) and `dolgan.coma` (metadata) with the standard library only (`xml.etree`, `csv`).
@@ -95,7 +98,7 @@ Web Claude drafts the map from the gloss census (handoff 002). Jude and Dustan a
 ### 7a. Study B
 Details in `case_change/ANALYSIS_PLAN.md`. In short:
 - **Objects:** tokens with `SyF` ending `:O` in main clauses, with their case morphology (NOM, ACC, PART in Dolgan; NOM, ACC, ACC.INDEF in Evenki), the clause verb's TAM, possessive marking, demonstrative, information status.
-- **Secondary-predicate candidates:** nominals marked INSTR or DAT/LOC in the predicate's neighbourhood that are not arguments by `SeR`/`SyF`. Hypothesis to check: `SeR` role `St`.
+- **Secondary-predicate candidates:** nominals marked INSTR or DAT/LOC in the predicate's neighbourhood that are not arguments by `SeR`/`SyF`. `SeR` role `St` turned out to be perception stimulus (D-021); the filter waits for Siegl (2015).
 - Counts only, at first (Gate 0).
 
 ### 7b. Study A

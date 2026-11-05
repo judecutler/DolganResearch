@@ -82,7 +82,7 @@ Some Stapert texts were glossed in Toolbox and re-imported, so glossing workflow
 - Folder `DolganCorpus/` with genre folders `conv`, `flk`, `misc`, `nar`, `sng`, `transl`, plus `documentation/` and one metadata file `dolgan.coma`.
 - Each genre folder has one subfolder per communication with `*.exb` (transcript), `*.exs` (segmented transcript, used for search and counts) and `*.wav` if audio exists.
 - Format: EXMARaLDA XML. Audio: WAV mono 44.1 kHz 16-bit; MP3 also supplied.
-- Download packages: complete, mp3-only, no-audio.
+- Download packages (Dolgan): complete, mp3-only, no-audio. Evenki has lite, standard and mp3 instead.
 
 ## Tiers (Dolgan 2.0, Table 2)
 

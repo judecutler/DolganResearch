@@ -7,7 +7,7 @@ data/
   MANIFEST.json        committed: corpus versions, DOIs/handles, download dates, file sizes, md5, licence, citation strings
   raw/
     dolgan-2.0/        unzipped INEL Dolgan Corpus (no-audio package), never edited
-    evenki-2.0/        unzipped INEL Evenki Corpus (no-audio package), never edited
+    evenki-2.0/        unzipped INEL Evenki Corpus (lite package: transcripts only), never edited
   derived/             tables built by shared/ (tokens, morphemes, speakers, ...), rebuildable
   audio/               optional: audio packages, only if needed for listening
 ```
