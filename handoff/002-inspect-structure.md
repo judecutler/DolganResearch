@@ -2,7 +2,7 @@
 
 - **From:** web Claude
 - **To:** desktop Claude
-- **Status:** blocked-by-001
+- **Status:** done
 - **Created:** 2026-11-04
 - **Depends on:** 001
 
@@ -59,10 +59,27 @@ Answer for **both** corpora, and say where they differ.
 ---
 
 ## Results
-*(desktop Claude fills in)*
 
-- **Date finished:**
+- **Date finished:** 2026-11-05
 - **Five-line summary:**
-- **Questions that could not be answered:**
+  1. All 136 Dolgan and 612 Evenki `.exb` files parse. Per word, `mb`, `mp` and `ge` align exactly (0 mismatches in about 93,000 words per corpus). Dolgan `mc` does not align one-to-one (about 17% of words); Evenki `mc` does.
+  2. Zero nominative is `.[NOM]` on the last gloss in both corpora (no plain `NOM`). Dolgan has `DAT/LOC` as one label. Evenki spells things differently (`INS`, `ACC.INDF`, `LAT`, `ALL`, `COM1` to `COM4`).
+  3. `-BIt` and `-DAK` are not in the tiers as spelled in the task. Dolgan `mp` `BIT` is `PST2` (`BIt` is `1PL`); `TAK` is `COND1` (555) or `INFER` (36); `EVID` is the particle `eːt` (53). Evenki has `EVID` on `rkə` (29) and no `INFER`.
+  4. Role `St` is the stimulus of perception verbs, not secondary predicates. The task's hypothesis is not supported.
+  5. Evenki counts match the website exactly. Dolgan transcripts (136) and speakers (74) match; Dolgan utterances (14,078 or 14,076 against 14,193) and tokens (97,757 or 97,652 against 97,625) do not match under any counting rule I tried.
+- **Questions that could not be answered:** none left unanswered. Partly answered: Q3 (I did not compare annotation content between `.exb` and `.exs`), Q13 (no collection field exists; my mapping from other fields is an inference), Q18 (the word "postterminal" is not in the Dolgan documentation, so I cannot confirm which label that means). Everything is in `handoff/outputs/002/structure_report.md`.
 - **Surprises:**
+  - The Dolgan documentation says Anabar Dolgan is not in the corpus, but the `.coma` marks 3 texts and 2 speakers as `Anabar`.
+  - Single-speaker files drop the `-SIGLE` suffix from tier ids (94 Dolgan and 605 Evenki files).
+  - Evenki has no `Top` or `Foc` tiers and no `=` clitic marker; Dolgan has both.
+  - 4,243 Dolgan and 1,066 Evenki words have no morph analysis (Russian words, repairs, non-speech). 302 Dolgan utterances have no analysed word at all.
+  - Three Dolgan `nar` folders hold only a `.eaf` file.
+  - Birth dates are missing or imprecise: Evenki 34 of 53 speakers unknown; Dolgan 14 of the 74 speakers in transcripts unknown and only 16 full dates.
+  - Personal names occur inside the transcript text itself, not only in the metadata.
+- **Files:** `handoff/outputs/002/structure_report.md`, `tier_coverage_<corpus>.csv`, `gloss_census_<corpus>.csv` (capitalised stems withheld, see the report), `scripts/`. Full evidentiality token lists are local only (`data/derived/002/`, git-ignored) because of the 30-line excerpt rule.
 - **Questions for web Claude:**
+  1. Which counting rule does the documentation use for Dolgan tokens and utterances? None of the file-based counts equals 97,625 or 14,193.
+  2. Which label do you mean by postterminal (`-BIt`)? In the data it is `PST2` (spelled `BIT`). Is `INFER` on `TAK` really the inferential `-DAK`, and should `COND1` on the same morph be treated as a different category?
+  3. Should the parser tolerate Dolgan `mc` slots that do not align with `mb`, or ignore `mc`?
+  4. Is `Anabar` in the `.coma` for those 3 texts correct, given the documentation?
+  5. Decide how to treat the capitalised stem glosses (names) in any shared label table.

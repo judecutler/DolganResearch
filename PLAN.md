@@ -3,16 +3,16 @@
 Update this at the end of every work session. Last updated: 2026-11-05 by desktop Claude.
 
 ## Current phase
-**Phase 0 complete (scaffold pushed). Data acquired.** Handoff 001 is `done`: both corpora are on Jude's computer, md5 verified, versions recorded in `data/MANIFEST.json`. Handoff 002 (inspect real structure) is in progress.
+**Phase 0 complete (scaffold pushed). Data acquired and inspected.** Handoffs 001 and 002 are `done`. The real file structure is documented in `handoff/outputs/002/structure_report.md`. Next: web Claude reads the report and writes the parser (WP3), after the open questions in handoff 002 Results are answered.
 
 ## Next actions
 | # | Who | Action | Where |
 |---|---|---|---|
 | 1 | Jude | Add Dustan as a collaborator on the GitHub repo | GitHub, Settings, Collaborators |
 | 2 | Jude + desktop Claude | ~~Run handoff 001~~ DONE 2026-11-05 | `handoff/001-environment-and-download.md` |
-| 3 | Jude + desktop Claude | Run handoff 002 (inspect real structure) | `handoff/002-inspect-structure.md` |
+| 3 | Jude + desktop Claude | ~~Run handoff 002~~ DONE 2026-11-05 | `handoff/outputs/002/structure_report.md` |
 | 4 | Jude, Dustan | Start the reading list (it does not need data) | `docs/ROADMAP_HUMAN.md`, Phase 2 |
-| 5 | web Claude | After 002 returns: write the parser and tests (WP3) | `docs/ROADMAP_CLAUDE_WEB.md` |
+| 5 | web Claude | Read `handoff/outputs/002/structure_report.md` and answer the questions in handoff 002 Results; then write the parser and tests (WP3) | `docs/ROADMAP_CLAUDE_WEB.md` |
 
 ## Gates
 | Gate | Question | Status |
@@ -28,6 +28,7 @@ Criteria for each gate are in `docs/ROADMAP_CLAUDE_WEB.md` and `docs/ROADMAP_HUM
 See `docs/DECISIONS.md`. Currently open: D-004 licensing, D-005 stats stack, D-006 evidentiality codebook, D-007 Evenki comparison design, D-008 which Study B sub-questions survive G0, D-009 target venues.
 
 ## Log (newest first)
+- 2026-11-05: Handoff 002 done. Structure report, tier coverage and gloss census written to `handoff/outputs/002/`. Main surprises: Dolgan token and utterance totals do not match the documentation under any rule; Anabar texts exist despite the documentation; `-BIt`/`-DAK` are `BIT`/`TAK` in `mp`; `St` is stimulus.
 - 2026-11-05: Handoff 001 done. Dolgan 2.0 (noaudio) and Evenki 2.0 (lite) downloaded, md5s match the pages. 136 Dolgan and 612 Evenki `.exb` files, matching the documented counts. Evenki has no `noaudio` package; `lite` is the text-only one per the documentation. Handoff 002 started.
 - 2026-11-05: Desktop Claude read both repository pages in the built-in browser and recorded versions, md5s, licence and citations in handoff 001 Results. Nothing downloaded (browser download produced no file). Evenki has no `noaudio` package (`lite`, `standard`, `mp3` only). 001 still blocked, 002 waiting.
 - 2026-11-04: Desktop Claude set up the repo on Jude's computer. Handoff 001 step 1 done (environment report). Step 2 blocked: HTTP 403 from proxy for hdl.handle.net, www.fdr.uni-hamburg.de and inel.corpora.uni-hamburg.de. No corpus downloaded. 002 not started.
