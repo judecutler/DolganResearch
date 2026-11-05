@@ -20,11 +20,12 @@ Web Claude does not edit your folder. What 002 found, to fold in:
 - The corpus glosses the particle `eːt` as `EVID` (53 tokens). This is probably the copula *äbit* grammaticalised as a particle, but that is **unverified**. Check Däbritz (2022) §6.6.
 - `INFER` (36 tokens) is the morph `TAK`. The same morph is glossed `COND1` 555 times. Whether a given `TAK` is inferential is therefore an annotator's call, and that is what your codebook's `is_evidential_use` column decides.
 - `-BIt` in your notes is `BIT` in the data, glossed `PST2` (2,415) and `PTCP.PST` (714). Whether `PST2` is Däbritz's "postterminal" is **unconfirmed** (D-022).
-- Evenki has only 29 `EVID` tokens (on `-rkə`) and no `INFER`. A Dolgan/Evenki comparison will need Evenki forms beyond the tagged ones. Which forms those are is D-007, and it needs the Evenki literature.
+- Evenki has only 29 `EVID` tokens (on `-rkə`) and no `INFER`. Skribnik and Aikhenvald (2024: 1022, fn. 11) note that `-rkA` is evidential for Bulatova and Grenoble (1999) but "past probable" (epistemic) for other grammars. Malchukov (1999, 2000) treat the Tungusic perfect as the indirect form, so the candidate generator now also lists Evenki `PRF` (D-030). Which Evenki forms to compare is D-007.
 - The codebook dropdowns come from `shared/config/evid_codebook.json`. When you change the codebook, change that file too, or ask web Claude.
 
-## 3. Read two sources (each is the input for a decision)
-- **Däbritz (2022), *A Grammar of Dolgan*, §6.6 (evidentiality) and the tense chapter.** Settles D-022 (is `PST2` the postterminal?) and whether `eːt` is the evidential particle. Check whether the book is open access (a Zenodo record was found earlier, unverified).
+## 3. Read three sources (each is the input for a decision)
+- **First, and most important: Skribnik and Aikhenvald (2024), "Evidentiality in Northern Asia", pp. 1016-1022.** Free PDF: https://aikhenvaldlinguistics.com/pdfs/2024/Skribnik-Aikhenvald-Evidentiality-in-Northern-Asia.pdf. Web Claude found it overnight. **It already compares Dolgan, Sakha and Evenki evidentials qualitatively and mentions Evenki influence on Dolgan.** So Study A can no longer claim to be the first comparison. It can be the first **quantitative, corpus-based** test of that description (D-031, ledger). Read the pages, check the quotes in `docs/LITERATURE_LEDGER.md`, and decide whether the narrower study is still worth doing. Web Claude thinks it is, because the chapter gives no frequencies and no variation by genre, speaker or period, but that is your call.
+- **Däbritz (2022), *A Grammar of Dolgan*, §6.6 (evidentiality) and the tense chapter.** Skribnik and Aikhenvald (2024: 1018) already say that `-TI` is the neutral past and that *e-bit* contracts to *e:t*. That supports D-022 and the `eːt` reading. Check that the grammar agrees. Check whether the book is open access (a Zenodo record was found earlier, unverified).
 - **Siegl (2015)** on Dolgan secondary predication, the source of the dative-to-instrumental claim. Study B1 cannot run without a way to recognise a secondary predicate, and the corpus has no tag for one (D-021). Note the examples and criteria Siegl uses. Web Claude turns them into a candidate filter.
 
 ## 4. Send one email to the INEL team (draft below; edit freely)
@@ -39,7 +40,7 @@ Four questions only they can answer cleanly. Send it from your own address.
 >
 > 1. Counts. The documentation gives 14,193 utterances and 97,625 tokens for Dolgan 2.0. Counting the files, we get 14,076 `ref` events (14,078 `HIAT:u` in the .exs files) and 97,652 `tx` events (97,757 `HIAT:w`). Which counting rule do the documented figures use? (For Evenki 2.0, the `# INEL:w` and `ref` counts match the website exactly.)
 > 2. Anabar. The documentation says Anabar Dolgan is not included, but the .coma marks three texts (AnKA_2009_Games_nar, AnKA_2009_Story_nar, ChAPa_NN1_2009_Taboo_nar) and two speakers with the dialect "Anabar". Which is correct?
-> 3. Terminology. Is the label PST2 (morph BIT) the form that Däbritz (2022, 2023) calls the postterminal? Is the particle glossed EVID (eːt) the grammaticalised copula form äbit?
+> 3. Terminology. We read PST2 (morph BIT) as the postterminal of Däbritz (2022, 2023), and the particle glossed EVID (eːt) as the contracted copula form e-bit, following Skribnik and Aikhenvald (2024: 1018). Is that how the corpus glosses are meant?
 > 4. Annotation coverage. SyF and SeR are filled in for 50 of the 136 Dolgan texts. Were these texts chosen by some criterion (for example, a particular collection or project), or is coverage simply incomplete? This matters for us because we want to compare speakers born in different decades.
 >
 > With best regards,

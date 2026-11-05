@@ -179,6 +179,14 @@ class ReviewRegressionTest(unittest.TestCase):
         self.assertEqual(evid_candidates.rules_for(w, "evenki"), (["evenki_PRF"], 1))
         self.assertEqual(evid_candidates.rules_for(w, "dolgan")[0], [])
 
+    def test_buollaga_particle_is_a_candidate_unless_already_analysed(self):
+        import evid_candidates
+        w = {"tx": "bu͡ollaga", "ge": "MOD", "mp": "bu͡ollaga", "mb": "bu͡ollaga", "align_ok": "true",
+             "IST": "", "IST_cover": ""}
+        self.assertEqual(evid_candidates.rules_for(w, "dolgan")[0], ["particle_buollaga"])
+        w2 = dict(w, ge="become-INFER-3SG", mp="bu͡ol-TAK-tA", mb="bu͡ol-lag-a")
+        self.assertEqual(evid_candidates.rules_for(w2, "dolgan")[0], ["ge_INFER"])
+
     def test_reconciliation_uses_002_case_rule(self):
         from build_tables import case_002
         self.assertEqual(case_002("x-%ACC"), "none")

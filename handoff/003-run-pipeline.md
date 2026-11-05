@@ -14,7 +14,7 @@ Web Claude wrote the parser and the extractors (`shared/`, `case_change/`) from 
 ## Steps
 1. `git pull`. Run the tests. They use only synthetic files and should take under a second:
    `python3 -m unittest discover -s shared/tests -t shared/tests`
-   Expect `OK` (38 tests). If anything fails, stop and report the failure. Do not run step 2.
+   Expect `OK` (40 tests). If anything fails, stop and report the failure. Do not run step 2.
 2. Run the pipeline from the repo root (stdlib only, no installs). It reads `data/raw/dolgan-2.0/` and `data/raw/evenki-2.0/`:
    `mkdir -p scratch && python3 shared/run_all.py 2>&1 | tee scratch/003_run.log`
    It writes `data/derived/<corpus>/*.csv` (local, git-ignored), `reports/qa_report.md`, `reports/gate0_feasibility.md`, `reports/power_b2.md` (about 10 to 60 seconds of simulation; it reads no outcome), and in `data/derived/workbooks/` (local, git-ignored) the Study A pilot (`pilot_sheet_A.xlsx`, `pilot_sheet_B.xlsx`, `pilot_key.csv`) and the Study B1 vetting sheets (`b1_sheet_A.xlsx`, `b1_sheet_B.xlsx`, `b1_key.csv`). Exit code 1 means some QA checks did not match 002. That is a finding to report, not a reason to stop. Record the run time.
