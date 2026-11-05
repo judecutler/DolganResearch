@@ -69,6 +69,19 @@ DOLGAN_MULTI = {
             {"tx": "aldʼatta", "mb": "aldʼat-t-a", "mp": "aldʼat-TI-tA", "ge": "break-PST1",
              "mc": "v-v:tense-v:pred.pn", "ps": "v", "SyF": "v:pred"},  # SYNTH, deliberately misaligned
         ]),
+        # Forms after Siegl (2015: 269-270), ex. 30 and 29b; INEL-style glosses SYNTH.
+        ("SpkB", {"ref": "SpkB_SpkC_2009_Test_conv.SpkB.002", "fe": "free translation B2"}, [
+            {"tx": "aptaːga", "mb": "aptaː-ga", "mp": "aptaː-GA", "ge": "sorcerer-DAT/LOC",
+             "mc": "n-n:case", "ps": "n"},
+            {"tx": "ete", "mb": "e-te", "mp": "e-TI", "ge": "be-PST1.[3SG]", "mc": "v-v:tense",
+             "ps": "cop", "SyF": "v:cop"},
+            {"tx": "vospitatelʼinnan", "mb": "vospitatelʼ-innan", "mp": "vospitatelʼ-InAn",
+             "ge": "educator-INSTR", "mc": "n-n:case", "ps": "n", "BOR": "RUS:core"},
+            {"tx": "ülehiːr", "mb": "ülehiː-r", "mp": "ülehiː-Ar", "ge": "work-PRS.[3SG]",
+             "mc": "v-v:tense", "ps": "v", "SyF": "v:pred"},
+            {"tx": "dʼi͡ege", "mb": "dʼi͡e-ge", "mp": "dʼi͡e-GA", "ge": "house-DAT/LOC", "mc": "n-n:case",
+             "ps": "n", "SeR": "np:G"},
+        ]),
     ],
     "span_events": [],
 }

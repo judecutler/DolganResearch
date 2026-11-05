@@ -3,7 +3,7 @@
     python3 shared/run_all.py                      # uses data/raw/<corpus>-2.0
     python3 shared/run_all.py --raw-root DIR --derived DIR --reports DIR
 
-Writes tables to data/derived/<corpus>/ (git-ignored, contains corpus text),
+Writes tables, objects.csv, evid_candidates.csv and b1_candidates.csv to data/derived/<corpus>/ (git-ignored, contains corpus text),
 reports with counts and labels only to reports/, and the Study A pilot
 workbooks to data/derived/workbooks/ (git-ignored, contains sentences).
 """
@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.join(ROOT, "case_change"))
 
 import build_tables  # noqa: E402
 import evid_candidates  # noqa: E402
+import extract_b1  # noqa: E402
 import extract_objects  # noqa: E402
 import gate0  # noqa: E402
 import qa_report  # noqa: E402
@@ -40,7 +41,8 @@ def main(argv=None):
         build_tables.build(corpus, raw, out)
         n_obj = len(extract_objects.main(out, os.path.join(out, "objects.csv")))
         n_cand = len(evid_candidates.main(out, os.path.join(out, "evid_candidates.csv")))
-        print(f"[{corpus}] {n_obj} objects, {n_cand} evidential candidates", flush=True)
+        n_b1 = len(extract_b1.main(out, os.path.join(out, "b1_candidates.csv")))
+        print(f"[{corpus}] {n_obj} objects, {n_cand} evidential candidates, {n_b1} B1 candidates", flush=True)
         dirs[corpus] = out
 
     os.makedirs(a.reports, exist_ok=True)
@@ -52,6 +54,9 @@ def main(argv=None):
     pilot = workbook.build("pilot", wb, [os.path.join(dirs[c], "evid_candidates.csv") for c in ("dolgan",)],
                            n=a.pilot_n)
 
+    b1 = workbook.build("pilot", wb, [os.path.join(dirs["dolgan"], "b1_candidates.csv")], n=100000,
+                        codebook_path=os.path.join(HERE, "config", "b1_codebook.json"), prefix="b1")
+    print(f"B1 vetting workbooks (all candidates, both annotators): {len(b1)} items -> {wb}")
     print(f"QA: {n_diff} checks do not match handoff 002 -> {qa_path}")
     for name, val, ok in verdicts:
         print(f"Gate 0 {'PASS' if ok else ('FAIL' if ok is not None else 'human')}: {name}: {val}")

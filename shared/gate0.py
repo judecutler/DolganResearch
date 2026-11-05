@@ -14,7 +14,6 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from inel import gloss  # noqa: E402
 from inel.load import num, table  # noqa: E402
 
 PRECISE = 10  # a birth year counts as usable if its range is at most this many years
@@ -28,6 +27,8 @@ def decade(x):
 
 def crosstab(pairs, rows_label, cols_label):
     c = Counter(pairs)
+    if not c:
+        return ["(none)"]
     rows = sorted({a for a, _ in c})
     cols = sorted({b for _, b in c})
     out = [f"| {rows_label} \\ {cols_label} | " + " | ".join(str(x) for x in cols) + " | total |",
@@ -110,14 +111,19 @@ def dolgan_section(d):
     verdicts.append(("Objects come from at least 15 such speakers", len(per), len(per) >= THRESHOLDS["object_speakers"]))
     verdicts.append(("No speaker gives more than 25% of objects", f"{share:.0%}", share <= THRESHOLDS["max_share"]))
 
-    nominal = [t for t in toks if t["case"] in ("INS", "DAT/LOC")]
-    roles = Counter((t["case"], (gloss.annotation_items(t["SeR"]) or [("", "untagged")])[-1][1]) for t in nominal)
-    out += ["", "### Study B1 (secondary predicates): what a candidate search would start from", "",
-            "No tag marks secondary predicates (D-021). These are all words whose case is INS or DAT/LOC, "
-            "by their `SeR` role, as a starting point for a filter designed after reading Siegl (2015).", "",
-            "| Case | SeR role | Words |", "|---|---|---|"]
-    out += [f"| {c} | {r} | {n} |" for (c, r), n in sorted(roles.items(), key=lambda x: -x[1])[:20]]
-    verdicts.append(("B1 candidates (needs human vetting; not automatic)", "see table", None))
+    b1 = table(d, "b1_candidates")
+    b1_spk = {c["speaker_id"] for c in b1}
+    out += ["", "### Study B1 (secondary predicates): candidates for human vetting", "",
+            "No tag marks secondary predicates (D-021). `case_change/extract_b1.py` applies rules built "
+            "from Siegl (2015)'s examples. Counts are by rule, source and recording decade only, not by "
+            f"case, because case is the B1 outcome. Candidates: {len(b1)}, from {len(b1_spk)} speakers "
+            f"({len(b1_spk & set(good))} with a usable birth year).", ""]
+    out += crosstab([(c["rules"].split()[0], texts[c["text_id"]]["source_collection"]) for c in b1],
+                    "rule", "source") + [""]
+    out += crosstab([(c["rules"].split()[0], decade(num(c["recording_lo"])) if c["recording_lo"] else "unknown")
+                     for c in b1], "rule", "recording decade")
+    verdicts.append(("B1: at least 30 candidates from at least 10 speakers (before vetting)",
+                     f"{len(b1)} from {len(b1_spk)}", len(b1) >= 30 and len(b1_spk) >= 10))
     return out + _evid(cands, good, dec), verdicts
 
 

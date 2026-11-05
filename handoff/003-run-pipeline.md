@@ -14,10 +14,10 @@ Web Claude wrote the parser and the extractors (`shared/`, `case_change/`) from 
 ## Steps
 1. `git pull`. Run the tests. They use only synthetic files and should take under a second:
    `python3 -m unittest discover -s shared/tests -t shared/tests`
-   Expect `OK` (27 tests). If anything fails, stop and report the failure. Do not run step 2.
+   Expect `OK` (28 tests). If anything fails, stop and report the failure. Do not run step 2.
 2. Run the pipeline from the repo root (stdlib only, no installs). It reads `data/raw/dolgan-2.0/` and `data/raw/evenki-2.0/`:
    `mkdir -p scratch && python3 shared/run_all.py 2>&1 | tee scratch/003_run.log`
-   It writes `data/derived/<corpus>/*.csv` (local, git-ignored), `reports/qa_report.md`, `reports/gate0_feasibility.md`, and `data/derived/workbooks/pilot_sheet_A.xlsx`, `pilot_sheet_B.xlsx` and `pilot_key.csv` (local, git-ignored). Exit code 1 means some QA checks did not match 002. That is a finding to report, not a reason to stop. Record the run time.
+   It writes `data/derived/<corpus>/*.csv` (local, git-ignored), `reports/qa_report.md`, `reports/gate0_feasibility.md`, and in `data/derived/workbooks/` (local, git-ignored) the Study A pilot (`pilot_sheet_A.xlsx`, `pilot_sheet_B.xlsx`, `pilot_key.csv`) and the Study B1 vetting sheets (`b1_sheet_A.xlsx`, `b1_sheet_B.xlsx`, `b1_key.csv`). Exit code 1 means some QA checks did not match 002. That is a finding to report, not a reason to stop. Record the run time.
 3. Read `reports/qa_report.md`. For every row whose status is not `MATCH`:
    - give the two numbers and the difference;
    - find up to 5 example words that explain it (token ids from `data/derived/<corpus>/tokens.csv`), and show their `tx | mb | mp | ge | SyF` values;
@@ -26,6 +26,7 @@ Web Claude wrote the parser and the extractors (`shared/`, `case_change/`) from 
 4. **Spot checks against the `.exb` files** (CLAUDE.md rule 7). Pick at random, with a fixed seed, and write the seed down:
    - 10 rows of `data/derived/dolgan/objects.csv`. For each, open the `.exb` and confirm `tx`, `ge`, `SyF`, `case`, the `speaker_id`, and that `pred_token_id` is a verb in the same utterance.
    - 10 rows of `data/derived/dolgan/evid_candidates.csv` (5 from tier 1 and 5 from tier 2), and 3 from Evenki. Confirm the word, its gloss, the rule, and that the `context` sentence is the right utterance.
+   - 5 rows of `data/derived/dolgan/b1_candidates.csv`. Confirm the case and the neighbouring copula (`next_verb`).
    - 5 utterances from a **multi-speaker** Dolgan text. Confirm that each word is assigned to the right speaker.
    - 5 rows of `data/derived/dolgan/speakers.csv`. Confirm `birth_lo`/`birth_hi` against the `.coma` value.
    Record each check as pass or fail in `handoff/outputs/003/spot_checks.md`. Use token ids only, no names.
@@ -63,5 +64,6 @@ Fill in Results. If the run crashes, set Status `blocked` and paste the last 30 
 - **Privacy check (step 5):**
 - **Workbook check (step 6):**
 - **Gate 0 summary table (copy it from the report):**
+- **Number of B1 candidates by rule** (from the Gate 0 report; web Claude tightens the rules if there are too many to vet):
 - **Surprises:**
 - **Questions for web Claude:**

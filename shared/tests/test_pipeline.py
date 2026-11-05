@@ -64,6 +64,12 @@ class PipelineTest(unittest.TestCase):
         self.assertIn("[[eːt]]", c["eːt"]["context"])
         self.assertNotIn("köstör,", c)
 
+    def test_b1_candidates_follow_siegl_patterns(self):
+        b1 = {c["tx"]: c for c in read(os.path.join(self.d, "dolgan", "b1_candidates.csv"))}
+        self.assertEqual(b1["aptaːga"]["rules"], "copula_next")
+        self.assertEqual(b1["vospitatelʼinnan"]["rules"], "ins_nominal")
+        self.assertNotIn("dʼi͡ege", b1)
+
     def test_gate0_hides_outcomes_by_cohort(self):
         with open(os.path.join(self.r, "gate0_feasibility.md"), encoding="utf-8") as f:
             text = f.read()
@@ -78,6 +84,9 @@ class PipelineTest(unittest.TestCase):
         self.assertEqual(len(a), 4)
         self.assertIn("is_evidential_use", a[0])
         self.assertNotIn("rules", a[0])
+        b1 = xlsx.read(os.path.join(wb, "b1_sheet_A.xlsx"))
+        self.assertEqual(len(b1), 2)
+        self.assertIn("is_secondary_predicate", b1[0])
 
 
 class WorkbookTest(unittest.TestCase):

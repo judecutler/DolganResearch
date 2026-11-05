@@ -22,8 +22,10 @@ Searches: 7 queries in English, Russian and German (including `evidentiality Dol
 | Sheifer (Dartmouth), work in progress: "Epistemic and agent-oriented modality in Dolgan and Yakut" | Adjacent: epistemic modality | Unpublished, and not evidentiality as such. https://faculty-directory.dartmouth.edu/karina-sheifer |
 | Habitual `-AːččI` chapter, TSL 136 (Benjamins, 2026) | Habitual | Different category. **Do not pursue the habitual.** |
 
+**Read on 2026-11-05 (web Claude, WebFetch of the full text):** Däbritz (2023, JEL), p. 196: "There is only one dedicated evidential item, namely the inferential {-DA4K} + AGR.POSS-suffixes"; "some tense-aspect forms express evidentiality concomitantly, most prominently the postterminal {-BI4T}"; "the third-person singular postterminal form of the copula ä- has developed into an evidential particle" (glossed EVID, ex. 55, spelled *äbit*). pp. 195-196 also name a "hypothetical mood formed with {-DA4K}", the same shape as the inferential, which fits the corpus glossing `TAK` as both `COND1` and `INFER`. The article gives no frequencies, says nothing about speaker or generation differences in evidentials, and does not use the labels PST1/PST2. Whether the corpus particle `eːt` is *äbit* is still unconfirmed.
+
 **Manual checks still owed**
-1. Read Däbritz (2022) §6.6 and Däbritz (2023) on evidentiality, so the paper starts from what they already state.
+1. Read Däbritz (2022) §6.6 (the grammar). Däbritz (2023) is now read; see above.
 2. **Map the Evenki and Sakha evidentiality literature.** Not done. Required before claiming a comparison gap. (WP10, web Claude.)
 3. Pakendorf and Stapert (2020, Oxford Guide to the Transeurasian Languages, 430–445) may mention Sakha or Dolgan evidentials. The HAL copy was blocked and not read.
 4. Read Stapert (2013) chapters, which could not be opened. Contents unknown.
@@ -47,8 +49,10 @@ Searches: 7 queries in the verification pass (English and Russian), plus three i
 
 **Rule:** do not pitch "differential object marking in Dolgan" as new. Pitch the age comparison.
 
+**Read on 2026-11-05 (web Claude, WebFetch of the full text from digar.ee):** Siegl (2015), §5, pp. 269-271 and fn. 24. He claims that "the encoding of secondary predicates switched from dative to instrumental sometime in the 20th century" (p. 270), that Dolgan speakers initiated it late in the century, and that earlier texts show the dative. The evidence is two examples: an instrumental one from a published text, "AAB II 34" ('worked as an educator ... now works as a radio operator'), and a dative one from the folklore collection "DF 29: 328" ('was (as) a Russian sorcerer', with the copula *e-te*). **No counts, no criteria for identifying a secondary predicate, and no speaker or date information.** Fn. 24 cites Artemjev (1999: 81-82, 102-103), who also links the shift to Russian. **Artemjev (1999) is a new lead that must be checked**: it may already describe the variation. So the apparent-time and real-time test stays open: Siegl asserts the shift without counting.
+
 **Manual checks still owed**
-1. Read Siegl (2015) in full: what exactly is claimed, on what data. (WP10.)
+1. ~~Read Siegl (2015) in full.~~ Done, see above. **New:** find and read Artemjev (1999), cited by Siegl for the same shift.
 2. One more Russian query on secondary predication and one Google Scholar "cited by" on Siegl (2015). Cited-by data was not obtainable in the first pass.
 3. Contact Sheifer, or check for publication, before submitting.
 4. Resolve the year of Siegl's partitive paper.

@@ -100,8 +100,8 @@ class BuildTest(unittest.TestCase):
             return json.load(f)["counts"]
 
     def test_every_tx_event_is_a_token(self):
-        self.assertEqual(len(self.table("dolgan", "tokens")), 18)
-        self.assertEqual(self.counts("dolgan")["ref_events"], 5)
+        self.assertEqual(len(self.table("dolgan", "tokens")), 23)
+        self.assertEqual(self.counts("dolgan")["ref_events"], 6)
 
     def test_speaker_comes_from_attribute_in_single_and_multi_files(self):
         toks = self.table("dolgan", "tokens")

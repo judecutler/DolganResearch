@@ -1,0 +1,11 @@
+{
+  "_note": "Strawman for vetting Study B1 candidates (secondary predicates, Siegl 2015). Web Claude wrote it; Jude and Dustan revise it after reading Siegl (2015) and Däbritz (2022). Terms are standard typology, not checked against the Dolgan literature.",
+  "version": "strawman-2026-11-05",
+  "columns": {
+    "is_secondary_predicate": ["yes", "no", "unclear"],
+    "construction": ["copular-predicate", "depictive", "role-as", "resultative", "other", "n/a"],
+    "controller": ["subject", "object", "none", "unclear"],
+    "confidence": ["high", "medium", "low"]
+  },
+  "free_text": ["note"]
+}

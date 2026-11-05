@@ -4,6 +4,10 @@ Build (pilot: the same items for both annotators; main: 15% hidden overlap):
     python3 shared/workbook.py build pilot  OUT_DIR CANDIDATES.csv [CANDIDATES.csv ...] --n 40
     python3 shared/workbook.py build main   OUT_DIR CANDIDATES.csv [...] --per-rule 60 --exclude OUT_DIR/pilot_key.csv
 
+Study B1 vetting sheets use the same builder with another codebook:
+    python3 shared/workbook.py build pilot OUT_DIR b1_candidates.csv --n 1000 --prefix b1 \
+        --codebook shared/config/b1_codebook.json
+
 Merge (validates every value against the codebook, then computes agreement):
     python3 shared/workbook.py merge OUT_DIR/main_key.csv SHEET_A.xlsx SHEET_B.xlsx OUT_PREFIX
 
@@ -32,14 +36,17 @@ CONTEXT = ("item_id", "corpus", "genre", "source_collection", "speaker_id", "bir
 KEY = ("item_id", "token_id", "utt_id", "text_id", "corpus", "tier", "rules", "sheet", "overlap")
 
 
-def codebook():
-    with open(CODEBOOK, encoding="utf-8") as f:
+def codebook(path=CODEBOOK):
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
 def read_csv(path):
     with open(path, encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+        rows = list(csv.DictReader(f))
+    for r in rows:
+        r.setdefault("tier", "1")
+    return rows
 
 
 def sample(cands, per_rule, rng):
@@ -74,13 +81,13 @@ def sheet_row(item_id, c):
     return {
         "item_id": item_id, "corpus": c["corpus"], "genre": c["genre"],
         "source_collection": c["source_collection"], "speaker_id": c["speaker_id"],
-        "birth_year": c["birth_mid"].replace(".0", "") if c["birth_mid"] else "",
+        "birth_year": c["birth_mid"].replace(".0", "") if c.get("birth_mid") else "",
         "recording_year": _year(c["recording_lo"], c["recording_hi"]), "word": c["tx"],
         "sentence": c["context"], "glosses": c["gloss_line"], "translation": c["fe"],
     }
 
 
-def build(mode, out, cand_paths, n=40, per_rule=60, overlap=0.15, exclude=None):
+def build(mode, out, cand_paths, n=40, per_rule=60, overlap=0.15, exclude=None, codebook_path=CODEBOOK, prefix=None):
     rng = random.Random(SEED)
     cands = [c for p in cand_paths for c in read_csv(p)]
     skip = {r["token_id"] for r in read_csv(exclude)} if exclude else set()
@@ -91,7 +98,8 @@ def build(mode, out, cand_paths, n=40, per_rule=60, overlap=0.15, exclude=None):
         items = sample(cands, per_rule, rng)
     rng.shuffle(items)
 
-    book = codebook()
+    book = codebook(codebook_path)
+    prefix = prefix or mode
     coding = list(book["columns"]) + list(book["free_text"])
     header = list(CONTEXT) + coding
     widths = {"sentence": 60, "glosses": 60, "translation": 50, "note": 40, "word": 16}
@@ -113,9 +121,9 @@ def build(mode, out, cand_paths, n=40, per_rule=60, overlap=0.15, exclude=None):
     os.makedirs(out, exist_ok=True)
     for s, rows in sheets.items():
         rows.sort(key=lambda r: r["item_id"])
-        xlsx.write(os.path.join(out, f"{mode}_sheet_{s}.xlsx"), header, rows,
+        xlsx.write(os.path.join(out, f"{prefix}_sheet_{s}.xlsx"), header, rows,
                    dropdowns=book["columns"], editable=coding, widths=widths)
-    write(os.path.join(out, f"{mode}_key.csv"), KEY, key)
+    write(os.path.join(out, f"{prefix}_key.csv"), KEY, key)
     return key
 
 
@@ -130,8 +138,8 @@ def kappa(pairs):
     return None if pe == 1 else (po - pe) / (1 - pe)
 
 
-def merge(key_path, a_path, b_path, out_prefix):
-    book = codebook()
+def merge(key_path, a_path, b_path, out_prefix, codebook_path=CODEBOOK):
+    book = codebook(codebook_path)
     key = {r["item_id"]: r for r in read_csv(key_path)}
     errors, coded = [], {}
     for who, path in (("A", a_path), ("B", b_path)):
@@ -196,17 +204,21 @@ def main(argv):
     b.add_argument("--n", type=int, default=40)
     b.add_argument("--per-rule", type=int, default=60)
     b.add_argument("--exclude")
+    b.add_argument("--codebook", default=CODEBOOK)
+    b.add_argument("--prefix")
     m = sub.add_parser("merge")
     m.add_argument("key")
     m.add_argument("sheet_a")
     m.add_argument("sheet_b")
     m.add_argument("out_prefix")
+    m.add_argument("--codebook", default=CODEBOOK)
     a = p.parse_args(argv)
     if a.cmd == "build":
-        key = build(a.mode, a.out, a.candidates, a.n, a.per_rule, exclude=a.exclude)
+        key = build(a.mode, a.out, a.candidates, a.n, a.per_rule, exclude=a.exclude,
+                    codebook_path=a.codebook, prefix=a.prefix)
         print(len(key), "items;", sum(int(k["overlap"]) for k in key), "double-coded")
     else:
-        errors = merge(a.key, a.sheet_a, a.sheet_b, a.out_prefix)
+        errors = merge(a.key, a.sheet_a, a.sheet_b, a.out_prefix, a.codebook)
         print(f"{len(errors)} problems; see {a.out_prefix}_agreement.md")
         return 1 if errors else 0
     return 0

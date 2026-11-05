@@ -81,6 +81,7 @@ def section(derived):
             f"- Source collection per text (inferred for Dolgan, D-013 note): "
             f"{top(Counter(t['source_collection'] for t in texts))}.",
             f"- Dialect per text: {top(Counter(t['dialect'] for t in texts))}.",
+            f"- Part-of-speech (`ps`) values: {top(Counter(t['ps'] for t in toks), 30)}.",
             f"- Words with more than one case label: {sum(1 for t in toks if t['case_flag'])}."]
     return out, n_diff
 
