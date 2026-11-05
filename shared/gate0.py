@@ -132,7 +132,22 @@ def dolgan_section(d):
                     "rule", "recording decade")
     verdicts.append(("B1: at least 30 candidates from at least 10 speakers (before vetting)",
                      f"{len(b1)} from {len(b1_spk)}", len(b1) >= 30 and len(b1_spk) >= 10))
-    return out + _evid(cands, good, dec), verdicts
+    return out + _evid(cands, good, dec) + _rates(cands, texts.values()), verdicts
+
+
+def _rates(cands, texts):
+    """Tier-1 candidates (the corpus's own EVID/INFER glosses) per 1,000 glossed words, by genre."""
+    words = Counter()
+    for t in texts:
+        words[t["genre"]] += int(t["n_tokens_glossed"] or 0)
+    hits = Counter(c["genre"] for c in cands if c["tier"] == "1")
+    out = ["", "Corpus-glossed evidentials (tier 1) per 1,000 glossed words, by genre. These are descriptive, "
+           "and they count the annotators' glosses, not our coding:", "",
+           "| Genre | Glossed words | Tier-1 words | Per 1,000 |", "|---|---|---|---|"]
+    for g in sorted(words):
+        rate = 1000 * hits[g] / words[g] if words[g] else 0
+        out.append(f"| {g} | {words[g]} | {hits[g]} | {rate:.2f} |")
+    return out
 
 
 def _evid(cands, good, dec):
@@ -160,7 +175,7 @@ def evenki_section(d):
     out += crosstab([(t["dialect"] or "unknown", t["source_collection"]) for t in texts], "dialect", "source")
     out += ["", "Objects by source: " + ", ".join(
         f"{k} {v}" for k, v in Counter(o["source_collection"] for o in objs).most_common()) + "."]
-    return out + _evid(cands, set(), {})
+    return out + _evid(cands, set(), {}) + _rates(cands, texts)
 
 
 def main(out_path, dolgan_dir, evenki_dir=None):

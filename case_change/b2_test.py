@@ -3,7 +3,7 @@
     python3 case_change/b2_test.py data/derived/dolgan/objects.csv reports/b2_results.md
 
 This reads the outcome, so it refuses to run until case_change/ANALYSIS_PLAN.md
-has the line "Status: **frozen" (Gate 3). Running it earlier would let the result
+has a line starting "Status: **frozen" (Gate 3). Running it earlier would let the result
 shape the plan.
 
 Outcome per object: ACC versus not ACC, among NOM, ACC and PART objects.
@@ -31,8 +31,9 @@ OUTCOMES = ("NOM", "ACC", "PART")
 
 
 def plan_is_frozen(path=PLAN):
+    """True only if a line of the plan starts with "Status: **frozen" (prose mentioning it does not count)."""
     with open(path, encoding="utf-8") as f:
-        return "Status: **frozen" in f.read()
+        return any(line.startswith("Status: **frozen") for line in f)
 
 
 def by_speaker(rows):
