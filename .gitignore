@@ -1,0 +1,38 @@
+# Corpus data: never commit (licence, size)
+data/raw/
+data/derived/
+data/audio/
+*.exb
+*.exs
+*.coma
+*.wav
+*.mp3
+*.zip
+*.tar
+*.tar.gz
+
+# Keep the manifest and the data README
+!data/MANIFEST.json
+!data/README.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Scratch space for throwaway exploration
+scratch/
