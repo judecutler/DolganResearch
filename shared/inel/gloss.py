@@ -150,3 +150,25 @@ def stem_gloss(ge):
 def looks_like_name(stem):
     """Capitalised lexical glosses are people, places or peoples (002, Q16)."""
     return bool(stem) and stem[0].isupper() and stem != stem.upper()
+
+
+def annotation_items(value):
+    """Split a SyF or SeR value into (form, function) items.
+
+    One event can hold several items, e.g. "0.3.h:S v:pred" (a zero subject and
+    the verb) or "0.3.h:Poss np.h:St" (002, Q9, Q10). A bare word such as "cop"
+    attaches to the item before it. Items whose form starts with "0" are zero
+    (unexpressed) arguments, not the word itself.
+    """
+    items = []
+    for part in (value or "").split():
+        if ":" in part:
+            form, func = part.rsplit(":", 1)
+            items.append([form, func])
+        elif items:
+            items[-1][1] += " " + part
+    return [(f, fn) for f, fn in items]
+
+
+def overt_functions(value):
+    return [fn for f, fn in annotation_items(value) if not f.startswith("0")]

@@ -1,0 +1,12 @@
+{
+  "_note": "Copy of the strawman codebook in evidentiality/PLAN.md. Jude and Dustan own the codebook: when you change it there, change it here too (or open a handoff task). The workbook builder reads this file for the dropdowns and the merge script rejects any other value.",
+  "version": "strawman-2026-11-04",
+  "columns": {
+    "is_evidential_use": ["yes", "no", "unclear"],
+    "info_source": ["inference-from-result", "inference-from-reasoning", "reported", "mirative-surprise", "other", "n/a"],
+    "person": ["1", "2", "3", "none"],
+    "frame": ["quotation-frame", "narrative-line", "background", "dialogue", "other"],
+    "confidence": ["high", "medium", "low"]
+  },
+  "free_text": ["note"]
+}

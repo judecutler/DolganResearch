@@ -66,8 +66,9 @@ def count(corpus, texts, speakers_rows, utts, toks, morphs, coma_speakers, parse
     c["ge_INFER"] = sum(1 for t in toks if gloss.has_component(t["ge"], "INFER", certain_only=True))
     c["ge_PST2"] = sum(1 for t in toks if gloss.has_component(t["ge"], "PST2", certain_only=True))
     c["mp_TAK_ge_COND1"] = sum(1 for m in morphs if m["form_underlying"] == "TAK" and m["gloss_overt"] == "COND1")
-    c["ge_zero_NOM_morphs"] = sum(1 for m in morphs if m["gloss_en"].endswith(".[NOM]"))
-    c["ge_ACC_morphs"] = sum(1 for m in morphs if m["gloss_en"] == "ACC")
+    ge_pieces = [m.text for t in toks for m in gloss.split_morphs(t["ge"])]
+    c["ge_zero_NOM_morphs"] = sum(1 for g in ge_pieces if g.endswith(".[NOM]"))
+    c["ge_ACC_morphs"] = sum(1 for g in ge_pieces if g == "ACC")
     c["speakers_with_birth_year"] = sum(1 for s in speakers_rows if s["birth_lo"] != "")
     c["source_unknown_texts"] = sum(1 for t in texts if t["source_collection"] == "unknown")
     return c

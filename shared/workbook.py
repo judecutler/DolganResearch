@@ -1,0 +1,216 @@
+"""Study A: build annotation workbooks from evidential candidates, and merge them back.
+
+Build (pilot: the same items for both annotators; main: 15% hidden overlap):
+    python3 shared/workbook.py build pilot  OUT_DIR CANDIDATES.csv [CANDIDATES.csv ...] --n 40
+    python3 shared/workbook.py build main   OUT_DIR CANDIDATES.csv [...] --per-rule 60 --exclude OUT_DIR/pilot_key.csv
+
+Merge (validates every value against the codebook, then computes agreement):
+    python3 shared/workbook.py merge OUT_DIR/main_key.csv SHEET_A.xlsx SHEET_B.xlsx OUT_PREFIX
+
+Sampling (D-020): every tier-1 candidate is kept; tier-2 candidates are sampled per
+rule, spread across speakers by round robin, with a fixed seed so the sheet is
+reproducible. Items are shuffled so rule and speaker order give nothing away. The
+rule that found an item is kept in the key, not the sheet, so it does not steer coding.
+"""
+import argparse
+import csv
+import json
+import os
+import random
+import sys
+from collections import Counter
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from inel import xlsx  # noqa: E402
+from inel.load import write  # noqa: E402
+
+SEED = 20261105
+CODEBOOK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "evid_codebook.json")
+CONTEXT = ("item_id", "corpus", "genre", "source_collection", "speaker_id", "birth_year",
+           "recording_year", "word", "sentence", "glosses", "translation")
+KEY = ("item_id", "token_id", "utt_id", "text_id", "corpus", "tier", "rules", "sheet", "overlap")
+
+
+def codebook():
+    with open(CODEBOOK, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def read_csv(path):
+    with open(path, encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def sample(cands, per_rule, rng):
+    """All tier-1 items, plus up to per_rule tier-2 items for each first rule, spread over speakers."""
+    keep = [c for c in cands if c["tier"] == "1"]
+    by_rule = {}
+    for c in cands:
+        if c["tier"] == "2":
+            by_rule.setdefault(c["rules"].split()[0], []).append(c)
+    for rule in sorted(by_rule):
+        by_spk = {}
+        for c in by_rule[rule]:
+            by_spk.setdefault(c["speaker_id"], []).append(c)
+        queues = [rng.sample(v, len(v)) for _, v in sorted(by_spk.items())]
+        rng.shuffle(queues)
+        picked = []
+        while len(picked) < per_rule and any(queues):
+            for q in queues:
+                if q and len(picked) < per_rule:
+                    picked.append(q.pop())
+        keep += picked
+    return keep
+
+
+def _year(lo, hi):
+    if not lo:
+        return ""
+    return lo if lo == hi else f"{lo}-{hi}"
+
+
+def sheet_row(item_id, c):
+    return {
+        "item_id": item_id, "corpus": c["corpus"], "genre": c["genre"],
+        "source_collection": c["source_collection"], "speaker_id": c["speaker_id"],
+        "birth_year": c["birth_mid"].replace(".0", "") if c["birth_mid"] else "",
+        "recording_year": _year(c["recording_lo"], c["recording_hi"]), "word": c["tx"],
+        "sentence": c["context"], "glosses": c["gloss_line"], "translation": c["fe"],
+    }
+
+
+def build(mode, out, cand_paths, n=40, per_rule=60, overlap=0.15, exclude=None):
+    rng = random.Random(SEED)
+    cands = [c for p in cand_paths for c in read_csv(p)]
+    skip = {r["token_id"] for r in read_csv(exclude)} if exclude else set()
+    cands = [c for c in cands if c["token_id"] not in skip]
+    if mode == "pilot":
+        items = rng.sample(cands, min(n, len(cands)))
+    else:
+        items = sample(cands, per_rule, rng)
+    rng.shuffle(items)
+
+    book = codebook()
+    coding = list(book["columns"]) + list(book["free_text"])
+    header = list(CONTEXT) + coding
+    widths = {"sentence": 60, "glosses": 60, "translation": 50, "note": 40, "word": 16}
+
+    key, sheets = [], {"A": [], "B": []}
+    n_overlap = len(items) if mode == "pilot" else round(len(items) * overlap)
+    double = set(rng.sample(range(len(items)), n_overlap))
+    single = [i for i in range(len(items)) if i not in double]
+    to_a = set(single[::2])
+    for i, c in enumerate(items):
+        item_id = f"{mode[0].upper()}{i + 1:04d}"
+        both = i in double
+        who = ("A", "B") if both else (("A",) if i in to_a else ("B",))
+        for s in who:
+            sheets[s].append(sheet_row(item_id, c))
+        key.append({"item_id": item_id, "token_id": c["token_id"], "utt_id": c["utt_id"],
+                    "text_id": c["text_id"], "corpus": c["corpus"], "tier": c["tier"],
+                    "rules": c["rules"], "sheet": "".join(who), "overlap": int(both)})
+    os.makedirs(out, exist_ok=True)
+    for s, rows in sheets.items():
+        rows.sort(key=lambda r: r["item_id"])
+        xlsx.write(os.path.join(out, f"{mode}_sheet_{s}.xlsx"), header, rows,
+                   dropdowns=book["columns"], editable=coding, widths=widths)
+    write(os.path.join(out, f"{mode}_key.csv"), KEY, key)
+    return key
+
+
+def kappa(pairs):
+    """Cohen's kappa for a list of (a, b) labels. None if undefined."""
+    if not pairs:
+        return None
+    n = len(pairs)
+    po = sum(a == b for a, b in pairs) / n
+    ca, cb = Counter(a for a, _ in pairs), Counter(b for _, b in pairs)
+    pe = sum(ca[k] * cb[k] for k in set(ca) | set(cb)) / (n * n)
+    return None if pe == 1 else (po - pe) / (1 - pe)
+
+
+def merge(key_path, a_path, b_path, out_prefix):
+    book = codebook()
+    key = {r["item_id"]: r for r in read_csv(key_path)}
+    errors, coded = [], {}
+    for who, path in (("A", a_path), ("B", b_path)):
+        rows = xlsx.read(path)
+        seen = set()
+        for r in rows:
+            iid = r.get("item_id", "")
+            if iid not in key or who not in key[iid]["sheet"]:
+                errors.append(f"{who}: unknown or misplaced item_id {iid!r}")
+                continue
+            seen.add(iid)
+            for col, allowed in book["columns"].items():
+                v = (r.get(col) or "").strip()
+                if v and v not in allowed:
+                    errors.append(f"{who} {iid}: {col}={v!r} is not in the codebook")
+            coded[(who, iid)] = r
+        missing = {i for i, k in key.items() if who in k["sheet"]} - seen
+        errors += [f"{who}: item {i} missing from the sheet" for i in sorted(missing)]
+        first = next(iter(book["columns"]))
+        uncoded = sorted(i for i in seen if not (coded[(who, i)].get(first) or "").strip())
+        if uncoded:
+            errors.append(f"{who}: {len(uncoded)} items have no `{first}` yet (first: {uncoded[0]})")
+
+    cols = list(book["columns"]) + list(book["free_text"])
+    merged = []
+    for iid, k in key.items():
+        row = dict(k)
+        for who in ("A", "B"):
+            r = coded.get((who, iid), {})
+            for c in cols:
+                row[f"{c}_{who}"] = (r.get(c) or "").strip()
+        merged.append(row)
+    write(out_prefix + "_merged.csv", list(KEY) + [f"{c}_{w}" for w in "AB" for c in cols], merged)
+
+    lines = ["# Annotation agreement", "", f"Key: `{os.path.basename(key_path)}`. Items: {len(key)}. "
+             f"Double-coded: {sum(1 for k in key.values() if k['overlap'] == '1')}.", ""]
+    if errors:
+        lines += ["## Problems (fix the sheets and merge again)", ""] + [f"- {e}" for e in errors] + [""]
+    lines += ["## Cohen's kappa on double-coded items", "",
+              "| Column | Items coded by both | Raw agreement | Kappa |", "|---|---|---|---|"]
+    for c in book["columns"]:
+        pairs = [(m[f"{c}_A"], m[f"{c}_B"]) for m in merged
+                 if m["overlap"] == "1" and m[f"{c}_A"] and m[f"{c}_B"]]
+        k = kappa(pairs)
+        raw = sum(a == b for a, b in pairs) / len(pairs) if pairs else None
+        lines.append(f"| `{c}` | {len(pairs)} | {'' if raw is None else f'{raw:.2f}'} | "
+                     f"{('no items' if not pairs else 'undefined') if k is None else f'{k:.2f}'} |")
+    lines += ["", "Kappa is undefined when both annotators used one value only. A low kappa means the "
+              "codebook needs work, not the annotators (evidentiality/PLAN.md)."]
+    with open(out_prefix + "_agreement.md", "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    return errors
+
+
+def main(argv):
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = p.add_subparsers(dest="cmd", required=True)
+    b = sub.add_parser("build")
+    b.add_argument("mode", choices=("pilot", "main"))
+    b.add_argument("out")
+    b.add_argument("candidates", nargs="+")
+    b.add_argument("--n", type=int, default=40)
+    b.add_argument("--per-rule", type=int, default=60)
+    b.add_argument("--exclude")
+    m = sub.add_parser("merge")
+    m.add_argument("key")
+    m.add_argument("sheet_a")
+    m.add_argument("sheet_b")
+    m.add_argument("out_prefix")
+    a = p.parse_args(argv)
+    if a.cmd == "build":
+        key = build(a.mode, a.out, a.candidates, a.n, a.per_rule, exclude=a.exclude)
+        print(len(key), "items;", sum(int(k["overlap"]) for k in key), "double-coded")
+    else:
+        errors = merge(a.key, a.sheet_a, a.sheet_b, a.out_prefix)
+        print(f"{len(errors)} problems; see {a.out_prefix}_agreement.md")
+        return 1 if errors else 0
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
