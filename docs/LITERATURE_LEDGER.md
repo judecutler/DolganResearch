@@ -69,6 +69,17 @@ Searches: 7 queries in the verification pass (English and Russian), plus three i
 
 **Rule:** do not pitch "differential object marking in Dolgan" as new. Pitch the age comparison.
 
+### Falsification pass (2026-11-05)
+A web Claude research subagent ran 29 queries: 18 in English, 9 in Russian and 2 in German. Examples: `долганский язык падеж вариативность носители поколения`, `долганский язык изменения в речи молодого поколения грамматика`, `"Категория падежа" Артемьев долганского и якутского языков 1999`, `Dolganisch Kasus Wandel Sprachkontakt Russisch`, `Karina Sheifer Dolgan 2024/2025/2026 paper`. **Verdict: B1 OPEN-VERIFIED and B2 OPEN-VERIFIED, with two caveats.** No work quantifies case change by speaker age or recording period.
+
+| Closest work | What it covers | Why it does not fill the gap | Read? |
+|---|---|---|---|
+| Artem'ev, N. M. (1999), *Категория падежа: системный анализ (на материале долганского и якутского языков)*, St Petersburg, 147 pp. (publisher UNVERIFIED, probably RGPU Herzen) | Case system of Dolgan and Yakut; Siegl's source for the dative-to-instrumental shift | Unknown. No online copy found. **Caveat 1: check pp. 81-82 and 102-103 in print** (Berkeley library or interlibrary loan). | no |
+| Stapert (2013), *Contact-induced change in Dolgan*, PhD thesis, Leiden, LOT 336. https://scholarlypublications.universiteitleiden.nl/access/item%3A2940587/view | Contact changes, with "corpus linguistics" among its keywords | The abstract mentions no case, Russian, generations or counts. **Caveat 2: the chapters could not be opened here** (repository items 2940590 to 2940602). If one counts case by speaker age, downgrade to PARTIAL. Handoff 005 asks desktop Claude to check. | abstract only |
+| Siegl, "Der Partitiv im Taimyr Dolganischen", *JSFOu*, DOI 10.33340/susa.87180 (2021 in OpenPolar metadata; year still UNVERIFIED) | Partitive, from field data and a 48,000-word written sample | Abstract shows no age or period analysis | abstract only |
+| Sheifer and Bolshakova (2023), slides | Object marking, qualitative, from grammars (including Artemjev 2013), explained by Evenki contact | No counts and no time dimension. Nothing from either author in 2024-2026. **The most likely future competitor.** | slides read |
+| Pakendorf and Stapert (2020), Oxford Guide | Loss of genitive and locative; new partitive and comparative | Abstract shows no variation | abstract only |
+
 **Read on 2026-11-05 (web Claude, WebFetch of the full text from digar.ee; quotes come from a model's extraction, so check them against the PDF before citing):** Siegl (2015), §5, pp. 269-271 and fn. 24. He claims that "the encoding of secondary predicates switched from dative to instrumental sometime in the 20th century" (p. 270), that Dolgan speakers initiated it late in the century, and that earlier texts show the dative. The evidence is two examples: an instrumental one from a published text, "AAB II 34" ('worked as an educator ... now works as a radio operator'), and a dative one from the folklore collection "DF 29: 328" ('was (as) a Russian sorcerer', with the copula *e-te*). **No counts, no criteria for identifying a secondary predicate, and no speaker or date information.** Fn. 24 cites Artemjev (1999: 81-82, 102-103), who also links the shift to Russian. **Artemjev (1999) is a new lead that must be checked**: it may already describe the variation. So the apparent-time and real-time test stays open: Siegl asserts the shift without counting.
 
 **Manual checks still owed**

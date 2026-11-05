@@ -28,6 +28,9 @@ Web Claude does not edit your folder. What 002 found, to fold in:
 - **Däbritz (2022), *A Grammar of Dolgan*, §6.6 (evidentiality) and the tense chapter.** Skribnik and Aikhenvald (2024: 1018) already say that `-TI` is the neutral past and that *e-bit* contracts to *e:t*. That supports D-022 and the `eːt` reading. Check that the grammar agrees. Check whether the book is open access (a Zenodo record was found earlier, unverified).
 - **Siegl (2015)** on Dolgan secondary predication, the source of the dative-to-instrumental claim. Study B1 cannot run without a way to recognise a secondary predicate, and the corpus has no tag for one (D-021). Note the examples and criteria Siegl uses. Web Claude turns them into a candidate filter.
 
+## 3b. One book to request from the library
+Artem'ev (1999), *Категория падежа: системный анализ (на материале долганского и якутского языков)*, St Petersburg. Siegl (2015) cites pp. 81-82 and 102-103 as the source of the dative-to-instrumental claim. No copy is online. Ask Berkeley's library or interlibrary loan for scans of those pages. This is the one source that could still sink Study B1.
+
 ## 4. Send one email to the INEL team (draft below; edit freely)
 Four questions only they can answer cleanly. Send it from your own address.
 

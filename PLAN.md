@@ -12,6 +12,7 @@ Update this at the end of every work session. Last updated: 2026-11-05 by web Cl
 | 2 | Jude + desktop Claude | Tell desktop Claude: "pull and run handoff 003" | `handoff/003-run-pipeline.md` |
 | 3 | Jude, Dustan | Confirm decisions, update the evidentiality plan, read Däbritz §6.6 and Siegl 2015, send the INEL email | `handoff/004-for-jude-and-dustan.md` |
 | 4 | Jude, Dustan | After 003: code the 40-item pilot separately (Gate 2) | `handoff/004`, item 5 |
+| 4b | Jude + desktop Claude | "pull and run handoff 005" (check Stapert's thesis; can follow 003) | `handoff/005-check-stapert-thesis.md` |
 | 5 | web Claude | After 003: read `reports/qa_report.md` and `reports/gate0_feasibility.md`, fix any mismatches, then design the main annotation round and the Study B analysis | `docs/ROADMAP_CLAUDE_WEB.md` |
 
 ## Gates
@@ -30,6 +31,7 @@ See `docs/DECISIONS.md`. Currently open: D-004 licensing, D-005 stats stack, D-0
 ## Log (newest first)
 - 2026-11-05: Web Claude (overnight): docs corrected from 002; decisions D-016 to D-027; parser and pipeline in `shared/` and `case_change/` (27 tests, synthetic files); handoff 003 (real run) and 004 (humans) written. Decision trail: `.audit/overnight.tsv`.
 - 2026-11-05: Web Claude (overnight, later): an independent review found 10 problems, all fixed with regression tests (39 tests). Read Siegl (2015) and Däbritz (2023) in full and built Study B1 candidate rules from Siegl's examples. Mapped the Evenki and Sakha evidential literature: no comparison found, but Skribnik and Aikhenvald must be read, and Hagel (2022) is a method precedent. Added the speaker-level B2 test, a power analysis and the freeze gate. Proposed D-028 to D-030.
+- 2026-11-05: Literature: Study A re-graded to PARTIAL after reading Skribnik and Aikhenvald (2024), and re-scoped as a quantitative test (D-031). Study B falsification pass (29 queries): B1 and B2 OPEN-VERIFIED, pending Stapert (2013) chapters (handoff 005) and Artem'ev (1999) pp. 81-82, 102-103 (library request in 004).
 - 2026-11-05: Handoff 002 done. Structure report, tier coverage and gloss census written to `handoff/outputs/002/`. Main surprises: Dolgan token and utterance totals do not match the documentation under any rule; Anabar texts exist despite the documentation; `-BIt`/`-DAK` are `BIT`/`TAK` in `mp`; `St` is stimulus.
 - 2026-11-05: Handoff 001 done. Dolgan 2.0 (noaudio) and Evenki 2.0 (lite) downloaded, md5s match the pages. 136 Dolgan and 612 Evenki `.exb` files, matching the documented counts. Evenki has no `noaudio` package; `lite` is the text-only one per the documentation. Handoff 002 started.
 - 2026-11-05: Desktop Claude read both repository pages in the built-in browser and recorded versions, md5s, licence and citations in handoff 001 Results. Nothing downloaded (browser download produced no file). Evenki has no `noaudio` package (`lite`, `standard`, `mp3` only). 001 still blocked, 002 waiting.

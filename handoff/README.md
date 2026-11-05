@@ -38,6 +38,7 @@ Neither Claude can wake the other. Jude is the trigger each time.
 | 002 | [Inspect real corpus structure](002-inspect-structure.md) | desktop Claude | done |
 | 003 | [Run the data pipeline on the real corpora](003-run-pipeline.md) | desktop Claude | todo |
 | 004 | [Decisions, reading and one email](004-for-jude-and-dustan.md) | Jude, Dustan | needs-human |
+| 005 | [Check Stapert (2013) for case counts by age](005-check-stapert-thesis.md) | desktop Claude | todo |
 
 Update this table whenever a status changes.
 
