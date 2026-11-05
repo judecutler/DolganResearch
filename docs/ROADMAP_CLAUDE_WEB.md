@@ -2,6 +2,19 @@
 
 Exact work packages for the Claude that writes code and designs the analysis. Each has inputs, outputs, an acceptance test, and the handoff it needs. Jude and Dustan's version is `ROADMAP_HUMAN.md`.
 
+## Status (2026-11-05, after the overnight run)
+| WP | State |
+|---|---|
+| WP0 to WP2 | done (handoffs 001, 002) |
+| WP3 parser, WP4 QA, WP5 enrich | built and tested on synthetic files; first real run is handoff 003 |
+| WP6 gloss map | case labels done in `shared/inel/config.py`; TAM grouping for B2 still to draft (needs human sign-off) |
+| WP7a Study B | objects (`case_change/extract_objects.py`) and B1 candidates (`extract_b1.py`, rules from Siegl 2015) built |
+| WP7b Study A | candidate generator built (`shared/evid_candidates.py`) |
+| WP8 | `.xlsx` workbooks with dropdowns, merge, kappa built (`shared/workbook.py`) |
+| WP9 | primary B2 test, power analysis and the Gate 3 lock built (`case_change/speaker_test.py`, `power.py`, `b2_test.py`) |
+| WP10 | Evenki and Sakha literature mapped; Study A re-graded to PARTIAL (Skribnik and Aikhenvald 2024) |
+| WP11, WP12 | not started |
+
 ## Working conditions
 - This session has no network downloads and no package installs. It can use Python 3.13 with the standard library, and pandas is present here, but parsers must still run on stdlib alone.
 - It has never seen a real INEL file. Until handoff 002 returns, it writes only plans and synthetic fixtures. Fixtures use made-up content with the real structure. They never contain invented Dolgan sentences presented as data.
