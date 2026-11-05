@@ -111,6 +111,8 @@ def dolgan_section(d):
         out.append(f"| {k} | {len(ss)} | {sum(per[s] for s in ss)} |")
     out += ["", "Objects by source (all speakers): " + ", ".join(
         f"{k} {v}" for k, v in Counter(o["source_collection"] for o in objs).most_common()) + ".",
+        "Objects by clause TAM group (draft grouping in `config.TAM_GROUPS`): " + ", ".join(
+            f"{k or 'no predicate'} {v}" for k, v in Counter(o["tam_group"] for o in objs).most_common()) + ".",
         "Objects with a `BOR` value (possible loans, a confounder for zero marking): "
         f"{sum(1 for o in objs if o['loan'] == '1')}. With no predicate found in the utterance: "
         f"{sum(1 for o in objs if not o['pred_token_id'])}."]

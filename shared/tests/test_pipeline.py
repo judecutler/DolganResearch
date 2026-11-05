@@ -195,6 +195,14 @@ class ReviewRegressionTest(unittest.TestCase):
         self.assertEqual(case_002("PRO.3-PL-ACC-3PL"), "ACC")
         self.assertEqual(case_002("meat-PART"), "PART")
 
+    def test_tam_groups(self):
+        self.assertEqual(gloss.tam_group(["IMP", "2PL"]), "imperative")
+        self.assertEqual(gloss.tam_group(["IMP.2SG"]), "imperative")
+        self.assertEqual(gloss.tam_group(["FUT", "3SG"]), "prospective")
+        self.assertEqual(gloss.tam_group(["PST2", "3SG"]), "past")
+        self.assertEqual(gloss.tam_group(["CVB.SEQ"]), "other")
+        self.assertEqual(gloss.tam_group([]), "")
+
     def test_lative_adverb_is_not_case(self):
         self.assertEqual(gloss.word_case("that-LAT.ADV", "evenki"), (None, ""))
         self.assertEqual(gloss.word_case("wind-LAT", "evenki")[0], "LAT")

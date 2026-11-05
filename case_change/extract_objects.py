@@ -21,7 +21,7 @@ COLUMNS = (
     "birth_precision", "recording_lo", "recording_hi", "age_at_recording", "genre",
     "source_collection", "dialect", "rule_hit", "syf", "syf_form", "human", "pronoun", "ps",
     "case", "case_flag", "plural", "person", "derivational", "ist", "bor", "bor_morph", "loan",
-    "stem", "prev_ps", "align_ok", "unsure_gloss", "pred_token_id", "pred_labels", "pred_neg",
+    "stem", "prev_ps", "align_ok", "unsure_gloss", "pred_token_id", "pred_labels", "tam_group", "pred_neg",
     "pred_position", "n_preds_in_utt",
 )
 
@@ -75,7 +75,8 @@ def objects(tokens, texts, speakers, corpus):
                 "align_ok": w["align_ok"],
                 "unsure_gloss": int(any(g.unsure or g.unknown for g in gloss.glosses(w["ge"]))),
                 "pred_token_id": pw["token_id"] if pw else "",
-                "pred_labels": " ".join(labels), "pred_neg": int("NEG" in labels),
+                "pred_labels": " ".join(labels), "tam_group": gloss.tam_group(labels),
+                "pred_neg": int("NEG" in labels),
                 "pred_position": "" if p is None else ("after" if p > i else "before"),
                 "n_preds_in_utt": len(preds),
             })

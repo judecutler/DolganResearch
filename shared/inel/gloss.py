@@ -7,7 +7,7 @@ components of one gloss; a zero morph is written ".[X]" at the end of a gloss;
 import re
 from dataclasses import dataclass
 
-from .config import CASE_LABELS, DERIVATIONAL_CASE_LIKE, NOT_CASE
+from .config import CASE_LABELS, DERIVATIONAL_CASE_LIKE, NOT_CASE, TAM_GROUPS
 
 _SPLIT = re.compile(r"([-=])")
 _ZERO = re.compile(r"\.\[([^\]]*)\]")
@@ -174,3 +174,12 @@ def annotation_items(value):
 
 def overt_functions(value):
     return [fn for f, fn in annotation_items(value) if not f.startswith("0")]
+
+
+def tam_group(labels):
+    """The first TAM group (config.TAM_GROUPS) whose label occurs among a verb's labels."""
+    comps = set(labels)
+    for group, members in TAM_GROUPS:
+        if any(m in comps or any(c.startswith(m + ".") for c in comps) for m in members):
+            return group
+    return "other" if labels else ""

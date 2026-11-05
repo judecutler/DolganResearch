@@ -109,3 +109,16 @@ COMA_TEXT_KEYS = {
     "has_audio_evenki": "6 Has audio",
 }
 UNKNOWN_VALUES = frozenset(("", "...", "…"))
+
+# DRAFT, needs human sign-off (WP6). Clause TAM groups for Study B2, from the verb's
+# gloss labels. The split follows Däbritz (2023: 196): "partitive-marked objects are
+# closely connected to the imperative mood and prospective tense-aspect". Labels are
+# the Dolgan ones seen in handoff 002 (Q18). First matching group wins, in this order.
+TAM_GROUPS = (
+    ("imperative", ("IMP",)),
+    ("prospective", ("FUT", "PURP", "INTNS.FUT")),
+    ("conditional", ("COND1", "COND2", "COND")),
+    ("inferential", ("INFER",)),
+    ("past", ("PST1", "PST2", "PST")),
+    ("present_habitual", ("PRS", "HAB", "AOR")),
+)
