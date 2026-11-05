@@ -51,6 +51,13 @@ Both extractors write a `rule_hit` column so that every row can be traced.
 
 Tokens from one speaker are not independent, so every model has speaker structure.
 
+**Primary test (proposed 2026-11-05, decide at Gate 3).** A speaker-level test in `case_change/speaker_test.py`. Each speaker's accusative share (empirical logit, weighted by their object count) is regressed on birth year. The p-value comes from permuting birth years across speakers. Why this is the primary test:
+- It needs no installs: Jude's machine has no R, statsmodels or scipy (handoff 001), so it settles most of D-005.
+- The speaker is the unit by construction (rule 8).
+- With about 30 to 60 speakers, it is easier to defend than a GLMM that may not converge.
+
+The mixed models below become a secondary analysis if R can be installed. `case_change/b2_test.py` runs the primary test and the robustness checks. It **refuses to run until this file's status line reads `Status: **frozen`**. `case_change/power.py` gives its power from the real design without reading the outcome. Run it before Gate 3, and put the detectable effect in the paper.
+
 - **B2:** a mixed-effects model with a speaker random intercept (and a text intercept if it converges), outcome the object marking category. Binary version first (accusative vs not), then multinomial. If counts are small or categories separate, use a penalised or Bayesian fit instead of dropping terms to make it converge.
 - **B1:** if there are enough tokens, a binary mixed model (instrumental vs dative). If not, **do not model**. Report counts by cohort, with exact confidence intervals, and say that the data cannot test the claim.
 - **Software:** Python for extraction. R (`lme4`, `brms`) for models (decision D-005, open).
@@ -63,6 +70,13 @@ Tokens from one speaker are not independent, so every model has speaker structur
 4. Birth year continuous instead of binned.
 5. Drop words flagged `align_ok = false`.
 6. Compare results with and without the `%` / `%%` uncertain glosses.
+
+## Real time as well as apparent time (proposed 2026-11-05)
+
+INEL Dolgan recordings span 1930 to 2017 (13 texts from 1930, 14 from 1964, 39 from 2009; handoff 002, Q12). Siegl (2015) dates the B1 shift to "sometime in the 20th century" and cites only two examples, one of them from a folklore collection. So recording period is a second, independent time axis. It is the **real-time** comparison that apparent time can only approximate.
+- B1 especially. Compare the share of instrumental-marked secondary predicates in texts recorded before 1970 with texts recorded from 2000 on, within genre where possible.
+- Caveat. Recording period is tangled with source (published folklore, archive, fieldwork) and genre. Gate 0 prints this tangle (`reports/gate0_feasibility.md`). If the periods share no genre, the comparison is descriptive only.
+- Where both axes are available, report both. Do not combine them into one "age" variable.
 
 ## Interpreting age
 

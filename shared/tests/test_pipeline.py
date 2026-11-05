@@ -173,6 +173,12 @@ class ReviewRegressionTest(unittest.TestCase):
              "IST": "", "IST_cover": ""}
         self.assertEqual(evid_candidates.rules_for(w, "dolgan")[0], ["mp_TAK_not_INFER"])
 
+    def test_evenki_perfect_is_a_tier2_candidate(self):
+        import evid_candidates
+        w = {"ge": "go-PRF-3SG", "mp": "ŋənə-nə-n", "mb": "ŋənə-nə-n", "align_ok": "true", "IST": "", "IST_cover": ""}
+        self.assertEqual(evid_candidates.rules_for(w, "evenki"), (["evenki_PRF"], 1))
+        self.assertEqual(evid_candidates.rules_for(w, "dolgan")[0], [])
+
     def test_reconciliation_uses_002_case_rule(self):
         from build_tables import case_002
         self.assertEqual(case_002("x-%ACC"), "none")

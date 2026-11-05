@@ -5,7 +5,7 @@ Verification records for every claim in this repo that something is unstudied. B
 **Statuses:** FILLED (done, cite it), PARTIAL (some of it done), OPEN-VERIFIED (no falsifier found in the searches listed), UNVERIFIED (could not check).
 "OPEN-VERIFIED" means *no falsifier found in the searches run*. It is not proof.
 
-Last full check: 2026-11-04. Re-check dates go in the table at the bottom.
+Last full check: 2026-11-04. Partial update 2026-11-05 (Evenki and Sakha mapping; Siegl 2015 and Däbritz 2023 read). Re-check dates go in the table at the bottom.
 
 ## Study A: evidentiality in Dolgan, compared with Evenki
 
@@ -24,7 +24,26 @@ Searches: 7 queries in English, Russian and German (including `evidentiality Dol
 
 **Read on 2026-11-05 (web Claude, WebFetch of the full text):** Däbritz (2023, JEL), p. 196: "There is only one dedicated evidential item, namely the inferential {-DA4K} + AGR.POSS-suffixes"; "some tense-aspect forms express evidentiality concomitantly, most prominently the postterminal {-BI4T}"; "the third-person singular postterminal form of the copula ä- has developed into an evidential particle" (glossed EVID, ex. 55, spelled *äbit*). pp. 195-196 also name a "hypothetical mood formed with {-DA4K}", the same shape as the inferential, which fits the corpus glossing `TAK` as both `COND1` and `INFER`. The article gives no frequencies, says nothing about speaker or generation differences in evidentials, and does not use the labels PST1/PST2. Whether the corpus particle `eːt` is *äbit* is still unconfirmed.
 
+### Evenki and Sakha side: first mapping (2026-11-05)
+Done by a web Claude research subagent. It ran 30 queries: 18 in English, 10 in Russian and 2 in German. Examples: `Evenki evidentiality`, `эвиденциальность эвенкийский язык`, `эвиденциальность якутский язык`, `якутский эбит үһү эвиденциальность`, `долганский язык эвиденциальность`, `Evidentialität Ewenkisch OR Jakutisch OR Dolganisch`, `Dolgan Evenki evidential contact Taymyr`, `Turkic evidentiality Siberia language contact Tungusic`. The full query list is in the overnight transcript. Google Scholar "cited by" pages were not reachable.
+
+**Result: no work compares evidentiality across Dolgan, Evenki and Sakha, and none treats evidentials as a Taymyr contact feature.** The comparison gap stays OPEN-VERIFIED, with one large caveat (the first row below).
+
+| Closest work | What it covers | Why it does not fill the gap | Read? |
+|---|---|---|---|
+| Skribnik and Aikhenvald, "Evidentiality in Northern Asia", in Vajda (ed.), *The Languages and Linguistics of Northern Asia* (De Gruyter Mouton; listed as 2018 in one record and as vol. 2, ch. 18, pp. 1007-1063, 2024 in another, **year UNVERIFIED**). https://acquire.cqu.edu.au/articles/chapter/Evidentiality_in_Northern_Asia/27321372 | Areal survey: Siberian Turkic, Tungusic, North Mongolic and contact zones | The abstract names neither Dolgan nor Sakha nor Evenki, and mentions no frequencies. **This is the work most likely to close the gap. Read it in full before claiming novelty.** | abstract only |
+| Hagel (2022), *Eine arealtypologische Untersuchung verbaler Evidentialität ... des Jenissej-Ob-Areals*, PhD thesis, Universität Hamburg. https://ediss.sub.uni-hamburg.de/handle/ediss/10572 | Corpus-based, with token counts, using INEL corpora (Nganasan, Khanty, Selkup, Kamas) | Does not cover Dolgan, Evenki or Sakha. **It is a method precedent: "the first corpus study of evidentials with INEL data" is not a claim we can make.** Cite it and compare methods. | front matter |
+| Malchukov (1999), "Перфект и эвиденциальность в тунгусских языках", *Voprosy Jazykoznanija* 1999(3): 119-132; Malchukov (2000), "Perfect, evidentiality and related categories in Tungusic languages", in Johanson and Utas (eds.), *Evidentials*, Mouton de Gruyter, DOI 10.1515/9783110805284.441 | Tungusic: the perfect as an evidential | Tungusic only, no Dolgan. It is the Evenki baseline to cite. | listing only |
+| Efremov (2010; 2014; 2017, *J. Endangered Languages*) | Sakha evidentials: particle үһү, *ebit*/*äbit*, perfect =BIT, conditional constructions | Sakha only, compared with other Turkic languages, not Dolgan | 2010 and 2017 read |
+| Bazhukov and Simonova (HSE theses, c. 2022), "Заметки об эвиденциальности в якутском языке" | Sakha -BIT, үһү, э-бит, mirative readings; 2022 fieldwork | Sakha only | read |
+| Pakendorf (2009, *J. Language Contact*; 2017 slides) | Even copying paradigms from Sakha | Mood paradigms, not evidentials | abstract and slides |
+
+**What this changes for Study A**
+- The Evenki literature describes indirect evidentiality mainly through the **perfect**, not through a dedicated `-rkə` suffix. The subagent found no source naming `-rkə`, yet the INEL Evenki corpus glosses 29 tokens of `rkə` as `EVID`. Before comparing, check Nedjalkov (1997) and Bulatova and Grenoble (1999) for this form, and include the Evenki perfect (`PRF`, 110 tokens in 002) among the Evenki candidate forms (D-007).
+- "Quantitative + comparative" remains the contribution. It must be framed against Hagel (2022) as the INEL corpus-method precedent and Skribnik and Aikhenvald as the areal survey.
+
 **Manual checks still owed**
+0. **Read Skribnik and Aikhenvald (Northern Asia chapter) in full**, and settle its year. If it discusses Dolgan or Taymyr contact, re-grade Study A.
 1. Read Däbritz (2022) §6.6 (the grammar). Däbritz (2023) is now read; see above.
 2. **Map the Evenki and Sakha evidentiality literature.** Not done. Required before claiming a comparison gap. (WP10, web Claude.)
 3. Pakendorf and Stapert (2020, Oxford Guide to the Transeurasian Languages, 430–445) may mention Sakha or Dolgan evidentials. The HAL copy was blocked and not read.
@@ -52,7 +71,7 @@ Searches: 7 queries in the verification pass (English and Russian), plus three i
 **Read on 2026-11-05 (web Claude, WebFetch of the full text from digar.ee):** Siegl (2015), §5, pp. 269-271 and fn. 24. He claims that "the encoding of secondary predicates switched from dative to instrumental sometime in the 20th century" (p. 270), that Dolgan speakers initiated it late in the century, and that earlier texts show the dative. The evidence is two examples: an instrumental one from a published text, "AAB II 34" ('worked as an educator ... now works as a radio operator'), and a dative one from the folklore collection "DF 29: 328" ('was (as) a Russian sorcerer', with the copula *e-te*). **No counts, no criteria for identifying a secondary predicate, and no speaker or date information.** Fn. 24 cites Artemjev (1999: 81-82, 102-103), who also links the shift to Russian. **Artemjev (1999) is a new lead that must be checked**: it may already describe the variation. So the apparent-time and real-time test stays open: Siegl asserts the shift without counting.
 
 **Manual checks still owed**
-1. ~~Read Siegl (2015) in full.~~ Done, see above. **New:** find and read Artemjev (1999), cited by Siegl for the same shift.
+1. ~~Read Siegl (2015) in full.~~ Done, see above. **New:** find and read Artemjev (1999), cited by Siegl for the same shift. Searched 2026-11-05: `Артемьев 1999 долганский язык синтаксис творительный дательный падеж`, `Артемьев Н.М. "Долганский язык" 1999 синтаксис учебное пособие`. Neither found the work. A National Library of the Sakha Republic record (`nlrs.ru/open/145811`) turned up in the results but could not be opened, so it is UNVERIFIED that it is this book. Ask the INEL team, or try a Berkeley library request.
 2. One more Russian query on secondary predication and one Google Scholar "cited by" on Siegl (2015). Cited-by data was not obtainable in the first pass.
 3. Contact Sheifer, or check for publication, before submitting.
 4. Resolve the year of Siegl's partitive paper.

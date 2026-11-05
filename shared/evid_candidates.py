@@ -9,6 +9,8 @@ Rules (D-020; forms from handoff 002, Q18):
           mp_BIT                Dolgan BIT (PST2 or PTCP.PST), the postterminal (D-022)
           copula_BIT            BIT on a stem glossed "be" (the copula, per Däbritz 2023)
           IST_quot              IST tag containing "quot" (quotative frames; spelling UNVERIFIED)
+          evenki_PRF            Evenki perfect (PRF): Malchukov (1999, 2000) describe the Tungusic
+                                perfect as the main indirect-evidential form (ledger, Study A)
 The output holds corpus sentences: it stays in data/derived/ (git-ignored).
 """
 import os
@@ -50,11 +52,13 @@ def rules_for(w, corpus):
             if form == "BIT":
                 hits.append("copula_BIT" if stem == "be" else "mp_BIT")
                 where = i
+    if corpus == "evenki" and gloss.has_component(w["ge"], "PRF"):
+        hits.append("evenki_PRF")
     if "quot" in (w["IST"] + " " + w["IST_cover"]).lower():
         hits.append("IST_quot")
     if where < 0 and hits:
         for i, (p, g) in enumerate(ms):
-            if {"EVID", "INFER"} & set(gloss.parse_gloss(g.text).all_components):
+            if {"EVID", "INFER", "PRF"} & set(gloss.parse_gloss(g.text).all_components):
                 where = i
     return hits, where
 
