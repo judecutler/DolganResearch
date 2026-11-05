@@ -7,7 +7,7 @@ components of one gloss; a zero morph is written ".[X]" at the end of a gloss;
 import re
 from dataclasses import dataclass
 
-from .config import CASE_LABELS, DERIVATIONAL_CASE_LIKE
+from .config import CASE_LABELS, DERIVATIONAL_CASE_LIKE, NOT_CASE
 
 _SPLIT = re.compile(r"([-=])")
 _ZERO = re.compile(r"\.\[([^\]]*)\]")
@@ -83,7 +83,9 @@ def case_hits(ge, corpus):
     table = CASE_LABELS[corpus]
     hits = []
     for i, g in enumerate(glosses(ge)):
-        if g.overt in table:
+        if g.overt in NOT_CASE[corpus]:
+            pass
+        elif g.overt in table:
             hits.append(CaseHit(i, table[g.overt], g.overt, False))
         else:
             comps = g.components

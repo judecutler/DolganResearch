@@ -41,6 +41,13 @@ class PipelineTest(unittest.TestCase):
         with open(os.path.join(self.r, "qa_report.md"), encoding="utf-8") as f:
             self.assertIn("DIFF", f.read())
 
+    def test_speaker_table_entries_are_counted_even_without_words(self):
+        import json
+        with open(os.path.join(self.d, "dolgan", "counts.json"), encoding="utf-8") as f:
+            c = json.load(f)["counts"]
+        self.assertEqual((c["speaker_ids_in_exb"], c["speakers_in_exb_and_coma"], c["speakers_with_words"]),
+                         (4, 3, 3))
+
     def test_objects_have_case_speaker_and_predicate(self):
         objs = {o["token_id"]: o for o in read(os.path.join(self.d, "dolgan", "objects.csv"))}
         o = objs["SpkB_SpkC_2009_Test_conv#002.w01"]
@@ -54,7 +61,7 @@ class PipelineTest(unittest.TestCase):
 
     def test_evenki_objects_use_evenki_labels(self):
         cases = sorted(o["case"] for o in read(os.path.join(self.d, "evenki", "objects.csv")))
-        self.assertEqual(cases, ["ACC", "ACC.INDF", "NOM"])
+        self.assertEqual(cases, ["ACC", "ACC.INDF", "NOM", "RFL"])
 
     def test_candidates_record_the_rule(self):
         c = {x["tx"]: x for x in read(os.path.join(self.d, "dolgan", "evid_candidates.csv"))}
@@ -139,6 +146,56 @@ class WorkbookTest(unittest.TestCase):
         self.assertAlmostEqual(workbook.kappa([("a", "a"), ("b", "b")]), 1.0)
         self.assertIsNone(workbook.kappa([("a", "a"), ("a", "a")]))
         self.assertIsNone(workbook.kappa([]))
+
+
+class ReviewRegressionTest(unittest.TestCase):
+    """Problems found by the independent review of 2026-11-05."""
+
+    def test_pilot_keeps_tier1_items(self):
+        with tempfile.TemporaryDirectory() as t:
+            path = os.path.join(t, "c.csv")
+            cols = ["token_id", "utt_id", "text_id", "corpus", "speaker_id", "tier", "rules", "tx", "genre",
+                    "source_collection", "birth_mid", "recording_lo", "recording_hi", "context", "gloss_line", "fe"]
+            rows = [[f"b{i}", "u", "x", "dolgan", f"s{i % 7}", "2", "mp_BIT"] + [""] * 9 for i in range(3000)]
+            rows += [[f"e{i}", "u", "x", "dolgan", "s1", "1", "ge_EVID" if i % 2 else "ge_INFER"] + [""] * 9
+                     for i in range(80)]
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f)
+                w.writerow(cols)
+                w.writerows(rows)
+            key = workbook.build("pilot", t, [path], n=40)
+        self.assertEqual(sum(k["tier"] == "1" for k in key), 20)
+        self.assertEqual({k["rules"] for k in key if k["tier"] == "1"}, {"ge_EVID", "ge_INFER"})
+
+    def test_mp_zero_brackets_do_not_hide_tak_or_bit(self):
+        import evid_candidates
+        w = {"ge": "come-COND1-3SG", "mp": "kel-TAK.[tA]-tA", "mb": "kel-tek-e", "align_ok": "true",
+             "IST": "", "IST_cover": ""}
+        self.assertEqual(evid_candidates.rules_for(w, "dolgan")[0], ["mp_TAK_not_INFER"])
+
+    def test_reconciliation_uses_002_case_rule(self):
+        from build_tables import case_002
+        self.assertEqual(case_002("x-%ACC"), "none")
+        self.assertEqual(case_002("human.being-PL.[NOM]=Q"), "none")
+        self.assertEqual(case_002("exhibition-PL.[NOM]"), "NOM")
+        self.assertEqual(case_002("PRO.3-PL-ACC-3PL"), "ACC")
+        self.assertEqual(case_002("meat-PART"), "PART")
+
+    def test_lative_adverb_is_not_case(self):
+        self.assertEqual(gloss.word_case("that-LAT.ADV", "evenki"), (None, ""))
+        self.assertEqual(gloss.word_case("wind-LAT", "evenki")[0], "LAT")
+
+    def test_corpus_root_is_the_coma_folder_and_utility_exbs_are_ignored(self):
+        from build_tables import find_inputs
+        with tempfile.TemporaryDirectory() as t:
+            root = fixtures.write_corpus(os.path.join(t, "dolgan-2.0", "inner"), "dolgan")
+            os.makedirs(os.path.join(root, "corpus-utilities", "a", "b"))
+            open(os.path.join(root, "corpus-utilities", "a", "b", "template.exb"), "w").close()
+            os.makedirs(os.path.join(root, "documentation"))
+            open(os.path.join(root, "corpus-utilities", "template.exb"), "w").close()
+            exbs, coma = find_inputs(os.path.join(t, "dolgan-2.0"), "dolgan")
+        self.assertEqual(os.path.basename(coma), "dolgan.coma")
+        self.assertEqual(len([e for e in exbs if "template" not in e]), 2)
 
 
 class QaCheckTest(unittest.TestCase):

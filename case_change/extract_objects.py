@@ -14,6 +14,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from inel import gloss  # noqa: E402
 from inel.load import num, table, write  # noqa: E402
 
+PRECISE = 10  # years; wider birth or recording ranges give no age
+
 COLUMNS = (
     "token_id", "utt_id", "text_id", "corpus", "speaker_id", "birth_lo", "birth_hi", "birth_mid",
     "birth_precision", "recording_lo", "recording_hi", "age_at_recording", "genre",
@@ -33,7 +35,8 @@ def objects(tokens, texts, speakers, corpus):
 
     rows = []
     for utt_id, words in by_utt.items():
-        preds = [i for i, w in enumerate(words) if "pred" in gloss.overt_functions(w["SyF"])]
+        orphan = "#orphan" in utt_id
+        preds = [] if orphan else [i for i, w in enumerate(words) if "pred" in gloss.overt_functions(w["SyF"])]
         for i, w in enumerate(words):
             if "O" not in gloss.overt_functions(w["SyF"]):
                 continue
@@ -45,15 +48,19 @@ def objects(tokens, texts, speakers, corpus):
             form = next(f for f, fn in gloss.annotation_items(w["SyF"]) if fn == "O" and not f.startswith("0"))
             tx, s = text.get(w["text_id"], {}), spk.get(w["speaker_id"], {})
             bmid, rlo, rhi = num(s.get("birth_mid")), num(tx.get("recording_lo")), num(tx.get("recording_hi"))
+            blo, bhi = num(s.get("birth_lo")), num(s.get("birth_hi"))
+            dated = None not in (bmid, rlo) and rhi - rlo <= PRECISE and bhi - blo <= PRECISE
             stem = gloss.stem_gloss(w["ge"])
             case, flag = w["case"], w["case_flag"]
+            if not case and gloss.glosses(w["ge"]) and gloss.glosses(w["ge"])[-1].overt.startswith("RFL"):
+                case, flag = "RFL", "reflexive_possessive_no_case_label"  # 002 Q19; case reading UNVERIFIED
             rows.append({
                 "token_id": w["token_id"], "utt_id": utt_id, "text_id": w["text_id"], "corpus": corpus,
                 "speaker_id": w["speaker_id"], "birth_lo": s.get("birth_lo", ""),
                 "birth_hi": s.get("birth_hi", ""), "birth_mid": s.get("birth_mid", ""),
                 "birth_precision": s.get("birth_precision", ""),
                 "recording_lo": tx.get("recording_lo", ""), "recording_hi": tx.get("recording_hi", ""),
-                "age_at_recording": "" if bmid is None or rlo is None else round((rlo + rhi) / 2 - bmid, 1),
+                "age_at_recording": round((rlo + rhi) / 2 - bmid, 1) if dated else "",
                 "genre": tx.get("genre", ""), "source_collection": tx.get("source_collection", ""),
                 "dialect": tx.get("dialect", ""), "rule_hit": "SyF_overt_O", "syf": w["SyF"],
                 "syf_form": form, "human": int(".h" in form),
@@ -64,7 +71,7 @@ def objects(tokens, texts, speakers, corpus):
                 "ist": w["IST"] or w["IST_cover"], "bor": w["BOR"], "bor_morph": w["BOR_Morph"],
                 "loan": int(bool(w["BOR"])),
                 "stem": "<capitalised>" if gloss.looks_like_name(stem) else stem,
-                "prev_ps": words[i - 1]["ps"] if i > 0 else "",
+                "prev_ps": words[i - 1]["ps"] if i > 0 and not orphan else "",
                 "align_ok": w["align_ok"],
                 "unsure_gloss": int(any(g.unsure or g.unknown for g in gloss.glosses(w["ge"]))),
                 "pred_token_id": pw["token_id"] if pw else "",

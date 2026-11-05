@@ -20,6 +20,7 @@ import build_tables  # noqa: E402
 import evid_candidates  # noqa: E402
 import extract_b1  # noqa: E402
 import extract_objects  # noqa: E402
+import power  # noqa: E402
 import gate0  # noqa: E402
 import qa_report  # noqa: E402
 import workbook  # noqa: E402
@@ -50,6 +51,10 @@ def main(argv=None):
     n_diff = qa_report.main(qa_path, dirs["dolgan"], dirs["evenki"])
     g0_path = os.path.join(a.reports, "gate0_feasibility.md")
     verdicts = gate0.main(g0_path, dirs["dolgan"], dirs["evenki"])
+    try:
+        power.main([os.path.join(dirs["dolgan"], "objects.csv"), os.path.join(a.reports, "power_b2.md")])
+    except SystemExit as e:
+        print(f"Power analysis skipped: {e}")
     wb = os.path.join(a.derived, "workbooks")
     pilot = workbook.build("pilot", wb, [os.path.join(dirs[c], "evid_candidates.csv") for c in ("dolgan",)],
                            n=a.pilot_n)

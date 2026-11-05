@@ -49,26 +49,46 @@ def read_csv(path):
     return rows
 
 
+def round_robin(groups, k, rng):
+    """Up to k items, taking one from each group in turn (groups shuffled, items shuffled)."""
+    queues = [rng.sample(v, len(v)) for _, v in sorted(groups.items())]
+    rng.shuffle(queues)
+    picked = []
+    while len(picked) < k and any(queues):
+        for q in queues:
+            if q and len(picked) < k:
+                picked.append(q.pop())
+    return picked
+
+
+def _group(items, key):
+    g = {}
+    for c in items:
+        g.setdefault(key(c), []).append(c)
+    return g
+
+
 def sample(cands, per_rule, rng):
     """All tier-1 items, plus up to per_rule tier-2 items for each first rule, spread over speakers."""
     keep = [c for c in cands if c["tier"] == "1"]
-    by_rule = {}
-    for c in cands:
-        if c["tier"] == "2":
-            by_rule.setdefault(c["rules"].split()[0], []).append(c)
+    by_rule = _group([c for c in cands if c["tier"] == "2"], lambda c: c["rules"].split()[0])
     for rule in sorted(by_rule):
-        by_spk = {}
-        for c in by_rule[rule]:
-            by_spk.setdefault(c["speaker_id"], []).append(c)
-        queues = [rng.sample(v, len(v)) for _, v in sorted(by_spk.items())]
-        rng.shuffle(queues)
-        picked = []
-        while len(picked) < per_rule and any(queues):
-            for q in queues:
-                if q and len(picked) < per_rule:
-                    picked.append(q.pop())
-        keep += picked
+        keep += round_robin(_group(by_rule[rule], lambda c: c["speaker_id"]), per_rule, rng)
     return keep
+
+
+def pilot_sample(cands, n, rng):
+    """Half tier 1 and half tier 2 where possible, each spread over rules.
+
+    Tier 2 outnumbers tier 1 about 40 to 1 in Dolgan, so a plain random sample would
+    pilot the codebook on almost no glossed evidentials.
+    """
+    t1 = [c for c in cands if c["tier"] == "1"]
+    t2 = [c for c in cands if c["tier"] == "2"]
+    n2 = min(len(t2), n - min(len(t1), n // 2))
+    n1 = min(len(t1), n - n2)
+    rule = lambda c: c["rules"].split()[0]  # noqa: E731
+    return round_robin(_group(t1, rule), n1, rng) + round_robin(_group(t2, rule), n2, rng)
 
 
 def _year(lo, hi):
@@ -93,7 +113,7 @@ def build(mode, out, cand_paths, n=40, per_rule=60, overlap=0.15, exclude=None, 
     skip = {r["token_id"] for r in read_csv(exclude)} if exclude else set()
     cands = [c for c in cands if c["token_id"] not in skip]
     if mode == "pilot":
-        items = rng.sample(cands, min(n, len(cands)))
+        items = pilot_sample(cands, n, rng)
     else:
         items = sample(cands, per_rule, rng)
     rng.shuffle(items)

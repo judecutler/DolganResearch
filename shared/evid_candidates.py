@@ -43,10 +43,11 @@ def rules_for(w, corpus):
         stem = gloss.stem_gloss(w["ge"])
         for i, (p, g) in enumerate(ms):
             comps = gloss.parse_gloss(g.text).components
-            if p.text == "TAK" and "INFER" not in comps:
+            form = gloss.parse_gloss(p.text).overt  # mp can carry zeros too, e.g. IAK.[tA] (002, Q5)
+            if form == "TAK" and "INFER" not in comps:
                 hits.append("mp_TAK_not_INFER")
                 where = i
-            if p.text == "BIT":
+            if form == "BIT":
                 hits.append("copula_BIT" if stem == "be" else "mp_BIT")
                 where = i
     if "quot" in (w["IST"] + " " + w["IST_cover"]).lower():
@@ -76,6 +77,8 @@ def candidates(tokens, utterances, texts, speakers, corpus):
             gl = " ".join(f"[[{x['ge'] or '?'}]]" if j == i else (x["ge"] or "?") for j, x in enumerate(words))
             tx, s = text.get(w["text_id"], {}), spk.get(w["speaker_id"], {})
             target = gloss.split_morphs(w["mp"])[where].text if where >= 0 else ""
+            if "#orphan" in utt_id:
+                ctx = gl = w["tx"]
             rows.append({
                 "token_id": w["token_id"], "utt_id": utt_id, "text_id": w["text_id"], "corpus": corpus,
                 "speaker_id": w["speaker_id"], "tier": tier, "rules": " ".join(hits),

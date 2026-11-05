@@ -50,7 +50,7 @@ DOLGAN_SINGLE = {
 DOLGAN_MULTI = {
     "text_id": "SpkB_SpkC_2009_Test_conv",
     "genre": "conv",
-    "speakers": ["SpkB", "SpkC"],
+    "speakers": ["SpkB", "SpkC", "SpkD"],  # SpkD is in the speaker table but has no words
     "utterances": [
         ("SpkB", {"ref": "SpkB_SpkC_2009_Test_conv.SpkB.001", "fe": "free translation B1"}, [
             {"tx": "vɨstavkalar", "mb": "vɨstavka-lar", "mp": "vɨstavka-LAr", "ge": "exhibition-PL.[NOM]",
@@ -100,6 +100,10 @@ EVENKI_SINGLE = {
              "mc": "adj-n:case", "ps": "adv", "SyF": "np:O"},  # REAL
             {"tx": "birkə.", "mb": "bi-rkə", "mp": "bi-rkə", "ge": "be-EVID.[3SG]",
              "mc": "v-v:mood2.[v:pn2]", "ps": "v", "SyF": "v:pred"},  # REAL
+            {"tx": "hogdʼoji", "mb": "hogdʼo-ji", "mp": "hogdʼo-wiː", "ge": "tail-RFL.SG",
+             "mc": "n-n:rfl.poss", "ps": "n", "SyF": "np:O"},  # REAL form (002 Q4); SyF SYNTH
+            {"tx": "tadu", "mb": "ta-du", "mp": "tar-duː", "ge": "that-LAT.ADV", "mc": "dem-n:case",
+             "ps": "dem"},  # REAL form (002 Q4); gloss LAT.ADV SYNTH
         ]),
     ],
     "span_events": [],

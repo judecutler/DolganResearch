@@ -35,6 +35,9 @@ CASE_LABELS = {
     },
 }
 
+# Labels that contain a case component but are listed apart from case in 002 (Q17).
+NOT_CASE = {"dolgan": frozenset(), "evenki": frozenset({"LAT.ADV"})}
+
 # Dolgan PROPR (proprietive) is derivational, not case. Carried as a flag.
 DERIVATIONAL_CASE_LIKE = {"dolgan": ("PROPR",), "evenki": ()}
 

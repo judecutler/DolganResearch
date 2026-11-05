@@ -39,6 +39,13 @@ def crosstab(pairs, rows_label, cols_label):
     return out
 
 
+def rec_decade(t):
+    lo, hi = num(t["recording_lo"]), num(t["recording_hi"])
+    if lo is None or hi - lo > PRECISE or decade(lo) != decade(hi):
+        return "imprecise"
+    return decade(lo)
+
+
 def usable(s):
     lo, hi = num(s["birth_lo"]), num(s["birth_hi"])
     return lo is not None and hi - lo <= PRECISE
@@ -55,9 +62,11 @@ def dolgan_section(d):
     verdicts = []
     out = ["## Dolgan", "", "### Speakers and birth years", ""]
     prec = Counter(s["birth_precision"] or "unknown" for s in spk)
+    n_dec = sum(1 for s in good.values() if s["birth_precision"] == "decade" or s["birth_uncertain"] == "1")
     out.append(f"{len(spk)} speakers appear in transcripts. Birth-year precision: "
                + ", ".join(f"{k} {v}" for k, v in sorted(prec.items()))
-               + f". Usable (range of {PRECISE} years or less): **{len(good)}**.")
+               + f". Usable (range of {PRECISE} years or less): **{len(good)}**, of which {n_dec} are "
+               "decades or marked uncertain (a robustness check drops them).")
     tok_by = Counter(t["speaker_id"] for t in toks)
     by_dec = Counter(dec.values())
     out += ["", "| Birth decade (provisional) | Speakers | Tokens |", "|---|---|---|"]
@@ -73,8 +82,7 @@ def dolgan_section(d):
         spk_texts[t["speaker_id"]].add(t["text_id"])
     pairs_src = [(dec[s], texts[t]["source_collection"]) for s in dec for t in spk_texts[s]]
     pairs_gen = [(dec[s], texts[t]["genre"]) for s in dec for t in spk_texts[s]]
-    pairs_rec = [(dec[s], decade(num(texts[t]["recording_lo"]))) for s in dec for t in spk_texts[s]
-                 if texts[t]["recording_lo"]]
+    pairs_rec = [(dec[s], rec_decade(texts[t])) for s in dec for t in spk_texts[s]]
     out += ["", "### Are birth cohort, source, genre and recording date tangled?",
             "", "Counts are (speaker, text) pairs. If each cohort sits in one source or genre, "
             "a cohort effect cannot be told apart from a source or genre effect.", ""]
@@ -120,8 +128,8 @@ def dolgan_section(d):
             f"({len(b1_spk & set(good))} with a usable birth year).", ""]
     out += crosstab([(c["rules"].split()[0], texts[c["text_id"]]["source_collection"]) for c in b1],
                     "rule", "source") + [""]
-    out += crosstab([(c["rules"].split()[0], decade(num(c["recording_lo"])) if c["recording_lo"] else "unknown")
-                     for c in b1], "rule", "recording decade")
+    out += crosstab([(c["rules"].split()[0], rec_decade(texts[c["text_id"]])) for c in b1],
+                    "rule", "recording decade")
     verdicts.append(("B1: at least 30 candidates from at least 10 speakers (before vetting)",
                      f"{len(b1)} from {len(b1_spk)}", len(b1) >= 30 and len(b1_spk) >= 10))
     return out + _evid(cands, good, dec), verdicts

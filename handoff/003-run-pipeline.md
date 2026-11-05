@@ -14,10 +14,10 @@ Web Claude wrote the parser and the extractors (`shared/`, `case_change/`) from 
 ## Steps
 1. `git pull`. Run the tests. They use only synthetic files and should take under a second:
    `python3 -m unittest discover -s shared/tests -t shared/tests`
-   Expect `OK` (28 tests). If anything fails, stop and report the failure. Do not run step 2.
+   Expect `OK` (38 tests). If anything fails, stop and report the failure. Do not run step 2.
 2. Run the pipeline from the repo root (stdlib only, no installs). It reads `data/raw/dolgan-2.0/` and `data/raw/evenki-2.0/`:
    `mkdir -p scratch && python3 shared/run_all.py 2>&1 | tee scratch/003_run.log`
-   It writes `data/derived/<corpus>/*.csv` (local, git-ignored), `reports/qa_report.md`, `reports/gate0_feasibility.md`, and in `data/derived/workbooks/` (local, git-ignored) the Study A pilot (`pilot_sheet_A.xlsx`, `pilot_sheet_B.xlsx`, `pilot_key.csv`) and the Study B1 vetting sheets (`b1_sheet_A.xlsx`, `b1_sheet_B.xlsx`, `b1_key.csv`). Exit code 1 means some QA checks did not match 002. That is a finding to report, not a reason to stop. Record the run time.
+   It writes `data/derived/<corpus>/*.csv` (local, git-ignored), `reports/qa_report.md`, `reports/gate0_feasibility.md`, `reports/power_b2.md` (about 10 to 60 seconds of simulation; it reads no outcome), and in `data/derived/workbooks/` (local, git-ignored) the Study A pilot (`pilot_sheet_A.xlsx`, `pilot_sheet_B.xlsx`, `pilot_key.csv`) and the Study B1 vetting sheets (`b1_sheet_A.xlsx`, `b1_sheet_B.xlsx`, `b1_key.csv`). Exit code 1 means some QA checks did not match 002. That is a finding to report, not a reason to stop. Record the run time.
 3. Read `reports/qa_report.md`. For every row whose status is not `MATCH`:
    - give the two numbers and the difference;
    - find up to 5 example words that explain it (token ids from `data/derived/<corpus>/tokens.csv`), and show their `tx | mb | mp | ge | SyF` values;
@@ -32,7 +32,7 @@ Web Claude wrote the parser and the extractors (`shared/`, `case_change/`) from 
    Record each check as pass or fail in `handoff/outputs/003/spot_checks.md`. Use token ids only, no names.
 5. Check the reports for private data before committing: `reports/qa_report.md` and `reports/gate0_feasibility.md` must contain no speaker names, no full birth dates, and no corpus sentences. They hold counts, labels and the values of the `BOR` and `IST` tags. If anything else got in, do not commit that file; say what you found.
 6. Open `data/derived/workbooks/pilot_sheet_A.xlsx` in whatever spreadsheet program is available (LibreOffice, or tell Jude to open it in Excel or Numbers). Check that the dropdowns work in the yellow columns and that the grey columns are locked. If nothing can open it, say so.
-7. Commit `reports/qa_report.md`, `reports/gate0_feasibility.md`, `handoff/outputs/003/`, this file and `PLAN.md`. Do **not** commit anything under `data/derived/`: it contains corpus text.
+7. Commit `reports/qa_report.md`, `reports/gate0_feasibility.md`, `reports/power_b2.md`, `handoff/outputs/003/`, this file and `PLAN.md`. Do **not** commit anything under `data/derived/`: it contains corpus text.
 
 ## Expected outputs
 - `reports/qa_report.md`, `reports/gate0_feasibility.md` (committed)

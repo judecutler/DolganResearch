@@ -122,7 +122,7 @@ class BuildTest(unittest.TestCase):
         self.assertEqual(t["SpkB_SpkC_2009_Test_conv#002.w04"]["align_ok"], "false")
         flags = {(q["token_id"], q["flag"]) for q in self.table("dolgan", "qa_flags")}
         self.assertIn(("SpkB_SpkC_2009_Test_conv#002.w04", "morph_gloss_mismatch"), flags)
-        self.assertIn(("SpkA_1990_Test_flk#orphan.w01", "word_outside_utterance"), flags)
+        self.assertIn(("SpkA_1990_Test_flk#orphan-SpkA.w01", "word_outside_utterance"), flags)
         self.assertIn(("", "unknown_tier"), {(q["token_id"], q["flag"]) for q in self.table("dolgan", "qa_flags")})
 
     def test_unanalysed_word_has_empty_alignment(self):
@@ -155,7 +155,7 @@ class BuildTest(unittest.TestCase):
                          (4, 2, 1, 1))
         self.assertEqual((c["ge_EVID"], c["ge_INFER"], c["mp_TAK_ge_COND1"], c["ge_PST2"]), (1, 2, 1, 3))
         e = self.counts("evenki")
-        self.assertEqual((e["ge_EVID"], e["words_syf_ends_O"], e["speakers_with_birth_year"]), (1, 3, 0))
+        self.assertEqual((e["ge_EVID"], e["words_syf_ends_O"], e["speakers_with_birth_year"]), (1, 4, 0))
 
 
 if __name__ == "__main__":

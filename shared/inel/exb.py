@@ -36,7 +36,7 @@ class Utterance:
 class Transcript:
     text_id: str
     path: str
-    speakers: dict      # speaker id in the file -> sigle
+    speakers: dict      # speaker id in the file (= .coma Sigle) -> abbreviation
     times: list         # timeline index -> seconds or None
     utterances: list
     orphan_words: list  # words inside no `ref` event
@@ -54,17 +54,15 @@ def read_exb(path):
     index = {t.get("id"): i for i, t in enumerate(tli)}
     times = [float(t.get("time")) if t.get("time") else None for t in tli]
 
-    speakers = {}
-    for s in root.iter("speaker"):
-        abbr = _clean(s.findtext("abbreviation"))
-        speakers[s.get("id")] = abbr or s.get("id")
+    # 002 matched the speaker `id` (not the abbreviation) to the .coma Sigle.
+    speakers = {s.get("id"): _clean(s.findtext("abbreviation")) for s in root.iter("speaker")}
 
     issues = []
     unknown = set()
     by_speaker = {}
     for tier in root.iter("tier"):
         cat = tier.get("category")
-        spk = speakers.get(tier.get("speaker"), tier.get("speaker"))
+        spk = tier.get("speaker")
         if cat not in KNOWN_TIERS:
             unknown.add(cat)
         events = by_speaker.setdefault(spk, {}).setdefault(cat, [])
@@ -122,7 +120,8 @@ def _assemble(spk, cats, issues):
     for w in words:
         while j < len(utts) and utts[j].end <= w.start:
             j += 1
-        if j < len(utts) and utts[j].start <= w.start and w.end <= utts[j].end:
+        # 002's rule (wordlib.words): a word belongs to the ref whose span contains its start.
+        if j < len(utts) and utts[j].start <= w.start < utts[j].end:
             utts[j].words.append(w)
         else:
             orphans.append(w)

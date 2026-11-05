@@ -2,7 +2,7 @@
 
 IDs come from the files, not from row order: utt_id = <text_id>#<nnn> (utterance
 order in the file), token_id = <utt_id>.w<nn>. Words inside no utterance get
-utt_id <text_id>#orphan and a QA flag.
+utt_id <text_id>#orphan-<speaker> and a QA flag.
 """
 from . import gloss
 from .coma import infer_dolgan_source, parse_year
@@ -57,8 +57,8 @@ def transcript_rows(tr, corpus):
         return "" if t is None else f"{t:.3f}"
 
     groups = [(f"{tr.text_id}#{n:03d}", u.speaker, u.words, u) for n, u in enumerate(tr.utterances, 1)]
-    if tr.orphan_words:
-        groups.append((f"{tr.text_id}#orphan", None, tr.orphan_words, None))
+    for spk in sorted({w.speaker for w in tr.orphan_words}):
+        groups.append((f"{tr.text_id}#orphan-{spk}", spk, [w for w in tr.orphan_words if w.speaker == spk], None))
 
     for utt_id, spk, words, u in groups:
         if u is not None:
