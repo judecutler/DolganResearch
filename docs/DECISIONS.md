@@ -26,3 +26,15 @@ Newest decisions at the bottom of each list. Record the date and who decided.
 | D-013 | Cohort bins for speaker birth year | Chosen after the speaker distribution is known and before any outcome is seen. | before Gate 3 |
 | D-014 | Whether the two studies become one paper or two | Depends on what survives Gate 0 and how well the results fit together. | before writing |
 | D-015 | Authorship and acknowledgements | Include the INEL team's contribution in the acknowledgements. Discuss authorship between the two of you early, in writing. | before writing |
+
+## Added after handoff 002 (2026-11-05)
+
+| ID | Date | Decision | Why | By |
+|---|---|---|---|---|
+| D-016 | 2026-11-05 | The primary token count for Dolgan is the number of `tx` events (97,652), and utterances are `ref` events (14,076). Evenki uses the `# INEL:w` sum (93,264) and `ref` events (19,931). Discrepancies with the documentation are reported in QA and are not parser errors. | Dolgan documentation figures (97,625 tokens, 14,193 utterances) cannot be reproduced from the files under any rule tried. | web Claude, to confirm after the INEL team replies |
+| D-017 | 2026-11-05 | The repo stays **private** while it contains corpus sentences. No public release before D-004 is settled and a names check has been run on any released text. Committed derived tables hold IDs and labels, not free text. Annotation sheets contain sentences and stay in the private repo or local. | Personal names appear inside the transcript text; speaker records contain private family and residence data. | web Claude, to confirm with Jude |
+| D-018 | 2026-11-05 | The parser ignores the `mc` slot structure (it does not align with `mb` in Dolgan) and carries `mc` as a raw string. Slots are read from `mp` and `ge`. | `mb`, `mp`, `ge` align exactly; `mc` does not. | web Claude |
+| D-019 | 2026-11-05 | `Anabar` texts and speakers are kept, flagged by a `dialect` column, and excluded in one robustness check. | The documentation says Anabar is not in the corpus, but the `.coma` says otherwise. Unresolved. | web Claude, to confirm after the INEL team replies |
+| D-020 | 2026-11-05 | The Study A candidate pool has two tiers: **Tier 1** is every token labelled `EVID` or `INFER` (Dolgan 89, Evenki 29). **Tier 2** is the polyfunctional forms an annotator would have to judge: `TAK` glossed `COND1`, `PST2` and `PTCP.PST` (`BIT`). Tier 2 is sampled, not exhaustive. | `TAK` is glossed `COND1` 555 times and `INFER` 36 times, and `PST2` has 2,415 tokens, so exhaustive coding is not feasible. | Jude and Dustan to confirm |
+| D-021 | 2026-11-05 | Study B sub-question B1 (secondary predicates) has no tag to find candidates by. Candidates come from `INSTR` and `DAT/LOC` nominals read by a human against Siegl (2015). B1 is a descriptive check unless Gate 0 shows enough tokens. | `SeR` role `St` is perception stimulus. | web Claude, to confirm after reading Siegl (2015) |
+| D-022 | 2026-11-05 | The documented postterminal is provisionally `PST2` (`BIT`). Unconfirmed until Däbritz (2022) is read. | The Dolgan documentation never uses the word postterminal. | Jude and Dustan to confirm |
