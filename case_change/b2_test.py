@@ -7,7 +7,8 @@ has a line starting "Status: **frozen" (Gate 3). Running it earlier would let th
 shape the plan.
 
 Outcome per object: ACC versus not ACC, among NOM, ACC and PART objects (secondary:
-PART versus not PART). Model: speaker-clustered linear probability model of the
+PART versus not PART). B3: verb before object (VO), among objects in utterances with
+exactly one predicate. Model: speaker-clustered linear probability model of the
 outcome on birth year, adjusted for genre and source (speaker_test.adjusted_test,
 D-034, D-037). Every row of the output is named in ANALYSIS_PLAN.md; nothing else
 is computed.
@@ -42,8 +43,17 @@ def _mid(lo, hi):
     return (float(lo) + float(hi)) / 2
 
 
+def is_vo(r):
+    """B3: the verb comes before the object, in an utterance with exactly one predicate."""
+    return r["pred_position"] == "before"
+
+
 def cells(rows, time="birth", controls=PRIMARY_CONTROLS, target="ACC"):
-    """[(speaker, time_in_years, control_labels, successes, n)] aggregated over objects."""
+    """[(speaker, time_in_years, control_labels, successes, n)] aggregated over objects.
+
+    target is a case label (success = the object has that case) or a function of the row.
+    """
+    hit = target if callable(target) else (lambda r: r["case"] == target)
     d = {}
     for r in rows:
         t = _mid(r["birth_lo"], r["birth_hi"]) if time == "birth" else _mid(r["recording_lo"], r["recording_hi"])
@@ -51,7 +61,7 @@ def cells(rows, time="birth", controls=PRIMARY_CONTROLS, target="ACC"):
             continue
         key = (r["speaker_id"], t, tuple(r[c] or "unknown" for c in controls))
         k, n = d.get(key, (0, 0))
-        d[key] = (k + (r["case"] == target), n + 1)
+        d[key] = (k + bool(hit(r)), n + 1)
     return [(g, t, lab, k, n) for (g, t, lab), (k, n) in sorted(d.items())]
 
 
@@ -76,8 +86,9 @@ def main(argv=None):
     if not plan_is_frozen(a.plan):
         sys.exit("ANALYSIS_PLAN.md is not frozen (Gate 3). Freeze the plan before looking at outcomes.")
     with open(a.objects, encoding="utf-8") as f:
-        rows = [r for r in csv.DictReader(f)
-                if r["case"] in OUTCOMES and _mid(r["birth_lo"], r["birth_hi"]) is not None]
+        dated = [r for r in csv.DictReader(f) if _mid(r["birth_lo"], r["birth_hi"]) is not None]
+    rows = [r for r in dated if r["case"] in OUTCOMES]
+    one_pred = [r for r in dated if r["n_preds_in_utt"] == "1" and r["pred_position"]]
     rng = random.Random(20261105)
     b = a.boot
     lines = ["# Study B2 results: object case by time", "",
@@ -105,6 +116,14 @@ def main(argv=None):
     for src in sorted({r["source_collection"] for r in rows}):
         lines.append(run([r for r in rows if r["source_collection"] == src], f"Source {src} only",
                          b, rng, controls=("genre",)))
+    lines += ["", "## B3: word order (verb before object), utterances with one predicate", "",
+              "| Analysis | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|",
+              run(one_pred, "B3 PRIMARY: VO, birth year, adjusted for genre and source", b, rng, target=is_vo),
+              run(one_pred, "B3: VO, birth year, unadjusted", b, rng, controls=(), target=is_vo),
+              run(one_pred, "B3: VO, recording year, adjusted for genre and source", b, rng, time="recording",
+                  target=is_vo),
+              run([r for r in one_pred if r["pronoun"] == "0"], "B3: VO, no pronoun objects", b, rng,
+                  target=is_vo)]
     lines += ["", "## Leave one speaker out (primary model)", "",
               "| Speaker left out | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|"]
     for s in sorted({r["speaker_id"] for r in rows}):

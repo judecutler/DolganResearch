@@ -129,3 +129,17 @@ Resolved in this session: ISTINA record 261724568 is the Wagner-Nagy and Arkhipo
 
 **Verdict: OPEN, provisional.** Two items unread (Siegl's full text, LDD 1188). Do not write up Study C until handoff 008 returns.
 
+## Study B3 (proposed 2026-11-06): Dolgan word order (OV vs VO) by speaker birth year
+
+**Queries (web Claude, 2026-11-06), 4, one Russian and one German:** `Dolgan word order OV VO Russian influence younger speakers corpus`; `долганский язык порядок слов SOV SVO влияние русского языка молодое поколение`; `Sakha Yakut word order change VO Russian contact apparent time corpus`; `Wortstellung Dolganisch Sprachkontakt Russisch Objekt Verb`.
+
+| Work | What it covers | Why it does not fill the gap | Read how |
+|---|---|---|---|
+| Stapert (2013), ch. 7, pp. 242, 257-258, Table 7.3 | OV/VO percentages by three age groups (about 75, 40 and 14 years), 1 to 2 speakers each; "no age pattern"; word order flexibility does not "correlate with a certain text genre or age category" (p. 242) | Five speakers, no test, no control for genre or source. **This is the closest work: B3 is PARTIAL**, a properly sized retest | desktop full-text search (handoff 005) |
+| Pakendorf and Stapert (2020) | Looser Dolgan word order "probably due to contact with Russian" | No counts, no age comparison | WebFetch extraction (HAL) |
+| Asztalos, "Generational and areal differences concerning word order usage and judgement among Udmurt speakers", Benjamins IMPACT 50, https://www.benjamins.com/catalog/impact.50.06asz | Udmurt: younger speakers produce and accept more head-initial order (Russian influence); slower near Tatar | Udmurt, survey not corpus. A parallel for the discussion | abstract |
+| Belova and Khomchenkova (2026), "The order of subject, object and verb in Tatyshly Udmurt", FieldMatters 2026, 60-65, https://aclanthology.org/2026.fieldmatters-1.7 | About 900 clauses, folklore vs non-folklore, old vs new recordings; SOV-SVO competition attributed to Russian | Udmurt; no speaker age | abstract |
+| Grenoble, Khokholova and others, "Evidence of syntactic convergence among Russian-Sakha bilinguals", https://hrcak.srce.hr/223084 | Sakha-Russian bilinguals | Sakha; not read | title only |
+
+**Verdict: PARTIAL.** The question was asked for Dolgan with five speakers (Stapert 2013). A corpus test with about 25 speakers, speaker clustering and genre and source controls is not found.
+

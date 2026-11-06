@@ -21,6 +21,7 @@ So the contribution is the **first test of whether Dolgan case marking differs b
 
 ## Questions
 - **B2, objects (confirmatory).** Does the share of accusative-marked objects change with speaker birth year, once genre and source are held constant?
+- **B3, word order (secondary study).** Does the share of verb-before-object order change with birth year? See B3 below.
 - **B1, secondary predicates.** Among nominal secondary predicates, does the share marked instrumental (versus dative) change with birth year or recording year? Confirmatory only if the vetting yields enough items (see B1 below). Otherwise descriptive.
 
 No direction is predicted for B2. The literature gives no prediction, and Russian contact could push either way. All tests are two-sided.
@@ -62,6 +63,14 @@ All in `case_change/b2_test.py`, in this order:
 5. Without Anabar texts (D-019).
 6. Each source on its own, adjusted for genre (sources with fewer than 5 speakers are skipped).
 7. Leave one speaker out, for every speaker.
+
+## B3, word order (added 2026-11-06, before any word-order output)
+- **Question.** Does the share of objects that follow their verb (VO) change with birth year? Stapert (2013: 257-258, Table 7.3) compared OV and VO across three age groups of one or two speakers each and found no age pattern. Pakendorf and Stapert (2020) attribute Dolgan's looser word order to Russian. Udmurt shows a generational shift toward VO under Russian contact (Asztalos, Benjamins IMPACT 50; Belova and Khomchenkova 2026). Ledger: B3.
+- **Data.** Objects in utterances with exactly one `SyF` predicate (`n_preds_in_utt` = 1), from speakers with a usable birth year, any case. With more than one predicate, the object table's nearest-predicate rule cannot say which verb the object belongs to.
+- **Outcome.** 1 if the predicate comes before the object (`pred_position` = `before`), else 0.
+- **Primary test.** The B2 model: birth year, adjusted for genre and source, wild cluster bootstrap by speaker; the same decision rule on collinearity. Two-sided.
+- **Secondary rows.** Unadjusted; recording year adjusted for genre and source; no pronoun objects.
+- **Caveat.** `SyF` is tagged in main clauses only, and published folklore may have been edited toward a written norm. The source-adjusted model takes part of this into account; the paper must state the rest.
 
 ## B1, secondary predicates
 - **Candidates.** `case_change/extract_b1.py`, rules from Siegl (2015)'s examples (D-033, D-035): 767 candidates from 67 speakers (handoff 006).
