@@ -273,5 +273,13 @@ class PanelTest(unittest.TestCase):
         self.assertEqual(rows, ["| A | 1910s | 1964 to 1995 | 2 | 3, 0 |"])
 
 
+class AgreementTest(unittest.TestCase):
+    def test_agreement_type_comes_from_the_raw_mc_string(self):
+        import evid_descriptives as ed
+        self.assertEqual(ed.agreement({"mc": "v-v:tense.[v:pred.pn]"}), "predicative")
+        self.assertEqual(ed.agreement({"mc": "v-v:mood-v:poss.pn-ptcl"}), "possessive")
+        self.assertEqual(ed.agreement({"mc": "v-v:tense"}), "unmarked")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -10,6 +10,9 @@ labelled exploratory. The questions:
      folklore, and the direct past PST1 the usual past of personal narrative and
      conversation?
   3. Is PST2 rarer with first-person subjects, as a "not witnessed" reading predicts?
+  4. Pakendorf and Stapert (2020) describe the -BIt past as witnessed with possessive
+     person marking and unwitnessed with predicative agreement. The mc tier marks the
+     two (v:poss.pn, v:pred.pn). Which type does each genre use?
 Tests are speaker-clustered (speaker_test.adjusted_test with a 0/1 predictor). Output
 holds counts only: no sentences, no speaker IDs.
 """
@@ -78,6 +81,16 @@ def finite_pasts(tokens):
     return out
 
 
+def agreement(t):
+    """'possessive', 'predicative' or 'unmarked' person agreement, from the raw mc string (D-018)."""
+    mc = t.get("mc", "")
+    if "v:poss.pn" in mc:
+        return "possessive"
+    if "v:pred.pn" in mc:
+        return "predicative"
+    return "unmarked"
+
+
 def share_table(pasts, key, label):
     c = defaultdict(lambda: [0, 0])
     for t, y in pasts:
@@ -110,6 +123,25 @@ def test_row(label, cells, n_boot, rng, controls):
     if est is None:
         return f"| {label} | {n_spk} | {n} | not separable from controls | |"
     return f"| {label} | {n_spk} | {n} | {100 * est:+.1f} | {p:.3f} |"
+
+
+def _pred_agreement(pasts):
+    """PST2 verbs with possessive or predicative agreement: (token, 1 if predicative)."""
+    return [(t, int(agreement(t) == "predicative")) for t, y in pasts
+            if y and agreement(t) in ("possessive", "predicative")]
+
+
+def _agreement_table(pasts):
+    c = defaultdict(Counter)
+    for t, y in pasts:
+        if y:
+            c[t["genre"]][agreement(t)] += 1
+    out = ["| Genre | Possessive | Predicative | Unmarked | Predicative share |", "|---|---|---|---|---|"]
+    for g in sorted(c):
+        po, pr = c[g]["possessive"], c[g]["predicative"]
+        share = f"{pr / (po + pr):.1%}" if po + pr else ""
+        out.append(f"| {g} | {po} | {pr} | {c[g]['unmarked']} | {share} |")
+    return out
 
 
 def with_text_fields(tokens, texts):
@@ -146,6 +178,10 @@ def main(argv=None):
                  pasts, lambda t: person_group(t["ge"]), "Subject person") + [""] + share_table(
                  [(t, y) for t, y in pasts if t["genre"] in ("flk", "nar", "conv")],
                  lambda t: f"{t['genre']}, person {person_group(t['ge'])}", "Genre and person") + [
+             "", "## 2b. Dolgan finite PST2 verbs by person agreement (from `mc`)", "",
+             "Pakendorf and Stapert (2020) describe possessive agreement as the witnessed and predicative "
+             "agreement as the unwitnessed form of this past. Counts by genre; the share column is the "
+             "predicative share among PST2 verbs with either agreement.", ""] + _agreement_table(pasts) + [
              "", "## 3. Speaker-clustered tests (exploratory)", "",
              "Estimates are differences in PST2 share in percentage points; p from "
              f"{b} wild-cluster-bootstrap draws by speaker.", "",
@@ -153,7 +189,13 @@ def main(argv=None):
              test_row("Folklore minus personal narrative (flk vs nar)", binary_cells(pasts, genre_x), b, rng, ()),
              test_row("The same, adjusted for source", binary_cells(pasts, genre_x, ("source",)), b, rng, ("source",)),
              test_row("First minus third person subject, nar and conv only", binary_cells(pasts, first_x), b, rng, ()),
-             test_row("The same, adjusted for genre", binary_cells(pasts, first_x, ("genre",)), b, rng, ("genre",))]
+             test_row("The same, adjusted for genre", binary_cells(pasts, first_x, ("genre",)), b, rng, ("genre",)),
+             "", "Among PST2 verbs with possessive or predicative agreement, the predicative share:", "",
+             "| Comparison | Speakers | Verbs | Difference (points) | p |", "|---|---|---|---|---|",
+             test_row("Folklore minus personal narrative (flk vs nar)",
+                      binary_cells(_pred_agreement(pasts), genre_x), b, rng, ()),
+             test_row("The same, adjusted for source",
+                      binary_cells(_pred_agreement(pasts), genre_x, ("source",)), b, rng, ("source",))]
     with open(a.out, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines))
