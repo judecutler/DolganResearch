@@ -37,7 +37,7 @@ The codebook is the one you settle at the pilot (`shared/config/evid_codebook.js
 Script: `shared/evid_analysis.py` (written 2026-11-06, tested on synthetic data only). It implements the first three bullets below; the Evenki comparison is its rule and genre tables side by side.
 - Per rule: the share coded evidential, with a speaker-cluster bootstrap interval.
 - Per genre: the same, where a rule has at least 20 items in the genre.
-- Evidential uses per 1,000 words: gloss rate (handoff 009) × coded share, with the interval carried through.
+- Evidential uses per 1,000 words: gloss rate (handoff 009) × coded share. The script gives the point estimate only; an interval is still to be added.
 - Agreement: Cohen's kappa per codebook column on the double-coded items, reported in the paper.
 - Dolgan versus Evenki: rates side by side, by genre where both corpora have the genre.
 
