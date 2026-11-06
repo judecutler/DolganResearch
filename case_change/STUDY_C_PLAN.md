@@ -47,7 +47,7 @@ The same speaker-clustered wild bootstrap as Study B (`speaker_test.adjusted_tes
 - **2026-11-06, H4 moved from percentage points to odds ratios.** An independent review simulated equal clause effects on the log-odds scale in both languages with Dolgan's marker rarer than Evenki's. The pooled percentage-point interaction test then rejected in 300 of 300 runs: it measured the different base rates, not a different system. H4 is now the ratio of the two odds ratios, with a speaker-resampling interval, and robustness rows for the extended definition and without pronoun objects. No Study C output existed (handoff 008 still `todo`).
 
 ## Run history
-- Handoff 008 (2026-11-06) ran the script as it stood **before** the H4 change above: desktop pulled before commit 4b39c22. Its `reports/study_c_clause_dom.md` therefore shows the old percentage-point H4 (−2.2 points, p = 0.70), which is superseded. H1 and H3 are unaffected. Handoff 010 reruns the script with the H4 fixed before any output existed.
+- Handoff 008 (2026-11-06) ran the script as it stood **before** the H4 change above: desktop pulled before commit 4b39c22. Its `reports/study_c_clause_dom.md` therefore shows the old percentage-point H4 (−2.2 points, p = 0.70), which is superseded. H1 and H3 are unaffected. Handoff 010 reran the script with the H4 fixed before any output existed: OR Dolgan 40.28, OR Evenki 3.17, ratio 12.71 (95% interval 3.23 to 81.00). H4 is supported, and so are its robustness rows (12.46; 9.12).
 
 ## Changes after data
 (none)

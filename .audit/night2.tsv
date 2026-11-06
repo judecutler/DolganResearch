@@ -29,3 +29,4 @@ ts	phase	decision	why	evidence	result
 2026-11-06T09:49:32Z	fix	simulate_cells draws speaker effects in sorted order; test runs simulate_cells under 3 PYTHONHASHSEEDs	desktop found report changed with hash seed	007 Q1; mutation: test fails without sort	done
 2026-11-06T09:49:32Z	decide	power opt-in in run_all; power.py --export-design writes DESIGN_COLUMNS only for desktop cloud workspace	Jude computer: 180 s per call, background jobs killed	007 Q2	done; test checks export has no case
 2026-11-06T09:49:32Z	verify	Study C graded PARTIAL with stated gap; H3 premise contradicted by Kazama (via Siegl) and by data; 008 H4 row superseded (ran pre-4b39c22)	Siegl 2021 full text summarised by desktop	outputs/008/siegl_partitive.md	done; 010 reruns H4
+2026-11-06T10:31:14Z	verify	010 read: H4 odds-ratio ratio 12.71 (3.23-81.00), robust 12.46, 9.12; power primary 0.83/0.42; hash-seed diff empty	handoff 010	reports/study_c_clause_dom.md, power_b2.md	done; docs updated
