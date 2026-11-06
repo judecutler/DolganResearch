@@ -22,7 +22,7 @@ from speaker_test import collinearity, power_cells  # noqa: E402
 
 PRECISE = 10
 DESIGN_COLUMNS = ("speaker_id", "birth_lo", "birth_hi", "birth_mid", "recording_lo", "recording_hi",
-                  "genre", "source_collection")
+                  "genre", "source_collection", "n_preds_in_utt")
 CONTROL_SETS = {"none": (), "genre": ("genre",), "genre + source": ("genre", "source_collection")}
 ODDS_RATIOS = (1.0, 1.2, 1.35, 1.5, 2.0)
 SDS = (0.5, 1.0)
@@ -76,6 +76,8 @@ def main(argv=None):
     p.add_argument("--base", type=float, default=0.8)
     p.add_argument("--sims", type=int, default=200)
     p.add_argument("--min-tokens", type=int, default=3)
+    p.add_argument("--b3-base", type=float, default=0.2,
+                   help="assumed share of verb-before-object order for B3 (an input, not a measurement)")
     a = p.parse_args(argv)
     rows = read_design(a.objects)
     birth = cells_from(rows, "birth", (), a.min_tokens)
@@ -109,6 +111,19 @@ def main(argv=None):
         for orat in ODDS_RATIOS:
             vals = [power_cells(designs[c], a.base, math.log(orat), sd, n_sim=a.sims, seed=7,
                                 controls=bool(CONTROL_SETS[c])) for c in CONTROL_SETS for sd in SDS]
+            lines.append(f"| {orat} | " + " | ".join(f"{v:.2f}" for v in vals) + " |")
+            print(lines[-1], flush=True)
+    one = [r for r in rows if r["n_preds_in_utt"] == "1"]
+    b3 = cells_from(one, "birth", CONTROL_SETS["genre + source"], a.min_tokens)
+    r2 = collinearity([(g, t, lab, 0, n) for g, t, lab, n in b3]) if b3 else None
+    lines += ["", "## B3 (word order): design and power, birth year adjusted for genre and source", "",
+              f"Objects in utterances with one predicate: {sum(c[3] for c in b3)} from "
+              f"{len({c[0] for c in b3})} speakers; birth-year variance explained by genre and source: "
+              + ("n/a" if r2 is None else f"{r2:.2f}") + f". Assumed VO share (input): {a.b3_base}.", "",
+              "| Odds ratio per decade | " + " | ".join(f"SD {sd}" for sd in SDS) + " |", "|---|" + "---|" * len(SDS)]
+    if len({c[0] for c in b3}) >= 4:
+        for orat in ODDS_RATIOS:
+            vals = [power_cells(b3, a.b3_base, math.log(orat), sd, n_sim=a.sims, seed=7) for sd in SDS]
             lines.append(f"| {orat} | " + " | ".join(f"{v:.2f}" for v in vals) + " |")
             print(lines[-1], flush=True)
     lines += ["", "Report in the paper the smallest odds ratio with power 0.8 or more for the test the frozen "
