@@ -8,7 +8,15 @@ source). The case column is never read, so this can run before Gate 3 (D-026). I
 counts every object, including the few whose case is not NOM, ACC or PART, so the
 object counts are slightly higher than in the analysis.
 
-Takes about 5 to 10 minutes at 200 simulations per cell: run it in the background.
+Takes about 5 to 10 minutes at 200 simulations per cell. On Jude's computer a shell
+call ends after 180 s and kills background jobs, so export the design columns first
+and run the simulation where long jobs are allowed (desktop Claude's cloud workspace):
+
+    python3 case_change/power.py --export-design data/derived/dolgan/objects.csv design_b2.csv
+    python3 case_change/power.py design_b2.csv reports/power_b2.md
+
+design_b2.csv holds only DESIGN_COLUMNS: speaker IDs, years, genre, source and the
+number of predicates per utterance. No case, no corpus text.
 """
 import argparse
 import csv
@@ -69,7 +77,22 @@ def cells_from(rows, time="birth", controls=(), min_tokens=3):
     return [(g, t, lab, n) for (g, t, lab), n in sorted(cells.items()) if per[g] >= min_tokens]
 
 
+def export_design(objects_csv, out_csv):
+    rows = read_design(objects_csv)
+    with open(out_csv, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=DESIGN_COLUMNS, lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows)
+    return len(rows)
+
+
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == "--export-design":
+        if len(argv) != 3:
+            sys.exit("usage: power.py --export-design OBJECTS.csv OUT.csv")
+        print(export_design(argv[1], argv[2]), "rows of design columns ->", argv[2])
+        return
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("objects")
     p.add_argument("out")

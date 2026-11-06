@@ -76,6 +76,12 @@ class SpeakerTestTest(unittest.TestCase):
             rows = power.read_design(path)
             self.assertNotIn("case", rows[0])
             self.assertNotIn("ACC", rows[0].values())
+            out = os.path.join(t, "design.csv")
+            power.main(["--export-design", path, out])
+            with open(out, encoding="utf-8") as f:
+                header = f.readline()
+            self.assertNotIn("case", header.split(","))
+            self.assertNotIn("ACC", open(out, encoding="utf-8").read())
 
 
 class FreezeGateTest(unittest.TestCase):
@@ -200,6 +206,19 @@ class CollinearTimeTest(unittest.TestCase):
             return out
         self.assertEqual(b2_test.choose_controls(rows(False, False))[0], b2_test.PRIMARY_CONTROLS)
         self.assertIsNone(b2_test.choose_controls(rows(True, True))[0])
+
+
+class ReproducibleTest(unittest.TestCase):
+    """Handoff 007: the design report changed with PYTHONHASHSEED."""
+
+    def test_simulation_does_not_depend_on_the_hash_seed(self):
+        import subprocess
+        code = ("import sys; sys.path.insert(0, %r); import speaker_test as st; "
+                "d = [('s%%d' %% i, 1900 + 7 * i, ('g%%d' %% (i %% 3),), 10 + i) for i in range(12)]; "
+                "import random; print(st.simulate_cells(d, 0.5, 0.2, 2.0, random.Random(3)))") % os.path.join(os.path.dirname(os.path.dirname(HERE)), "case_change")
+        outs = {subprocess.run([sys.executable, "-c", code], capture_output=True, text=True,
+                               env=dict(os.environ, PYTHONHASHSEED=h)).stdout for h in ("1", "2", "3")}
+        self.assertEqual(len(outs), 1, outs)
 
 
 if __name__ == "__main__":

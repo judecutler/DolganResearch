@@ -43,6 +43,7 @@ Neither Claude can wake the other. Jude is the trigger each time.
 | 007 | [Rerun with the adjusted B2 design report](007-design-report.md) | desktop Claude | done |
 | 008 | [Run Study C; fetch two papers](008-study-c-and-two-papers.md) | desktop Claude | done |
 | 009 | [Run the Study A gloss descriptives](009-study-a-descriptives.md) | desktop Claude | done |
+| 010 | [Rerun Study C and the design report with the fixed code](010-rerun-c-and-power.md) | desktop Claude | todo |
 
 Update this table whenever a status changes.
 

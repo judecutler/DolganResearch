@@ -205,7 +205,7 @@ def simulate_cells(design, base_share, slope_per_decade, sd_speaker, rng, contro
     """
     mean_t = sum(t * n for _, t, _, n in design) / sum(n for *_, n in design)
     base = math.log(base_share / (1 - base_share))
-    shift = {g: rng.gauss(0, sd_speaker) for g in {d[0] for d in design}}
+    shift = {g: rng.gauss(0, sd_speaker) for g in sorted({d[0] for d in design})}  # sorted: same draws under any PYTHONHASHSEED
     out = []
     for g, t, labels, n in design:
         eta = base + slope_per_decade * (t - mean_t) / 10 + shift[g]

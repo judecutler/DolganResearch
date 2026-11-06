@@ -229,6 +229,17 @@ def main(argv=None):
               "| Speaker left out | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|"]
     for s in sorted({r["speaker_id"] for r in rows}):
         lines.append(run([r for r in rows if r["speaker_id"] != s], s, LOO_BOOT, rng, controls=P))
+    lines += ["", "## Real-time panel: speakers with objects in two or more recording years (descriptive)", "",
+              "| Speaker | Recording year | NOM | ACC | PART |", "|---|---|---|---|---|"]
+    years = {}
+    for r in rows:
+        y = _mid(r["recording_lo"], r["recording_hi"])
+        if y is not None:
+            years.setdefault(r["speaker_id"], {}).setdefault(y, dict.fromkeys(OUTCOMES, 0))[r["case"]] += 1
+    for sp in sorted(years):
+        if len(years[sp]) > 1 and max(years[sp]) - min(years[sp]) >= 10:
+            lines += [f"| {sp} | {y:.0f} | " + " | ".join(str(c[x]) for x in OUTCOMES) + " |"
+                      for y, c in sorted(years[sp].items())]
     points = speaker_points(rows)
     svg = os.path.splitext(a.out)[0] + "_speakers.svg"
     svg_plot(points, svg)

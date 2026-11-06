@@ -35,8 +35,9 @@ No direction is predicted for B2. The literature gives no prediction, and Russia
 - Birth years of speakers with objects run from the 1890s to the 2000s. The speakers born after 1970 give 4 to 8 objects each, one speaker per decade.
 - Birth year is tangled with source and genre. Speakers born before 1920 appear almost only in `published_folklore` and genre `flk`. Speakers born after 1950 appear only in fieldwork and the archive, mostly `nar` and `conv`.
 - `SyF` exists in 50 of 136 texts: 27 `TDNT_archive`, 18 `published_folklore`, 3 `fieldwork_2007_2010`, 2 `fieldwork_2017`.
-- Collinearity (share of the object-weighted variance of birth year explained by the controls), from `reports/power_b2.md` after handoff 007: genre ___ ; genre + source ___ . Recording year: genre ___ ; genre + source ___ .
-- Power of the primary test at odds ratio 1.5 per decade, speaker SD 0.5 / 1.0: ___ / ___ (from the same report).
+- Collinearity (share of the object-weighted variance of birth year explained by the controls), from `reports/power_b2.md` (handoff 007): genre **0.27**; genre + source **0.60**. Recording year: genre **0.49**; genre + source **0.83**. So the decision rule keeps the genre + source adjustment as primary (0.60 < 0.90). The recording-year test is close to the limit and has little power (see below).
+- Power of the primary test at odds ratio 1.5 per decade, speaker SD 0.5 / 1.0: **0.82 / 0.41**. At odds ratio 2.0: 0.98 / 0.78. Unadjusted, at 1.5: 0.99 / 0.82. Recording year, genre + source, at 1.5: 0.41 / 0.20. B3: 496 objects from 23 speakers, collinearity 0.57, power at 1.5: 0.79 / 0.43. (Handoff 007, 200 simulations per cell. Handoff 010 reruns the report after a reproducibility fix; expect changes of a few hundredths only.)
+- **What this means.** With genre and source controlled, the design reliably detects only fairly large changes (odds ratio about 1.5 per decade if speakers are similar, about 2 if they differ a lot). A null result must be reported with these numbers.
 
 ## Primary test (B2)
 - **Outcome.** 1 if the object is `ACC`, 0 if `NOM` or `PART`.
@@ -85,6 +86,7 @@ All in `case_change/b2_test.py`, in this order:
 - **Recording bins.** Before 1980; 1980 to 1999; 2000 and later.
 - Counts of `NOM`, `ACC` and `PART` by bin, and by bin and genre.
 - Each speaker's accusative share against birth year, with the number of objects, so readers see the variation behind the model.
+- **Real-time panel (added 2026-11-06, before any outcome).** Gate 0 lists four speakers recorded at times 10 or more years apart; only one has objects in more than one recording (62, 35 and 17 objects, 1970 to 2004). Report that speaker's NOM, ACC and PART counts per recording year. Descriptive only: one speaker cannot test change, but can show whether one person's usage moved.
 
 ## Interpreting age
 - **Apparent time.** It assumes older speakers keep an earlier state of the language. It cannot separate generational change from changes in a person's speech over their life (age grading). Recording year is the only real-time check we have.
