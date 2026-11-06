@@ -170,7 +170,7 @@ class ReviewRegressionTest(unittest.TestCase):
             header = list(xlsx.read(os.path.join(t, "pilot_sheet_A.xlsx"))[0].keys())
         self.assertEqual(sum(k["tier"] == "1" for k in key), 20)
         self.assertEqual({k["rules"] for k in key if k["tier"] == "1"}, {"ge_EVID", "ge_INFER"})
-        self.assertFalse({"speaker_id", "birth_year", "recording_year"} & set(header))
+        self.assertFalse({"speaker_id", "birth_year", "recording_year", "source_collection"} & set(header))
         self.assertTrue({"speaker_id", "birth_year"} <= set(key[0]))
 
     def test_mp_zero_brackets_do_not_hide_tak_or_bit(self):

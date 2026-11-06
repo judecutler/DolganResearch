@@ -145,13 +145,12 @@ class ClauseTypeTest(unittest.TestCase):
         self.assertEqual(clause_dom.clause_type("PROB 3SG"), "other")
         self.assertEqual(clause_dom.clause_type("PROB 3SG", clause_dom.IRREALIS_EXTENDED), "irrealis")
 
-    def test_interaction_cells_mark_only_dolgan_irrealis(self):
+    def test_odds_ratio_compares_clause_types(self):
         import clause_dom
-        rows = [{"_corpus": c, "speaker_id": "s", "pred_labels": pl, "genre": "nar", "_y": 0}
-                for c in ("dolgan", "evenki") for pl in ("IMP 2SG", "PST 3SG")]
-        xs = {(lab[0], lab[1]): x for _, x, lab, _, _ in clause_dom.cells(rows, interaction=True)}
-        self.assertEqual(xs, {("dolgan", "irrealis"): 1, ("dolgan", "realis"): 0,
-                              ("evenki", "irrealis"): 0, ("evenki", "realis"): 0})
+        rows = ([{"pred_labels": "IMP 2SG", "_y": 1}] * 3 + [{"pred_labels": "IMP 2SG", "_y": 0}] * 1
+                + [{"pred_labels": "PST 3SG", "_y": 1}] * 1 + [{"pred_labels": "PST 3SG", "_y": 0}] * 3)
+        self.assertAlmostEqual(clause_dom.odds_ratio(rows), (3.5 / 1.5) / (1.5 / 3.5))
+        self.assertIsNone(clause_dom.odds_ratio(rows[:4]))
 
 
 class B1TestTest(unittest.TestCase):
@@ -173,6 +172,34 @@ class B1TestTest(unittest.TestCase):
         import b1_test
         with self.assertRaises(SystemExit):
             b1_test.main(["m.csv", "c.csv", "s.csv", "out.md"])
+
+
+class CollinearTimeTest(unittest.TestCase):
+    """Review 2026-11-06: a control that duplicates time must not be pruned away."""
+
+    def test_control_identical_to_time_makes_time_unidentified(self):
+        cells = [(f"o{i}", 1900, ("flk",), 10, 20) for i in range(6)] + \
+                [(f"n{i}", 1960, ("nar",), 16, 20) for i in range(6)]
+        self.assertEqual(st.collinearity(cells), 1.0)
+        self.assertEqual(st.adjusted_test(cells, 99, random.Random(1)), (None, None))
+        self.assertIsNotNone(st.adjusted_test(cells, 99, random.Random(1), controls=False)[1])
+
+    def test_decision_rule_falls_back_to_genre_then_to_none(self):
+        import b2_test
+
+        def rows(src_tangled, genre_tangled):
+            out = []
+            for i in range(8):
+                b = 1900 + 10 * i
+                # Tangled: a new genre and source every two decades, which explains about 95% of birth year.
+                genre = f"g{i // 2}" if genre_tangled else ("flk" if i % 2 else "nar")
+                src = f"s{i // 2}" if src_tangled else ("pub" if i % 3 else "arch")
+                for _ in range(5):
+                    out.append({"speaker_id": f"s{i}", "birth_lo": str(b), "birth_hi": str(b), "case": "ACC",
+                                "genre": genre, "source_collection": src})
+            return out
+        self.assertEqual(b2_test.choose_controls(rows(False, False))[0], b2_test.PRIMARY_CONTROLS)
+        self.assertIsNone(b2_test.choose_controls(rows(True, True))[0])
 
 
 if __name__ == "__main__":

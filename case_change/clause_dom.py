@@ -46,28 +46,66 @@ def load(path, corpus):
     return rows
 
 
-def cells(rows, irrealis=IRREALIS, controls=("genre",), interaction=False):
-    """[(speaker, x, control labels, successes, n)] with x = 1 for irrealis, 0 for realis.
-
-    interaction=True is the pooled H4 model: x = 1 only for Dolgan irrealis objects, and
-    corpus and clause type become controls.
-    """
+def cells(rows, irrealis=IRREALIS, controls=("genre",)):
+    """[(speaker, x, control labels, successes, n)] with x = 1 for irrealis, 0 for realis."""
     d = {}
     for r in rows:
         ct = clause_type(r["pred_labels"], irrealis)
         if ct not in ("irrealis", "realis"):
             continue
-        irr = int(ct == "irrealis")
+        x = int(ct == "irrealis")
         labels = tuple(r[c] or "unknown" for c in controls)
-        if interaction:
-            x = irr * int(r["_corpus"] == "dolgan")
-            labels = (r["_corpus"], ct) + labels
-        else:
-            x = irr
         key = (r["_corpus"] + ":" + r["speaker_id"], x, labels)
         k, n = d.get(key, (0, 0))
         d[key] = (k + r["_y"], n + 1)
     return [(g, x, lab, k, n) for (g, x, lab), (k, n) in sorted(d.items())]
+
+
+def odds_ratio(rows, irrealis=IRREALIS):
+    """Irrealis-versus-realis odds ratio of the marker (0.5 added to each cell), or None."""
+    c = {"irrealis": [0.5, 0.5], "realis": [0.5, 0.5]}
+    seen = set()
+    for r in rows:
+        ct = clause_type(r["pred_labels"], irrealis)
+        if ct in c:
+            c[ct][0 if r["_y"] else 1] += 1
+            seen.add(ct)
+    if len(seen) < 2:
+        return None
+    return (c["irrealis"][0] / c["irrealis"][1]) / (c["realis"][0] / c["realis"][1])
+
+
+def ratio_of_odds_ratios(dlg, evk, rng, boot=2000, irrealis=IRREALIS):
+    """(OR Dolgan, OR Evenki, their ratio, 95% interval of the ratio) resampling speakers in each corpus.
+
+    H4 on the odds scale: an additive (percentage-point) interaction would mostly reflect the
+    different base rates of PART and ACC.INDF (review, 2026-11-06).
+    """
+    def by_speaker(rows):
+        d = {}
+        for r in rows:
+            d.setdefault(r["speaker_id"], []).append(r)
+        return list(d.values())
+    sd, se = by_speaker(dlg), by_speaker(evk)
+    ord_, ore = odds_ratio(dlg, irrealis), odds_ratio(evk, irrealis)
+    if ord_ is None or ore is None:
+        return ord_, ore, None, None, None
+    draws = []
+    for _ in range(boot):
+        a = odds_ratio([r for g in (rng.choice(sd) for _ in sd) for r in g], irrealis)
+        e = odds_ratio([r for g in (rng.choice(se) for _ in se) for r in g], irrealis)
+        if a is not None and e is not None:
+            draws.append(a / e)
+    draws.sort()
+    lo, hi = (draws[int(0.025 * len(draws))], draws[int(0.975 * len(draws)) - 1]) if draws else (None, None)
+    return ord_, ore, ord_ / ore, lo, hi
+
+
+def h4_line(label, dlg, evk, rng, irrealis=IRREALIS):
+    ord_, ore, ratio, lo, hi = ratio_of_odds_ratios(dlg, evk, rng, irrealis=irrealis)
+    if ratio is None:
+        return f"| {label} | not computable | | | |"
+    return f"| {label} | {ord_:.2f} | {ore:.2f} | {ratio:.2f} | {lo:.2f} to {hi:.2f} |"
 
 
 def counts_table(rows, corpus):
@@ -124,8 +162,6 @@ def main(argv=None):
              "|---|---|---|---|---|",
              test_row("H1 Dolgan PART, adjusted for genre", cells(dlg), b, rng),
              test_row("H3 Evenki ACC.INDF, adjusted for genre", cells(evk), b, rng),
-             test_row("H4 Dolgan minus Evenki difference (interaction), adjusted for genre",
-                      cells(dlg + evk, interaction=True), b, rng),
              "", "## Robustness", "", "| Test | Speakers | Objects | Irrealis minus realis (points) | p |",
              "|---|---|---|---|---|",
              test_row("H1 extended irrealis (adds INTNS, PROB)", cells(dlg, IRREALIS_EXTENDED), b, rng),
@@ -134,7 +170,15 @@ def main(argv=None):
              test_row("H3 no pronoun objects", cells([r for r in nopro if r["_corpus"] == "evenki"]), b, rng),
              test_row("H1 unadjusted", cells(dlg, controls=()), b, rng, controls=False),
              test_row("H3 unadjusted", cells(evk, controls=()), b, rng, controls=False),
-             test_row("H4 extended irrealis", cells(dlg + evk, IRREALIS_EXTENDED, interaction=True), b, rng)]
+             "", "## H4: Dolgan versus Evenki on the odds scale", "",
+             "Irrealis-versus-realis odds ratio of the marker in each corpus, and their ratio. A ratio above 1 "
+             "means the clause effect is stronger in Dolgan. 95% interval from 2,000 draws resampling speakers "
+             "within each corpus. Unadjusted for genre.", "",
+             "| Analysis | OR Dolgan | OR Evenki | Ratio | 95% interval |", "|---|---|---|---|---|",
+             h4_line("H4 core irrealis", dlg, evk, rng),
+             h4_line("H4 extended irrealis", dlg, evk, rng, IRREALIS_EXTENDED),
+             h4_line("H4 no pronoun objects", [r for r in nopro if r["_corpus"] == "dolgan"],
+                     [r for r in nopro if r["_corpus"] == "evenki"], rng)]
     with open(a.out, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines))

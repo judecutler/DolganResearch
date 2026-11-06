@@ -22,13 +22,16 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-from speaker_test import adjusted_test  # noqa: E402
+from speaker_test import adjusted_test, collinearity  # noqa: E402
 
 PLAN = os.path.join(HERE, "ANALYSIS_PLAN.md")
 PRECISE = 10
 OUTCOMES = ("NOM", "ACC", "PART")
 PRIMARY_CONTROLS = ("genre", "source_collection")
+FALLBACK_CONTROLS = ("genre",)
+MAX_COLLINEARITY = 0.90  # the plan's decision rule
 MIN_SPEAKERS = 5
+LOO_BOOT = 999
 
 
 def plan_is_frozen(path=PLAN):
@@ -63,6 +66,28 @@ def cells(rows, time="birth", controls=PRIMARY_CONTROLS, target="ACC"):
         k, n = d.get(key, (0, 0))
         d[key] = (k + bool(hit(r)), n + 1)
     return [(g, t, lab, k, n) for (g, t, lab), (k, n) in sorted(d.items())]
+
+
+def choose_controls(rows, target="ACC"):
+    """The plan's decision rule, from the design only: (controls, explained shares) or (None, ...)."""
+    shares = {}
+    for ctl in (PRIMARY_CONTROLS, FALLBACK_CONTROLS):
+        r2 = collinearity(cells(rows, "birth", ctl, target))
+        shares[ctl] = r2
+        if r2 is not None and r2 < MAX_COLLINEARITY:
+            return ctl, shares
+    return None, shares
+
+
+def rule_lines(name, ctl, shares):
+    out = [f"Decision rule ({name}): birth-year variance explained by genre + source "
+           f"{shares.get(PRIMARY_CONTROLS, 0):.2f}"]
+    if FALLBACK_CONTROLS in shares:
+        out[0] += f", by genre alone {shares[FALLBACK_CONTROLS]:.2f}"
+    names = " and ".join("source" if c == "source_collection" else c for c in ctl or ())
+    out[0] += (f". Primary test adjusts for {names}." if ctl else
+               ". **Both are 0.90 or more: no confirmatory test; report the descriptive tables only.**")
+    return out
 
 
 def run(rows, label, n_boot, rng, time="birth", controls=PRIMARY_CONTROLS, target="ACC"):
@@ -158,43 +183,52 @@ def main(argv=None):
     one_pred = [r for r in dated if r["n_preds_in_utt"] == "1" and r["pred_position"]]
     rng = random.Random(20261105)
     b = a.boot
+    ctl, shares = choose_controls(rows)
+    ctl3, shares3 = choose_controls(one_pred, is_vo)
+    P = ctl or PRIMARY_CONTROLS
+    P3 = ctl3 or PRIMARY_CONTROLS
+    adj = lambda c: " and ".join("source" if x == "source_collection" else x for x in c)  # noqa: E731
+    head = "PRIMARY" if ctl else "NOT CONFIRMATORY (decision rule)"
+    head3 = "B3 PRIMARY" if ctl3 else "B3 NOT CONFIRMATORY (decision rule)"
     lines = ["# Study B2 results: object case by time", "",
              "Built by `case_change/b2_test.py` after the analysis plan was frozen. Each row is a "
              "speaker-clustered regression of the outcome on time; the estimate is the change in the outcome "
              "share in percentage points per decade; p is from "
-             f"{b} wild-cluster-bootstrap draws by speaker (D-034, D-037).", "",
-             "## Primary and secondary tests", "",
+             f"{b} wild-cluster-bootstrap draws by speaker ({LOO_BOOT} for leave-one-out rows) (D-034, D-037).", ""]
+    lines += rule_lines("B2", ctl, shares) + [""] + rule_lines("B3", ctl3, shares3) + [
+             "", "## Primary and secondary tests", "",
              "| Analysis | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|",
-             run(rows, "PRIMARY: ACC, birth year, adjusted for genre and source", b, rng),
+             run(rows, f"{head}: ACC, birth year, adjusted for {adj(P)}", b, rng, controls=P),
              run(rows, "ACC, birth year, unadjusted", b, rng, controls=()),
              run(rows, "ACC, birth year, adjusted for genre only", b, rng, controls=("genre",)),
              run(rows, "ACC, recording year (real time), adjusted for genre and source", b, rng, time="recording"),
              run(rows, "PART, birth year, adjusted for genre and source", b, rng, target="PART"),
              run(rows, "ACC, birth year, adjusted for genre, source and clause TAM group", b, rng,
                  controls=PRIMARY_CONTROLS + ("tam_group",)),
-             "", "## Robustness checks (primary model)", "",
+             "", f"## Robustness checks (primary model, adjusted for {adj(P)})", "",
              "| Analysis | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|",
-             run([r for r in rows if r["loan"] == "0"], "Native nouns only (no BOR tag)", b, rng),
-             run([r for r in rows if r["pronoun"] == "0"], "No pronoun objects", b, rng),
+             run([r for r in rows if r["loan"] == "0"], "Native nouns only (no BOR tag)", b, rng, controls=P),
+             run([r for r in rows if r["pronoun"] == "0"], "No pronoun objects", b, rng, controls=P),
              run([r for r in rows if r["align_ok"] == "true" and r["unsure_gloss"] == "0"],
-                 "Aligned, no % glosses", b, rng),
-             run([r for r in rows if r["birth_precision"] in ("year", "date")], "Exact birth years only", b, rng),
-             run([r for r in rows if r["dialect"] != "Anabar"], "Without Anabar", b, rng)]
+                 "Aligned, no % glosses", b, rng, controls=P),
+             run([r for r in rows if r["birth_precision"] in ("year", "date")], "Exact birth years only", b, rng,
+                 controls=P),
+             run([r for r in rows if r["dialect"] != "Anabar"], "Without Anabar", b, rng, controls=P)]
     for src in sorted({r["source_collection"] for r in rows}):
         lines.append(run([r for r in rows if r["source_collection"] == src], f"Source {src} only",
                          b, rng, controls=("genre",)))
     lines += ["", "## B3: word order (verb before object), utterances with one predicate", "",
               "| Analysis | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|",
-              run(one_pred, "B3 PRIMARY: VO, birth year, adjusted for genre and source", b, rng, target=is_vo),
+              run(one_pred, f"{head3}: VO, birth year, adjusted for {adj(P3)}", b, rng, controls=P3, target=is_vo),
               run(one_pred, "B3: VO, birth year, unadjusted", b, rng, controls=(), target=is_vo),
               run(one_pred, "B3: VO, recording year, adjusted for genre and source", b, rng, time="recording",
                   target=is_vo),
               run([r for r in one_pred if r["pronoun"] == "0"], "B3: VO, no pronoun objects", b, rng,
-                  target=is_vo)]
-    lines += ["", "## Leave one speaker out (primary model)", "",
+                  controls=P3, target=is_vo)]
+    lines += ["", f"## Leave one speaker out (primary model, adjusted for {adj(P)})", "",
               "| Speaker left out | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|"]
     for s in sorted({r["speaker_id"] for r in rows}):
-        lines.append(run([r for r in rows if r["speaker_id"] != s], s, min(b, 999), rng))
+        lines.append(run([r for r in rows if r["speaker_id"] != s], s, LOO_BOOT, rng, controls=P))
     points = speaker_points(rows)
     svg = os.path.splitext(a.out)[0] + "_speakers.svg"
     svg_plot(points, svg)

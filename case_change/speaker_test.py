@@ -98,9 +98,13 @@ def design_rows(cells, controls=True, scale=10):
     """cells: list of (cluster, time_in_years, control_labels, successes, n).
 
     Builds an intercept, time in decades, and one dummy per control level after the
-    first level of each control. A dummy that adds nothing (for example the source
-    "published_folklore" when genre "flk" already picks out the same objects) is
-    dropped, intercept and time first, so the fit stays solvable.
+    first level of each control. A dummy that adds nothing beyond the intercept and the
+    dummies already kept (for example the source "published_folklore" when genre "flk"
+    picks out the same objects) is dropped, so the fit stays solvable. Dummies are never
+    pruned against time: a control that duplicates time must make time unidentifiable,
+    not silently disappear (review, 2026-11-06).
+
+    Returns (rows, time_identified).
     """
     width = len(cells[0][2]) if controls else 0
     levels = [sorted({c[2][j] for c in cells}) for j in range(width)]
@@ -108,11 +112,13 @@ def design_rows(cells, controls=True, scale=10):
     for j in range(width):
         cols += [[1.0 if c[2][j] == lv else 0.0 for c in cells] for lv in levels[j][1:]]
     ws = [c[4] for c in cells]
-    kept = [0, 1]
+    kept = [0]
     for j in range(2, len(cols)):
         if not _redundant(cols, ws, j, kept):
             kept.append(j)
-    return [(c[0], [cols[j][r] for j in kept], c[4]) for r, c in enumerate(cells)]
+    identified = not _redundant(cols, ws, 1, kept)
+    order = [0, 1] + kept[1:]
+    return [(c[0], [cols[j][r] for j in order], c[4]) for r, c in enumerate(cells)], identified
 
 
 def adjusted_test(cells, n_boot=999, rng=None, controls=True, scale=10):
@@ -125,7 +131,9 @@ def adjusted_test(cells, n_boot=999, rng=None, controls=True, scale=10):
     scale=1 tests any other numeric predictor, such as a 0/1 clause-type indicator.
     """
     rng = rng or random.Random(0)
-    rows = design_rows(cells, controls, scale)
+    rows, identified = design_rows(cells, controls, scale)
+    if not identified:
+        return None, None
     ks = [c[3] for c in cells]
     obs = _t_first(rows, ks)
     if obs is None:
@@ -158,7 +166,9 @@ def collinearity(cells):
 
     Design only: reads no outcome. Near 1 means time and the controls cannot be told apart.
     """
-    rows = design_rows(cells)
+    rows, identified = design_rows(cells)
+    if not identified:
+        return 1.0
     xs = [(x[1], [x[0]] + x[2:], n) for _, x, n in rows]
     p = len(xs[0][1])
     xtx = [[sum(n * z[i] * z[j] for _, z, n in xs) for j in range(p)] for i in range(p)]
