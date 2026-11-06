@@ -4,7 +4,7 @@ IDs come from the files, not from row order: utt_id = <text_id>#<nnn> (utterance
 order in the file), token_id = <utt_id>.w<nn>. Words inside no utterance get
 utt_id <text_id>#orphan-<speaker> and a QA flag.
 """
-from . import gloss
+from . import config, gloss
 from .coma import infer_dolgan_source, parse_year
 
 TEXT_COLUMNS = (
@@ -25,7 +25,8 @@ UTTERANCE_COLUMNS = (
 TOKEN_COLUMNS = (
     "token_id", "utt_id", "corpus", "text_id", "speaker_id", "idx", "tx", "mb", "mp", "ge",
     "gr", "mc", "ps", "SyF", "SyF_cover", "SeR", "SeR_cover", "IST", "IST_cover", "Top", "Foc",
-    "BOR", "BOR_Phon", "BOR_Morph", "CS", "ExLocPoss", "n_morphs", "align_ok", "case",
+    "BOR", "BOR_cover", "BOR_Phon", "BOR_Morph", "BOR_Morph_cover", "CS", "ExLocPoss", "ExLocPoss_cover",
+    "n_morphs", "align_ok", "case",
     "case_flag",
 )
 MORPHEME_COLUMNS = (
@@ -81,8 +82,8 @@ def transcript_rows(tr, corpus):
             for t in ("mb", "mp", "ge", "gr", "mc", "ps", "SyF", "SeR", "IST", "Top", "Foc",
                       "BOR", "BOR-Phon", "BOR-Morph", "CS", "ExLocPoss"):
                 row[t.replace("-", "_")] = w.tiers.get(t, "")
-            for t in ("SyF", "SeR", "IST"):
-                row[f"{t}_cover"] = w.covering.get(t, "")
+            for t in config.COVER_TIERS:
+                row[f"{t.replace('-', '_')}_cover"] = w.covering.get(t, "")
             tok_rows.append(row)
             if ok == "false":
                 qa.append({"corpus": corpus, "text_id": tr.text_id, "token_id": token_id,

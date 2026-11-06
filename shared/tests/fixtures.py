@@ -44,7 +44,9 @@ DOLGAN_SINGLE = {
         (None, {}, [{"tx": "((laugh))"}]),
     ],
     # Two-word clause-level SyF event over words 1-2 of utterance 3 (002 Q9: "s:comp").
-    "span_events": [("SpkA", 2, 0, 1, "SyF", "s:comp")],
+    "span_events": [("SpkA", 2, 0, 1, "SyF", "s:comp"),
+                    # SYNTH: a two-word BOR event (handoff 006 found 22 such BOR/BOR-Morph events).
+                    ("SpkA", 0, 1, 2, "BOR", "RUS:core")],
 }
 
 DOLGAN_MULTI = {

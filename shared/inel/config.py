@@ -11,7 +11,9 @@ WORD_TIERS = (
 )
 
 # Annotation tiers whose events can span several words (report Q9: SyF "s:comp").
-SPAN_TIERS = ("SyF", "SeR", "IST", "Top", "Foc", "CS")
+# BOR, BOR-Morph and ExLocPoss events can also span several words (handoff 006, 1,280 events).
+SPAN_TIERS = ("SyF", "SeR", "IST", "Top", "Foc", "CS", "BOR", "BOR-Morph", "ExLocPoss")
+COVER_TIERS = ("SyF", "SeR", "IST", "BOR", "BOR-Morph", "ExLocPoss")  # carried as <tier>_cover columns
 
 UTTERANCE_TIERS = ("ref", "st", "stl", "ts", "fe", "fg", "fr", "ltr", "nt", "nto", "lte", "ltg")
 

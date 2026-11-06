@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from inel import config, gloss, tables  # noqa: E402
 from inel.coma import communications_by_text, read_coma  # noqa: E402
 from inel.exb import read_exb  # noqa: E402
+from inel.load import write  # noqa: E402
 
 
 def find_inputs(raw, corpus):
@@ -41,14 +42,6 @@ def find_inputs(raw, corpus):
         other = sorted(glob.glob(os.path.join(raw, "**", "*.exb"), recursive=True))[:5]
         sys.exit(f"no <genre>/<text>/*.exb under {root}; .exb files found elsewhere: {other}")
     return exbs, comas[0]
-
-
-def write_csv(path, columns, rows):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=columns, extrasaction="raise", lineterminator="\n")
-        w.writeheader()
-        for r in rows:
-            w.writerow(r)
 
 
 def syf_last_part(v):
@@ -151,12 +144,12 @@ def build(corpus, raw, out):
         qa.append({"corpus": corpus, "text_id": "", "token_id": "", "flag": "unknown_tier", "detail": tier})
 
     os.makedirs(out, exist_ok=True)
-    write_csv(os.path.join(out, "texts.csv"), tables.TEXT_COLUMNS, texts)
-    write_csv(os.path.join(out, "speakers.csv"), tables.SPEAKER_COLUMNS, spk)
-    write_csv(os.path.join(out, "utterances.csv"), tables.UTTERANCE_COLUMNS, utts)
-    write_csv(os.path.join(out, "tokens.csv"), tables.TOKEN_COLUMNS, toks)
-    write_csv(os.path.join(out, "morphemes.csv"), tables.MORPHEME_COLUMNS, morphs)
-    write_csv(os.path.join(out, "qa_flags.csv"), tables.QA_COLUMNS, qa)
+    write(os.path.join(out, "texts.csv"), tables.TEXT_COLUMNS, texts)
+    write(os.path.join(out, "speakers.csv"), tables.SPEAKER_COLUMNS, spk)
+    write(os.path.join(out, "utterances.csv"), tables.UTTERANCE_COLUMNS, utts)
+    write(os.path.join(out, "tokens.csv"), tables.TOKEN_COLUMNS, toks)
+    write(os.path.join(out, "morphemes.csv"), tables.MORPHEME_COLUMNS, morphs)
+    write(os.path.join(out, "qa_flags.csv"), tables.QA_COLUMNS, qa)
     side = {"parse_errors": len(errors), "exb_speakers": exb_speakers, "coma_speakers": set(coma_speakers),
             "mb_events": mb_events}
     counts = count(texts, spk, utts, toks, morphs, side)

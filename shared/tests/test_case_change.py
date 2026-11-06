@@ -80,5 +80,24 @@ class ExtractorReviewTest(unittest.TestCase):
         self.assertEqual(extract_b1.candidates(blocked, [], [], []), [])
 
 
+class MultiWordTagTest(unittest.TestCase):
+    """Handoff 006: multi-word BOR events must reach the words they cover."""
+
+    def test_multi_word_bor_event_marks_the_object_as_a_loan(self):
+        import build_tables
+        import extract_objects
+        from fixtures import write_corpus
+        with tempfile.TemporaryDirectory() as t:
+            raw = os.path.join(t, "raw")
+            write_corpus(raw, "dolgan")
+            out = os.path.join(t, "out")
+            build_tables.build("dolgan", raw, out)
+            rows = extract_objects.main(out, os.path.join(out, "o.csv"))
+            obj = next(r for r in rows if r["stem"] == "icehole")
+            self.assertEqual(obj["loan"], 1)
+            self.assertEqual(obj["bor"], "RUS:core")
+
+
 if __name__ == "__main__":
     unittest.main()
+
