@@ -12,7 +12,7 @@ Study C is new (`case_change/STUDY_C_PLAN.md`, committed before this script exis
 You only run commands, download the two files and report. Do not edit `shared/` or `case_change/`.
 
 ## Steps
-1. `git pull`. Run the tests: `python3 -m unittest discover -s shared/tests -t shared/tests`. Expect `OK` (all tests pass; 55 or more).
+1. `git pull`. Run the tests: `python3 -m unittest discover -s shared/tests -t shared/tests`. Expect `OK` (all tests pass; 54 or more).
 2. Run Study C in the background (a few minutes):
    `python3 case_change/clause_dom.py data/derived/dolgan/objects.csv data/derived/evenki/objects.csv reports/study_c_clause_dom.md > scratch/008_c.log 2>&1 &`
    Record the run time and exit code. Do not change the plan or rerun with other settings.
