@@ -14,7 +14,8 @@ Merge (validates every value against the codebook, then computes agreement):
 Sampling (D-020): every tier-1 candidate is kept; tier-2 candidates are sampled per
 rule, spread across speakers by round robin, with a fixed seed so the sheet is
 reproducible. Items are shuffled so rule and speaker order give nothing away. The
-rule that found an item is kept in the key, not the sheet, so it does not steer coding.
+rule that found an item, the speaker, birth year and recording year are kept in the
+key, not the sheet, so they do not steer coding (D-039).
 """
 import argparse
 import csv
@@ -31,9 +32,11 @@ from inel.load import write  # noqa: E402
 
 SEED = 20261105
 CODEBOOK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "evid_codebook.json")
-CONTEXT = ("item_id", "corpus", "genre", "source_collection", "speaker_id", "birth_year",
-           "recording_year", "word", "sentence", "glosses", "translation")
-KEY = ("item_id", "token_id", "utt_id", "text_id", "corpus", "tier", "rules", "sheet", "overlap")
+# Coders see no speaker, birth year or recording year: Studies A and B1 compare those later,
+# so coding blind to them keeps the codes from leaning toward an expected trend (D-039).
+CONTEXT = ("item_id", "corpus", "genre", "source_collection", "word", "sentence", "glosses", "translation")
+KEY = ("item_id", "token_id", "utt_id", "text_id", "corpus", "speaker_id", "birth_year", "recording_year",
+       "tier", "rules", "sheet", "overlap")
 
 
 def codebook(path=CODEBOOK):
@@ -100,9 +103,7 @@ def _year(lo, hi):
 def sheet_row(item_id, c):
     return {
         "item_id": item_id, "corpus": c["corpus"], "genre": c["genre"],
-        "source_collection": c["source_collection"], "speaker_id": c["speaker_id"],
-        "birth_year": c["birth_mid"].replace(".0", "") if c.get("birth_mid") else "",
-        "recording_year": _year(c["recording_lo"], c["recording_hi"]), "word": c["tx"],
+        "source_collection": c["source_collection"], "word": c["tx"],
         "sentence": c["context"], "glosses": c["gloss_line"], "translation": c["fe"],
     }
 
@@ -136,7 +137,9 @@ def build(mode, out, cand_paths, n=40, per_rule=60, overlap=0.15, exclude=None, 
         for s in who:
             sheets[s].append(sheet_row(item_id, c))
         key.append({"item_id": item_id, "token_id": c["token_id"], "utt_id": c["utt_id"],
-                    "text_id": c["text_id"], "corpus": c["corpus"], "tier": c["tier"],
+                    "text_id": c["text_id"], "corpus": c["corpus"], "speaker_id": c["speaker_id"],
+                    "birth_year": c["birth_mid"].replace(".0", "") if c.get("birth_mid") else "",
+                    "recording_year": _year(c["recording_lo"], c["recording_hi"]), "tier": c["tier"],
                     "rules": c["rules"], "sheet": "".join(who), "overlap": int(both)})
     os.makedirs(out, exist_ok=True)
     for s, rows in sheets.items():

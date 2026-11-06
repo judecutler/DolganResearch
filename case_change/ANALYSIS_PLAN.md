@@ -1,107 +1,92 @@
-# Study B analysis plan: case change across speaker generations (draft)
+# Study B analysis plan: case change across speaker generations
 
-Status: **draft, not frozen.** It is frozen at Gate 3, before any outcome is examined. Until then everything here can change. After that, changes need a dated entry in `docs/DECISIONS.md`.
+Status: **draft, ready to freeze.** To freeze it, Jude and Dustan read it, change what they disagree with, and replace this line with `Status: **frozen YYYY-MM-DD by Jude and Dustan**`, then commit. `case_change/b2_test.py` refuses to read the outcome until that line exists. After freezing, every change needs a dated entry under "Changes after freezing" and in `docs/DECISIONS.md`.
 
-Owner: web Claude writes; Jude and Dustan review.
+Owner: web Claude wrote it (2026-11-06); Jude and Dustan decide.
 
-## Why this design, and what it must not claim
+## Before freezing: checklist
+1. Handoff 007 is done. Copy its collinearity table into "Design facts" below, and apply the decision rule in "Primary test".
+2. D-034 and D-037 (the test) and D-013 (the descriptive bins below) are confirmed or changed in `docs/DECISIONS.md`.
+3. Nobody has looked at object case by birth year or recording year. Gate 0 and the power report show design counts only (D-026). Study C reads case by clause type, not by time (D-038).
 
-Existing work (details and links in `docs/LITERATURE_LEDGER.md`):
-- Siegl (2015) states that Dolgan secondary predication shifted from dative to instrumental marking in the 20th century, under Russian influence. No test of that claim was found.
-- Sheifer and Bolshakova (2023, workshop slides, unpublished as far as we found) describe Dolgan object marking as ternary, and say that it spreads to more TAM contexts than in Sakha. Sheifer's profile lists related work in progress.
-- Däbritz (2022, 2023) describes three-way object marking in Dolgan (nominative, accusative, partitive) and reports no variation between speakers.
+Artem'ev (1999) is still unread (handoff 004, item 3b). It does not block the freeze. It blocks the novelty claim in the paper.
 
-So the contribution is **not** "object marking in Dolgan". It is an **apparent-time test**: does case use differ by speaker birth cohort? The gap is verified as PARTIAL overall and open only for that sub-question.
+## What is new, and what the paper must not claim
+Details and links in `docs/LITERATURE_LEDGER.md`.
+- Siegl (2015) asserts that Dolgan secondary predicates moved from dative to instrumental marking in the 20th century. He gives two examples, no counts and no criteria.
+- Däbritz (2022, 2023), Sheifer and Bolshakova (2023, slides) and Siegl (on the partitive) describe three-way object marking (nominative, accusative, partitive). None reports variation between speakers or over time.
+- Stapert (2013) checks speaker age only for stem variants of relational nouns (pp. 187-188, no counts by age) and for OV/VO word order (Table 7.3). Neither is case marking (handoff 005).
+
+So the contribution is the **first test of whether Dolgan case marking differs by speaker birth year (apparent time) and by recording year (real time)**, in a corpus, with the speaker as the unit. It is not a description of the case system.
 
 ## Questions
+- **B2, objects (confirmatory).** Does the share of accusative-marked objects change with speaker birth year, once genre and source are held constant?
+- **B1, secondary predicates.** Among nominal secondary predicates, does the share marked instrumental (versus dative) change with birth year or recording year? Confirmatory only if the vetting yields enough items (see B1 below). Otherwise descriptive.
 
-**B1. Secondary predicates.** Among nominal secondary predicates, is the share marked instrumental (versus dative) higher in younger speakers?
-
-**B2. Object marking.** Among objects, does the share of nominative / accusative / partitive marking differ by speaker cohort, after accounting for clause TAM and referent properties? Does the Dolgan system look more like Evenki's (binary) or more like what Sheifer and Bolshakova report for Sakha?
-
-Gate 0 may drop B1 or B2. A dropped question is reported as dropped, with the counts.
+No direction is predicted for B2. The literature gives no prediction, and Russian contact could push either way. All tests are two-sided.
 
 ## Data
+- **Corpus.** INEL Dolgan Corpus 2.0, objects from the 50 texts with `SyF` annotation (`case_change/extract_objects.py`; D-025). 1,307 objects; 997 from 25 speakers with a usable birth year (range of 10 years or less), 2026-11-05 run.
+- **Analysis set (B2).** Objects whose case is `NOM`, `ACC` or `PART`, from speakers with a usable birth year. Other cases and the reflexive-possessive objects without a case label are left out.
+- **Evenki** has no usable birth years and is not used in B. The cross-language question is Study C (`case_change/STUDY_C_PLAN.md`).
 
-- **Dolgan:** INEL 2.0, only texts with a recorded speaker whose birth year is known. Folklore texts from the published volume [FD 2000] are expected to be out (no audio, unclear speakers, no BOR tier). Confirm in handoff 002.
-- **Evenki:** INEL 2.0. No usable age information. Used as a **baseline by dialect and source** for B2 only.
-- **Sakha:** not in INEL. Comparison to Sakha comes from the literature only.
+## Design facts (from Gate 0 and the power report; counts only)
+- Birth years of speakers with objects run from the 1890s to the 2000s. The speakers born after 1970 give 4 to 8 objects each, one speaker per decade.
+- Birth year is tangled with source and genre. Speakers born before 1920 appear almost only in `published_folklore` and genre `flk`. Speakers born after 1950 appear only in fieldwork and the archive, mostly `nar` and `conv`.
+- `SyF` exists in 50 of 136 texts: 27 `TDNT_archive`, 18 `published_folklore`, 3 `fieldwork_2007_2010`, 2 `fieldwork_2017`.
+- Collinearity (share of the object-weighted variance of birth year explained by the controls), from `reports/power_b2.md` after handoff 007: genre ___ ; genre + source ___ . Recording year: genre ___ ; genre + source ___ .
+- Power of the primary test at odds ratio 1.5 per decade, speaker SD 0.5 / 1.0: ___ / ___ (from the same report).
 
-## Variables
+## Primary test (B2)
+- **Outcome.** 1 if the object is `ACC`, 0 if `NOM` or `PART`.
+- **Model.** Linear probability model at the object level: outcome on birth year (decades) plus genre and source dummies. Standard errors are clustered by speaker. The p-value comes from a wild cluster bootstrap with the null imposed and Webb weights, 9,999 draws, seed 20261105 (`speaker_test.adjusted_test`, D-034, D-037). A control level that adds nothing is dropped automatically.
+- **Estimate.** Change in accusative share, in percentage points per decade of birth year.
+- **Why adjusted.** In a simulated design with the same tangle, an unadjusted test reported a birth-year trend 50 to 70% of the time when only genre had an effect. The adjusted test stayed at 4 to 5% (D-037).
+- **Decision rule, fixed now and applied from the design report only.** If the collinearity of birth year with genre + source is 0.90 or more, or `b2_test.py` reports "not separable", the primary test is the genre-only adjustment. If that is also 0.90 or more, B2 has no confirmatory test: the paper reports the descriptive tables and says the corpus cannot separate generation from genre.
+- **What counts as support for change.** The primary p is below 0.05, **and** the estimate has the same sign in every robustness check that can be run (rows with "too few speakers" do not count), **and** the leave-one-speaker-out estimates keep that sign. If p is below 0.05 but a robustness check reverses the sign, the paper reports a fragile result, not change.
+- **What a null result means.** Report the estimate and the smallest odds ratio with power 0.8 from `reports/power_b2.md`, and say that effects smaller than that cannot be ruled out.
 
-**Outcome B1:** case on the secondary-predicate nominal: instrumental, dative/locative, other.
-**Outcome B2:** object marking: nominative (unmarked), accusative, partitive. Evenki: nominative, accusative, indefinite accusative (`ACC.INDF`). Case labels per corpus are in `shared/inel/config.py`. Dolgan has only 23 partitive objects (handoff 002), so a three-way model may not be estimable. Plan for accusative versus not, and report partitive descriptively.
+## Secondary tests (B2), reported with their p-values, no correction, labelled secondary
+All in `case_change/b2_test.py`, in this order:
+1. Unadjusted birth-year test (to show what the adjustment does).
+2. Adjusted for genre only.
+3. Real time: recording year instead of birth year, adjusted for genre and source. Apparent and real time are never combined into one variable.
+4. Partitive: outcome `PART` versus `NOM` or `ACC`. Dolgan has few partitive objects, so this may be uninformative; report counts.
+5. Adjusted for genre, source and clause TAM group (`config.TAM_GROUPS`, D-032), because Däbritz (2023) and Sheifer and Bolshakova tie the partitive to clause type.
 
-**Predictor of interest:** speaker cohort (birth-year bins fixed after looking at the speaker distribution, before any outcome). Also try birth year as a continuous variable.
+## Robustness checks (primary model, fixed in advance)
+1. Native nouns only (no `BOR` tag, including multi-word `BOR` events, D-036).
+2. No pronoun objects.
+3. Well-aligned glosses only, without `%` or `%%` glosses.
+4. Exact birth years only (precision `year` or `date`).
+5. Without Anabar texts (D-019).
+6. Each source on its own, adjusted for genre (sources with fewer than 5 speakers are skipped).
+7. Leave one speaker out, for every speaker.
 
-**Covariates (B2):** borrowing (`BOR` tag on the object: several zero-marked objects in 002 are Russian loans, so loan status must be controlled or the analysis restricted to native nouns); clause TAM context (from `pred_labels` in the object table, grouped to match Sheifer and Bolshakova's contrasts; the grouping needs human sign-off); referent properties from tags (`IST` information status, possession, demonstrative, animacy from `SyF`/`SeR`); source collection; genre; dialect.
-**Covariates (B1):** source, genre, dialect.
+## B1, secondary predicates
+- **Candidates.** `case_change/extract_b1.py`, rules from Siegl (2015)'s examples (D-033, D-035): 767 candidates from 67 speakers (handoff 006).
+- **Vetting comes first.** Jude and Dustan code every candidate separately in the B1 sheets. The sheets show the sentence and translation, **not** the speaker's birth year or the recording year, and coders do not look them up. Agreement (kappa) is reported. Only items both accept as a nominal secondary predicate enter the analysis, and disagreements are resolved by discussion before any outcome is computed.
+- **Outcome.** 1 if instrumental, 0 if dative/locative, among accepted items.
+- **Tests.** The same model as B2: birth year, adjusted for genre (source too if it is not redundant); and recording year, adjusted for genre. Both two-sided.
+- **Minimum.** At least 30 accepted items from at least 10 speakers with a usable birth year. Below that, B1 is descriptive only: counts by decade of birth and by recording period, with exact binomial intervals, and the statement that the corpus cannot test Siegl's claim.
 
-**Grouping variables (random effects):** speaker; text.
-
-## Extraction
-
-**B2 objects:** words with an overt `SyF` item of function `O` (D-025). Built by `case_change/extract_objects.py`. Dolgan has about 1,307, all in the 50 texts with `SyF`. The verb's TAM comes from the clause predicate in the same utterance. SyF is tagged only in main clauses and is optional, so coverage is measured per text and per source before anything else. If many speakers or sources lack SyF, the object sample is biased and we say so.
-
-**B1 candidates:** nominals marked INSTR or DAT/LOC that are not arguments by `SeR` and `SyF`. Handoff 002 showed that `SeR` role `St` is the stimulus of perception verbs, not a secondary predicate, so there is no tag to start from (D-021). The filter will be designed from Siegl (2015)'s criteria, and humans vet every hit. Because the candidate list is small, a human reads every item and codes whether it is a secondary predicate (depictive or resultative). The vetting sheet lists the reading and the free translation.
-
-Both extractors write a `rule_hit` column so that every row can be traced.
-
-## Models (outline)
-
-Tokens from one speaker are not independent, so every model has speaker structure.
-
-**Primary test (proposed 2026-11-05, revised the same day as D-034, decide at Gate 3).** A speaker-level test in `case_change/speaker_test.py`. Each speaker's accusative share, weighted by their object count, is regressed on birth year. The statistic is the slope's t-value with a cluster-robust standard error, and the p-value comes from a wild cluster bootstrap with the null imposed (Webb weights). The effect is reported as percentage points of accusative share per decade of birth year. The first version permuted birth years across speakers. In the real design that gave about 9% false positives instead of 5%, because the speakers with the fewest objects are all born last (D-034). Why this is the primary test:
-- It needs no installs: Jude's machine has no R, statsmodels or scipy (handoff 001), so it settles most of D-005.
-- The speaker is the unit by construction (rule 8).
-- With about 30 to 60 speakers, it is easier to defend than a GLMM that may not converge.
-
-The mixed models below become a secondary analysis if R can be installed. `case_change/b2_test.py` runs the primary test and the robustness checks. It **refuses to run until this file's status line reads `Status: **frozen`**. `case_change/power.py` gives its power from the real design without reading the outcome. Run it before Gate 3, and put the detectable effect in the paper.
-
-- **B2:** a mixed-effects model with a speaker random intercept (and a text intercept if it converges), outcome the object marking category. Binary version first (accusative vs not), then multinomial. If counts are small or categories separate, use a penalised or Bayesian fit instead of dropping terms to make it converge.
-- **B1:** if there are enough tokens, a binary mixed model (instrumental vs dative). If not, **do not model**. Report counts by cohort, with exact confidence intervals, and say that the data cannot test the claim.
-- **Software:** Python for extraction. R (`lme4`, `brms`) for models (decision D-005, open).
-
-## Robustness checks (fixed in advance)
-0. Native nouns only (objects with no `BOR` tag).
-1. Leave one speaker out, repeated for every speaker. Does the result survive losing the most prolific speaker?
-2. Restrict to one source (for example Stapert fieldwork only) and to one genre.
-3. Restrict to texts with complete SyF coverage.
-4. Birth year continuous instead of binned.
-5. Drop words flagged `align_ok = false`.
-6. Compare results with and without the `%` / `%%` uncertain glosses.
-
-## Real time as well as apparent time (proposed 2026-11-05)
-
-INEL Dolgan recordings span 1930 to 2017 (13 texts from 1930, 14 from 1964, 39 from 2009; handoff 002, Q12). Siegl (2015) dates the B1 shift to "sometime in the 20th century" and cites only two examples, one of them from a folklore collection. So recording period is a second, independent time axis. It is the **real-time** comparison that apparent time can only approximate.
-- B1 especially. Compare the share of instrumental-marked secondary predicates in texts recorded before 1970 with texts recorded from 2000 on, within genre where possible.
-- Caveat. Recording period is tangled with source (published folklore, archive, fieldwork) and genre. Gate 0 prints this tangle (`reports/gate0_feasibility.md`). If the periods share no genre, the comparison is descriptive only.
-- Where both axes are available, report both. Do not combine them into one "age" variable.
+## Descriptive tables (not tests)
+- **Birth bins (D-013 proposal), chosen from the speaker distribution before any outcome.** Before 1920; 1920 to 1939; 1940 to 1959; 1960 and later. From the Gate 0 object table, these hold roughly 185, 568, 88 and 156 objects.
+- **Recording bins.** Before 1980; 1980 to 1999; 2000 and later.
+- Counts of `NOM`, `ACC` and `PART` by bin, and by bin and genre.
+- Each speaker's accusative share against birth year, with the number of objects, so readers see the variation behind the model.
 
 ## Interpreting age
+- **Apparent time.** It assumes older speakers keep an earlier state of the language. It cannot separate generational change from changes in a person's speech over their life (age grading). Recording year is the only real-time check we have.
+- **Genre and source.** Even after adjustment, folklore by old speakers and conversation by young speakers differ in ways the dummies may not capture (register, editing of published texts). The source-only checks show how much this matters.
+- **Bilingualism and Russian schooling.** These differ by generation. The metadata have L1 and L2, but they are too sparse to control for. Discuss them; do not claim them as causes.
+- **Siegl's 20th-century dating.** A birth-year effect in the corpus is consistent with change. It does not date it.
 
-Apparent time assumes older speakers reflect an earlier state of the language. Reasons for care, all to be discussed in the paper:
-- Source, genre and age may be correlated. A result that disappears within a single source is not an age effect.
-- Speakers change with age. Without recordings of the same speakers at several times, apparent time cannot separate generational change from age grading.
-- Some recordings come from decades apart (TDNT 1970s to 2000s, Stapert 2007 to 2017). Include recording year, not only birth year, and look at what it does to the cohort effect.
-- Bilingualism and schooling in Russian differ across generations. The metadata include education and L2. They are candidate covariates, not controls we can trust.
-- Siegl's claim concerns the 20th century. A cohort effect in the corpus does not establish that change occurred, only that it is consistent.
-
-## Power
-Before examining outcomes, simulate data with the real number of speakers per cohort and tokens per speaker to find what effect size the design could detect. State it in the paper. A null result with no power statement is uninformative.
-
-## Reporting
-- Counts by cohort and source, as a table.
-- Per-speaker proportions, plotted, so readers see the variation behind any model.
-- Model tables with intervals.
-- Every example sentence with its text ID.
-- A limitations section built from the checks above.
-
-## Decisions needed
-- Cohort bins (after Gate 0).
-- Whether B1 survives (Gate 0).
-- Stats stack (D-005).
-- TAM groupings for B2 (gloss map).
+## Software
+Python standard library only (D-005 settled for the confirmatory tests by D-034/D-037). If R becomes available, a mixed logistic model with a speaker random intercept may be added as a sensitivity analysis, labelled as added after freezing.
 
 ## Competitors to watch
-Sheifer (object marking in Dolgan; epistemic modality), Dartmouth. The INEL team (Hamburg). Check at each milestone and before submission. Contact before submitting.
+Sheifer (Dartmouth; object marking and modality in Dolgan) and the INEL team. Check again before submission, and contact them before submitting.
+
+## Changes after freezing
+(none)

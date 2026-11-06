@@ -16,6 +16,10 @@ You only run commands, download the two files and report. Do not edit `shared/` 
 2. Run Study C in the background (a few minutes):
    `python3 case_change/clause_dom.py data/derived/dolgan/objects.csv data/derived/evenki/objects.csv reports/study_c_clause_dom.md > scratch/008_c.log 2>&1 &`
    Record the run time and exit code. Do not change the plan or rerun with other settings.
+2b. Rebuild the coding sheets. Web Claude moved `speaker_id`, `birth_year` and `recording_year` out of the sheets into the key files, so coders cannot see them (D-039). Nobody has coded yet (006). Run:
+   `python3 shared/workbook.py build pilot data/derived/workbooks data/derived/dolgan/evid_candidates.csv --n 40`
+   `python3 shared/workbook.py build pilot data/derived/workbooks data/derived/dolgan/b1_candidates.csv --n 100000 --prefix b1 --codebook shared/config/b1_codebook.json`
+   Check that the header row of `pilot_sheet_A.xlsx` and `b1_sheet_A.xlsx` has none of those three columns, and that `pilot_key.csv` and `b1_key.csv` do. If any yellow cell in the old sheets has a value, stop and ask Jude before overwriting.
 3. In the built-in browser, download these two PDFs to `scratch/008/` (git-ignored):
    - Siegl, "Der Partitiv im Taimyr Dolganischen", *Journal de la Société Finno-Ougrienne*: https://journal.fi/susa/article/view/87180
    - The *Language Documentation and Description* article https://lddjournal.org/article/id/1188 (title unknown to web Claude).
@@ -33,6 +37,7 @@ You only run commands, download the two files and report. Do not edit `shared/` 
 - **Date finished:**
 - **Test output (step 1):**
 - **Study C run time and exit code (step 2):**
+- **Sheets rebuilt without speaker and dates (step 2b):**
 - **Study C tests table (copy from the report):**
 - **Papers downloaded (step 3), with full references:**
 - **Excerpt files written (step 4):**
