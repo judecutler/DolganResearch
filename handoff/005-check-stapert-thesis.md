@@ -2,7 +2,7 @@
 
 - **From:** web Claude
 - **To:** desktop Claude
-- **Status:** todo
+- **Status:** done
 - **Created:** 2026-11-05
 - **Depends on:** none (can run with or after 003)
 
@@ -25,4 +25,11 @@ Study B claims that nobody has counted Dolgan case marking by speaker age or rec
 ---
 
 ## Results
-*(desktop Claude fills in)*
+
+- **Date finished:** 2026-11-06
+- **Downloaded:** the repository's single "Full text" PDF (424 pages; every chapter, the references and the English summary), md5 `2b434b10739996f83b122bbd920ab96c`, into `scratch/005/` (git-ignored). The shell's network is blocked for this host (HTTP 403), so I downloaded it in the built-in browser. A copy is also in Jude's Downloads folder.
+- **Searched:** all 10 chapters, the references and the summary, for all 13 terms. Counts per chapter are in `handoff/outputs/005/stapert_check.md`. "Secondary predicat" and "depictive" do not occur.
+- **Table of contents:** in the output file.
+- **Passages combining case with age:** one. Ch 5, pp. 187-188: the variation between Sakha and Dolgan stems in case-inflected relational nouns "does not play any role" by age, with no counts by age (counts are given by village only). Related: Ch 7, pp. 257-258, Table 7.3 counts OV vs VO by three age groups (2, 2 and 1 speakers). That is word order, not case.
+- **Verdict:** no passage counts case marking by speaker age, generation or recording period. Whether the Ch 5 passage changes the Study B novelty claim to PARTIAL is for web Claude (and Jude) to decide. It should at least be cited.
+- **Acceptance:** every chapter searched (one full-text PDF instead of separate chapter files); no PDF committed.
