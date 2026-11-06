@@ -261,5 +261,17 @@ class MainSampleTest(unittest.TestCase):
         self.assertEqual(Counter(c["corpus"] for c in picked), {"dolgan": 10, "evenki": 10})
 
 
+class PanelTest(unittest.TestCase):
+    def test_only_speakers_recorded_ten_or_more_years_apart_are_listed(self):
+        import gate0
+        texts = {"t1": {"recording_lo": "1964", "recording_hi": "1964"},
+                 "t2": {"recording_lo": "1995", "recording_hi": "1995"},
+                 "t3": {"recording_lo": "1999", "recording_hi": "1999"}}
+        out = gate0._panel({"A": "1910s", "B": "1930s"}, {"A": {"t1", "t2"}, "B": {"t2", "t3"}}, texts,
+                           [{"speaker_id": "A", "text_id": "t1"}] * 3, set())
+        rows = [line for line in out if line.startswith("| ") and not line.startswith("| Speaker")]
+        self.assertEqual(rows, ["| A | 1910s | 1964 to 1995 | 2 | 3, 0 |"])
+
+
 if __name__ == "__main__":
     unittest.main()

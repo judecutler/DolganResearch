@@ -90,6 +90,8 @@ def dolgan_section(d):
     out += crosstab(pairs_gen, "birth", "genre") + [""]
     out += crosstab(pairs_rec, "birth", "recording decade")
 
+    out += [""] + _panel(dec, spk_texts, texts, objs, good)
+
     syf_texts = {t for t, r in texts.items() if r["has_SyF"] == "1"}
     syf_spk = {t["speaker_id"] for t in toks if t["text_id"] in syf_texts}
     out += ["", "### `SyF` coverage (Study B needs it to find objects)", "",
@@ -135,6 +137,31 @@ def dolgan_section(d):
     verdicts.append(("B1: at least 30 candidates from at least 10 speakers (before vetting)",
                      f"{len(b1)} from {len(b1_spk)}", len(b1) >= 30 and len(b1_spk) >= 10))
     return out + _evid(cands, good, dec) + _rates(cands, texts.values()), verdicts
+
+
+def _panel(dec, spk_texts, texts, objs, good):
+    """Speakers recorded at two or more times: the only data that separate generational
+    change from change within a speaker's life (age grading). Design counts only."""
+    obj_by = Counter((o["speaker_id"], o["text_id"]) for o in objs)
+    rows = []
+    for s in sorted(dec):
+        years = {}
+        for t in spk_texts[s]:
+            lo, hi = num(texts[t]["recording_lo"]), num(texts[t]["recording_hi"])
+            if lo is not None and hi - lo <= PRECISE:
+                years.setdefault((lo + hi) / 2, []).append(t)
+        if len(years) < 2 or max(years) - min(years) < 10:
+            continue
+        objects = [sum(obj_by[(s, t)] for t in years[y]) for y in sorted(years)]
+        rows.append(f"| {s} | {dec[s]} | {min(years):.0f} to {max(years):.0f} | {len(years)} | "
+                    + ", ".join(str(n) for n in objects) + " |")
+    out = ["### Speakers recorded at times at least 10 years apart (real-time panel)", "",
+           "Only these speakers can show whether a person's own usage changed over their life. Objects are "
+           "listed per recording year, oldest first (design counts, not case).", ""]
+    if not rows:
+        return out + ["None."]
+    return out + ["| Speaker | Birth decade | Recorded | Recording years | Objects per recording year |",
+                  "|---|---|---|---|---|"] + rows
 
 
 def _rates(cands, texts):

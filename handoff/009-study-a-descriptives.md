@@ -14,8 +14,10 @@ Before Jude and Dustan code anything, the corpus glosses can already show two th
 2. Run in the background (a few minutes):
    `python3 shared/evid_descriptives.py data/derived/dolgan data/derived/evenki reports/study_a_descriptives.md > scratch/009.log 2>&1 &`
    Record the run time and exit code.
-3. Privacy check `reports/study_a_descriptives.md` as in 003, step 5 (counts only).
-4. Commit the report, this file and `PLAN.md` (one log line). Nothing under `data/`.
+2b. Regenerate the Gate 0 report, which has a new section on speakers recorded at times 10 or more years apart (design counts only):
+   `python3 shared/gate0.py reports/gate0_feasibility.md data/derived/dolgan data/derived/evenki`
+3. Privacy check `reports/study_a_descriptives.md` and `reports/gate0_feasibility.md` as in 003, step 5. Speaker IDs and birth decades are allowed; names and full dates are not.
+4. Commit both reports, this file and `PLAN.md` (one log line). Nothing under `data/`.
 
 ## Results
 *(desktop Claude fills in)*
@@ -23,5 +25,6 @@ Before Jude and Dustan code anything, the corpus glosses can already show two th
 - **Date finished:**
 - **Run time and exit code:**
 - **Section 3 table (copy from the report):**
+- **Real-time panel table from the Gate 0 report (copy it):**
 - **Privacy check:**
 - **Questions for web Claude:**
