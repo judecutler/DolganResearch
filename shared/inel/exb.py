@@ -90,9 +90,13 @@ def _assemble(spk, cats, issues):
     word_spans = {(a, b) for a, b, _ in tx}
 
     for cat in WORD_TIERS:
-        for span in exact.get(cat, {}):
-            if span not in word_spans and cat not in SPAN_TIERS:
-                issues.append(("word_tier_event_without_word", f"{spk} {cat} {span}"))
+        for a, b in exact.get(cat, {}):
+            if (a, b) in word_spans:
+                continue
+            # A span-tier event that covers at least one whole word reaches it as <tier>_cover.
+            # Anything else (e.g. a BOR event inside one word, handoff 006) would be lost: flag it.
+            if cat not in SPAN_TIERS or not any(a <= s and e <= b for s, e in word_spans):
+                issues.append(("word_tier_event_without_word", f"{spk} {cat} {(a, b)}"))
 
     multi = {cat: [(a, b, v) for a, b, v in cats.get(cat, []) if (a, b) not in word_spans]
              for cat in SPAN_TIERS}

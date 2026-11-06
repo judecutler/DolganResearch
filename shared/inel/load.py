@@ -1,5 +1,6 @@
 """Read the tables written by build_tables.py."""
 import csv
+import io
 import os
 
 
@@ -9,11 +10,15 @@ def table(derived, name):
 
 
 def write(path, columns, rows):
+    """Write the whole CSV in one call: many small writes were too slow on a mounted
+    Windows folder (handoff 006)."""
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=columns, lineterminator="\n")
+    w.writeheader()
+    w.writerows(rows)
     with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=columns, lineterminator="\n")
-        w.writeheader()
-        w.writerows(rows)
+        f.write(buf.getvalue())
 
 
 def num(x):
