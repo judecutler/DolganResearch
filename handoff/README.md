@@ -40,6 +40,7 @@ Neither Claude can wake the other. Jude is the trigger each time.
 | 004 | [Decisions, reading and one email](004-for-jude-and-dustan.md) | Jude, Dustan | needs-human |
 | 005 | [Check Stapert (2013) for case counts by age](005-check-stapert-thesis.md) | desktop Claude | done |
 | 006 | [Rerun after the 003 fixes; check the BOR events](006-rerun-and-bor-check.md) | desktop Claude | done |
+| 007 | [Rerun with the adjusted B2 design report](007-design-report.md) | desktop Claude | todo |
 
 Update this table whenever a status changes.
 
