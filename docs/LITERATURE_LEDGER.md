@@ -75,7 +75,7 @@ A web Claude research subagent ran 29 queries: 18 in English, 9 in Russian and 2
 | Closest work | What it covers | Why it does not fill the gap | Read? |
 |---|---|---|---|
 | Artem'ev, N. M. (1999), *Категория падежа: системный анализ (на материале долганского и якутского языков)*, St Petersburg, 147 pp. (publisher UNVERIFIED, probably RGPU Herzen) | Case system of Dolgan and Yakut; Siegl's source for the dative-to-instrumental shift | Unknown. No online copy found. **Caveat 1: check pp. 81-82 and 102-103 in print** (Berkeley library or interlibrary loan). | no |
-| Stapert (2013), *Contact-induced change in Dolgan*, PhD thesis, Leiden, LOT 336. https://scholarlypublications.universiteitleiden.nl/access/item%3A2940587/view | Contact changes, with "corpus linguistics" among its keywords | The abstract mentions no case, Russian, generations or counts. **Caveat 2: the chapters could not be opened here** (repository items 2940590 to 2940602). If one counts case by speaker age, downgrade to PARTIAL. Handoff 005 asks desktop Claude to check. | abstract only |
+| Stapert (2013), *Contact-induced change in Dolgan*, PhD thesis, Leiden, LOT 336. https://scholarlypublications.universiteitleiden.nl/access/item%3A2940587/view | Contact changes, with "corpus linguistics" among its keywords | **Checked in full by desktop Claude (handoff 005, all 424 pages, `handoff/outputs/005/stapert_check.md`).** No passage counts case marking by age, generation or period. Closest: pp. 187-188, stem variants of case-inflected relational nouns, where "age does not play any role" (no counts by age); and Table 7.3 (pp. 257-258), OV/VO word order by three age groups of 1 to 2 speakers each. Both should be cited. Verdict for Study B unchanged: OPEN-VERIFIED. | full text searched (desktop) |
 | Siegl, "Der Partitiv im Taimyr Dolganischen", *JSFOu*, DOI 10.33340/susa.87180 (2021 in OpenPolar metadata; year still UNVERIFIED) | Partitive, from field data and a 48,000-word written sample | Abstract shows no age or period analysis | abstract only |
 | Sheifer and Bolshakova (2023), slides | Object marking, qualitative, from grammars (including Artemjev 2013), explained by Evenki contact | No counts and no time dimension. Nothing from either author in 2024-2026. **The most likely future competitor.** | slides read |
 | Pakendorf and Stapert (2020), Oxford Guide | Loss of genitive and locative; new partitive and comparative | Abstract shows no variation | abstract only |
@@ -112,3 +112,20 @@ Resolved in this session: ISTINA record 261724568 is the Wagner-Nagy and Arkhipo
 |---|---|---|---|
 | 2026-11-04 | web Claude | Initial map and independent falsification pass | as above |
 | 2026-11-04 | Jude | ISTINA records opened in a browser | resolved (see above) |
+
+## Study C (proposed 2026-11-06): object marking by clause type, Dolgan vs Evenki
+
+**Claim to protect:** no one has counted Dolgan partitive objects by clause type, or compared that with Evenki's indefinite accusative, in a corpus.
+
+**Queries (web Claude, 2026-11-06), 6 in all, 2 in Russian:** `Dolgan partitive object Evenki indefinite accusative contact`; `долганский язык частный падеж эвенкийский неопределённый винительный падеж влияние`; `Evenki indefinite accusative -ja corpus frequency imperative future object marking`; `Sakha partitive case direct object imperative Turkic Tungusic contact differential object marking`; `Sheifer Bolshakova Dolgan object marking 2024 2025 2026`; `эвенкийский язык винительный неопределённый падеж -ja употребление корпус`; plus `"Der Partitiv im Taimyr Dolganischen" Siegl Abstract`.
+
+| Work | What it covers | Why it does not fill the gap | Read how |
+|---|---|---|---|
+| Sheifer and Bolshakova (2023), slides, https://blogs.helsinki.fi/language-diversification-and-spread-north/files/2023/09/Sheifer-DOM-in-DLG.pdf | The hypothesis itself: Dolgan ternary marking in future, imperative, conditional and modal clauses, binary in past, present and habitual; Evenki binary by object semantics; Evenki influence | Qualitative, from grammars (Artemjev 2013, Däbritz 2022, Nedjalkov 1997 and others); no counts, no corpus | WebFetch extraction of the slides |
+| Siegl, "Der Partitiv im Taimyr Dolganischen", *JSFOu* (year UNVERIFIED), https://core.ac.uk/works/123492993 | The Dolgan partitive, from Ubrjatova (1985), Artem'ev (1999), field data and about 48,000 words of written Dolgan; comparison with Finnish | Abstract mentions no clause types, Evenki or age. **Full text not read (bot protection): the main open falsifier.** Handoff 008 fetches it | abstract only |
+| Matić and Nikolaeva (2024), *Journal of Language Contact* 17: 11-69, https://eprints.soas.ac.uk/42371/1/jlc-article-p11_2.pdf | Contact changes in the Lower Kolyma; fn. 1 lists "the ablative or partitive casemarking on imperative objects" as a regional feature | About Tundra Yukaghir and Even, not Dolgan or Evenki counts. Useful areal framing | WebFetch, first 100,000 characters |
+| Baker and Vinokurova (2021), "Rethinking structural case: Partitive case in Sakha", in *Syntactic architecture and its consequences III*, Language Science Press, 51-67 | Formal analysis of the Sakha partitive | Sakha only, theoretical, no corpus counts | catalogue page |
+| *Language Documentation and Description* article 1188, https://lddjournal.org/article/id/1188 | Unknown: appeared in two Dolgan-partitive searches | Not read (bot protection). Handoff 008 fetches it | not read |
+
+**Verdict: OPEN, provisional.** Two items unread (Siegl's full text, LDD 1188). Do not write up Study C until handoff 008 returns.
+

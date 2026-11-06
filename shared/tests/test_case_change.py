@@ -131,6 +131,29 @@ class MultiWordTagTest(unittest.TestCase):
             self.assertEqual(obj["bor"], "RUS:core")
 
 
+class ClauseTypeTest(unittest.TestCase):
+    """Study C clause classification (STUDY_C_PLAN.md)."""
+
+    def test_irrealis_wins_and_digits_are_stripped(self):
+        import clause_dom
+        self.assertEqual(clause_dom.clause_type("NEG IMP 2SG"), "irrealis")
+        self.assertEqual(clause_dom.clause_type("COND1 3SG"), "irrealis")
+        self.assertEqual(clause_dom.clause_type("DESID AOR 3SG"), "irrealis")
+        self.assertEqual(clause_dom.clause_type("PST2 3SG"), "realis")
+        self.assertEqual(clause_dom.clause_type("PTCP 3SG"), "other")
+        self.assertEqual(clause_dom.clause_type(""), "")
+        self.assertEqual(clause_dom.clause_type("PROB 3SG"), "other")
+        self.assertEqual(clause_dom.clause_type("PROB 3SG", clause_dom.IRREALIS_EXTENDED), "irrealis")
+
+    def test_interaction_cells_mark_only_dolgan_irrealis(self):
+        import clause_dom
+        rows = [{"_corpus": c, "speaker_id": "s", "pred_labels": pl, "genre": "nar", "_y": 0}
+                for c in ("dolgan", "evenki") for pl in ("IMP 2SG", "PST 3SG")]
+        xs = {(lab[0], lab[1]): x for _, x, lab, _, _ in clause_dom.cells(rows, interaction=True)}
+        self.assertEqual(xs, {("dolgan", "irrealis"): 1, ("dolgan", "realis"): 0,
+                              ("evenki", "irrealis"): 0, ("evenki", "realis"): 0})
+
+
 if __name__ == "__main__":
     unittest.main()
 

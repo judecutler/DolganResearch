@@ -237,5 +237,14 @@ class AnnotationItemsTest(unittest.TestCase):
         self.assertEqual(gloss.overt_functions(""), [])
 
 
+class PdfExcerptTest(unittest.TestCase):
+    def test_excerpts_are_short_and_page_numbered(self):
+        import pdf_excerpts
+        pages = ["intro\nnothing here\n", "a\nthe Partitive in imperatives\nb\nc\npartitive again\n"]
+        hits, counts = pdf_excerpts.excerpts(pages, ["partitive"], context=1, max_hits=1)
+        self.assertEqual(counts["partitive"], {2: 2})
+        self.assertEqual(hits, [(2, "partitive", ["a", "the Partitive in imperatives", "b"])])
+
+
 if __name__ == "__main__":
     unittest.main()

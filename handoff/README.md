@@ -41,6 +41,7 @@ Neither Claude can wake the other. Jude is the trigger each time.
 | 005 | [Check Stapert (2013) for case counts by age](005-check-stapert-thesis.md) | desktop Claude | done |
 | 006 | [Rerun after the 003 fixes; check the BOR events](006-rerun-and-bor-check.md) | desktop Claude | done |
 | 007 | [Rerun with the adjusted B2 design report](007-design-report.md) | desktop Claude | todo |
+| 008 | [Run Study C; fetch two papers](008-study-c-and-two-papers.md) | desktop Claude | todo |
 
 Update this table whenever a status changes.
 
