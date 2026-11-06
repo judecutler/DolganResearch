@@ -178,6 +178,8 @@ class ReviewRegressionTest(unittest.TestCase):
         w = {"ge": "go-PRF-3SG", "mp": "ŋənə-nə-n", "mb": "ŋənə-nə-n", "align_ok": "true", "IST": "", "IST_cover": ""}
         self.assertEqual(evid_candidates.rules_for(w, "evenki"), (["evenki_PRF"], 1))
         self.assertEqual(evid_candidates.rules_for(w, "dolgan")[0], [])
+        participle = dict(w, ge="go-PTCP.PRF")
+        self.assertEqual(evid_candidates.rules_for(participle, "evenki")[0], ["evenki_PTCP_PRF"])
 
     def test_buollaga_particle_is_a_candidate_unless_already_analysed(self):
         import evid_candidates

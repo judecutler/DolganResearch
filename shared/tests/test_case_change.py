@@ -23,7 +23,16 @@ class SpeakerTestTest(unittest.TestCase):
 
     def test_false_positive_rate_is_near_alpha(self):
         design = [(1920 + 3 * i, 20) for i in range(20)]
-        self.assertLess(st.power(design, 0.8, 0.0, 0.5, n_sim=200, n_perm=99, seed=11), 0.11)
+        self.assertLess(st.power(design, 0.8, 0.0, 0.5, n_sim=200, n_boot=99, seed=11), 0.09)
+
+    def test_false_positive_rate_when_the_youngest_speakers_have_few_objects(self):
+        # Handoff 003: in the real design the speakers with 4 to 8 objects are all born last.
+        # Permuting birth years gave about 0.14 here; the wild bootstrap gives about 0.05.
+        design = ([(1890 + 2 * i, 45) for i in range(4)] + [(1915 + 2 * i, 50) for i in range(14)]
+                  + [(1965, 30), (1968, 25), (1975, 8), (1992, 4), (2003, 8)])
+        fpr = st.power(design, 0.8, 0.0, 0.0, n_sim=300, n_boot=99, seed=5)
+        self.assertLess(fpr, 0.09)
+        self.assertGreater(fpr, 0.02)
 
     def test_power_design_reads_no_outcome(self):
         with tempfile.TemporaryDirectory() as t:
@@ -42,6 +51,33 @@ class FreezeGateTest(unittest.TestCase):
         self.assertFalse(b2_test.plan_is_frozen())
         with self.assertRaises(SystemExit):
             b2_test.main(["unused.csv", "unused.md"])
+
+
+def _tok(i, tx, ps, ge="", case="", syf="", ser=""):
+    """A minimal SYNTH token row (all forms invented) for the extractor tests."""
+    return {"token_id": f"T#1.w{i}", "utt_id": "T#1", "text_id": "T", "corpus": "dolgan", "speaker_id": "S1",
+            "tx": tx, "ps": ps, "ge": ge, "case": case, "case_flag": "", "SyF": syf, "SeR": ser,
+            "IST": "", "IST_cover": "", "BOR": "", "BOR_Morph": "", "align_ok": "true"}
+
+
+class ExtractorReviewTest(unittest.TestCase):
+    """Fixes for desktop's questions in handoff 003."""
+
+    def test_object_predicate_must_be_verbal(self):
+        import extract_objects
+        words = [_tok(1, "verb1", "v", "see-PST", syf="v:pred"), _tok(2, "obj", "n", "fish-ACC", "ACC", "np:O"),
+                 _tok(3, "adv1", "adv", "then", syf="adv:pred")]
+        rows = extract_objects.objects(words, [], [], "dolgan")
+        self.assertEqual(rows[0]["pred_token_id"], "T#1.w1")  # the verb before, not the adverb after
+        self.assertEqual(rows[0]["pred_position"], "before")
+
+    def test_copula_rule_stops_at_an_intervening_verb(self):
+        import extract_b1
+        adjacent = [_tok(1, "noun1", "n", "sorcerer-DAT/LOC", "DAT/LOC"), _tok(2, "cop1", "v", "be-PST")]
+        blocked = [_tok(1, "noun1", "n", "sorcerer-DAT/LOC", "DAT/LOC"), _tok(2, "verb1", "v", "go-CVB"),
+                   _tok(3, "cop1", "v", "be-PST")]
+        self.assertEqual([r["rules"] for r in extract_b1.candidates(adjacent, [], [], [])], ["copula_next"])
+        self.assertEqual(extract_b1.candidates(blocked, [], [], []), [])
 
 
 if __name__ == "__main__":

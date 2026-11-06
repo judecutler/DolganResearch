@@ -7,7 +7,9 @@ in Siegl (2015: 269-270): a role noun in the instrumental or dative next to the 
 "be" (ex. 30, *ńučča aptaa-ga e-te* 'was (as) a Russian sorcerer') or after a verb it
 describes (ex. 29b, *vospitatel-nnan ... üleelir* 'works as an educator'). Rules:
   copula_next   INS or DAT/LOC nominal followed within 2 words by a verb glossed "be"
-                or "become", or a word whose SyF has function "cop"
+                or "become", or a word whose SyF has function "cop", with no other
+                verb in between (handoff 003: in 139 of 267 hits a lexical verb stood
+                between, so the noun most likely belonged to that verb)
   syf_pred      INS or DAT/LOC nominal whose own SyF function is "pred"
   ins_nominal   any other INS nominal with no SeR role (role nouns 'as X'); Dolgan only
 The rules are a high-recall net. Humans decide every item. The output holds corpus
@@ -27,6 +29,7 @@ CASES = ("INS", "DAT/LOC")
 NON_NOMINAL_PS = ("v", "cop", "ptcl", "conj", "interj", "adv", "post", "")
 COPULA_STEMS = ("be", "become")
 WINDOW = 2
+VERBAL_PS = ("v", "aux", "cop")
 COLUMNS = (
     "token_id", "utt_id", "text_id", "corpus", "speaker_id", "rules", "tx", "case", "ps", "SyF", "SeR",
     "next_verb", "genre", "source_collection", "recording_lo", "recording_hi", "birth_mid",
@@ -52,7 +55,13 @@ def candidates(tokens, utterances, texts, speakers):
             if w["case"] not in CASES or w["ps"] in NON_NOMINAL_PS:
                 continue
             rules = []
-            nxt = [x for x in words[i + 1:i + 1 + WINDOW] if _is_copula(x)]
+            nxt = []
+            for x in words[i + 1:i + 1 + WINDOW]:
+                if _is_copula(x):
+                    nxt = [x]
+                    break
+                if x["ps"] in VERBAL_PS:
+                    break  # another verb comes first: the noun belongs to it, not to the copula
             if nxt:
                 rules.append("copula_next")
             if "pred" in gloss.overt_functions(w["SyF"]):

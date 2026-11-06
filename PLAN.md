@@ -1,24 +1,23 @@
 # PLAN: living status page
 
-Update this at the end of every work session. Last updated: 2026-11-05 by web Claude (overnight run).
+Update this at the end of every work session. Last updated: 2026-11-05 by web Claude (after handoff 003).
 
 ## Current phase
-**Pipeline run on the real corpora; Gate 0 passes.** Handoffs 001, 002 and 003 are `done`. Web Claude answered 002's questions (D-016 to D-022) and built the parser, the extractors for both studies, the QA and Gate 0 reports and the annotation workbooks (`shared/README.md`). All are tested on synthetic files only. Next: desktop Claude runs handoff 003 on the real corpora. In parallel, Jude and Dustan do handoff 004.
+**Pipeline run on the real corpora; Gate 0 passes.** Handoffs 001, 002 and 003 are `done`. All QA counts match 002 and all six Gate 0 checks pass. Web Claude answered desktop's questions from 003: the B2 test was miscalibrated and is replaced (D-034), and three extractor rules are tightened (D-035). Next: desktop Claude reruns the pipeline (handoff 006) and checks Stapert (005). In parallel, Jude and Dustan do handoff 004.
 
 ## Next actions
 | # | Who | Action | Where |
 |---|---|---|---|
 | 1 | Jude | Add Dustan as a collaborator on the GitHub repo | GitHub, Settings, Collaborators |
-| 2 | Jude + desktop Claude | Tell desktop Claude: "pull and run handoff 003" | `handoff/003-run-pipeline.md` |
+| 2 | Jude + desktop Claude | Tell desktop Claude: "pull and run handoff 006", then "handoff 005" | `handoff/006-rerun-and-bor-check.md` |
 | 3 | Jude, Dustan | Confirm decisions, update the evidentiality plan, read Däbritz §6.6 and Siegl 2015, send the INEL email | `handoff/004-for-jude-and-dustan.md` |
-| 4 | Jude, Dustan | After 003: code the 40-item pilot separately (Gate 2) | `handoff/004`, item 5 |
-| 4b | Jude + desktop Claude | "pull and run handoff 005" (check Stapert's thesis; can follow 003) | `handoff/005-check-stapert-thesis.md` |
-| 5 | web Claude | After 003: read `reports/qa_report.md` and `reports/gate0_feasibility.md`, fix any mismatches, then design the main annotation round and the Study B analysis | `docs/ROADMAP_CLAUDE_WEB.md` |
+| 4 | Jude, Dustan | After 006: code the 40-item pilot separately (Gate 2). If you already started on the 003 sheets, keep them; 006 backs them up first | `handoff/004`, item 5 |
+| 5 | web Claude | After 006: read the new power report and the BOR check; then design the main annotation round, propose cohort bins (D-013) and draft the Gate 3 freeze | `docs/ROADMAP_CLAUDE_WEB.md` |
 
 ## Gates
 | Gate | Question | Status |
 |---|---|---|
-| G0 | Is there enough data of the right kind for each design? (speakers by birth year, SyF coverage, counts) | not started |
+| G0 | Is there enough data of the right kind for each design? (speakers by birth year, SyF coverage, counts) | passed on counts (003); D-008 still needs a human call, see below |
 | G1 | Has the literature been re-checked and the closest authors contacted before we commit? | not started |
 | G2 | Is the evidentiality codebook stable (pilot agreement acceptable)? | not started |
 | G3 | Is the analysis plan frozen before outcomes are examined? | not started |
@@ -26,9 +25,12 @@ Update this at the end of every work session. Last updated: 2026-11-05 by web Cl
 Criteria for each gate are in `docs/ROADMAP_CLAUDE_WEB.md` and `docs/ROADMAP_HUMAN.md`.
 
 ## Open decisions
-See `docs/DECISIONS.md`. Currently open: D-004 licensing, D-005 stats stack, D-006 evidentiality codebook, D-007 Evenki comparison design, D-008 which Study B sub-questions survive G0, D-009 target venues, D-013 cohort bins, D-014 one paper or two, D-015 authorship. Waiting for Jude's confirmation: D-016 to D-023.
+See `docs/DECISIONS.md`. Currently open: D-004 licensing, D-005 stats stack, D-006 evidentiality codebook, D-007 Evenki comparison design, D-008 which Study B sub-questions survive G0, D-009 target venues, D-013 cohort bins, D-014 one paper or two, D-015 authorship. Waiting for Jude's confirmation: D-016 to D-035.
+
+**D-008 caveat from the Gate 0 crosstabs (counts only, no outcome seen).** The counts pass, but birth cohort is tangled with source and genre. Speakers born before 1920 appear almost only in `published_folklore` and genre `flk`. Speakers born after 1950 appear only in fieldwork and the archive, mostly `nar` and `conv`. For B2, the speakers born after 1970 give 4 to 8 objects each, one speaker per decade, so B2 in practice compares births from the 1890s to the 1960s. Genre and source must be in the model or the robustness checks, and the paper must say this.
 
 ## Log (newest first)
+- 2026-11-05: Web Claude answered handoff 003. The B2 permutation test gave 0.09 false positives on the real design because the speakers with fewest objects are all born last; replaced by a wild cluster bootstrap (D-034, about 0.055 in simulation). Object predicates must be verbal, B1 `copula_next` stops at an intervening verb, Evenki `PTCP.PRF` has its own rule, locked workbook columns are grey (D-035). 44 tests OK, each new test fails on the old code. Handoff 006 written.
 - 2026-11-05: Web Claude (overnight): docs corrected from 002; decisions D-016 to D-027; parser and pipeline in `shared/` and `case_change/` (tests on synthetic files); handoff 003 (real run) and 004 (humans) written. Decision trail: `.audit/overnight.tsv`.
 - 2026-11-05: Web Claude (overnight, later): an independent review found 10 problems, all fixed with regression tests (41 tests at the end of the night). Read Siegl (2015) and Däbritz (2023) in full and built Study B1 candidate rules from Siegl's examples. Mapped the Evenki and Sakha evidential literature: no comparison found, but Skribnik and Aikhenvald must be read, and Hagel (2022) is a method precedent. Added the speaker-level B2 test, a power analysis and the freeze gate. Proposed D-028 to D-030.
 - 2026-11-05: Literature: Study A re-graded to PARTIAL after reading Skribnik and Aikhenvald (2024), and re-scoped as a quantitative test (D-031). Study B falsification pass (29 queries): B1 and B2 OPEN-VERIFIED, pending Stapert (2013) chapters (handoff 005) and Artem'ev (1999) pp. 81-82, 102-103 (library request in 004).

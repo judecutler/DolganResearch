@@ -13,6 +13,8 @@ Rules (D-020; forms from handoff 002, Q18):
                                 matched on the transcription; Dolgan only; spelling UNVERIFIED
           evenki_PRF            Evenki perfect (PRF): Malchukov (1999, 2000) describe the Tungusic
                                 perfect as the main indirect-evidential form (ledger, Study A)
+          evenki_PTCP_PRF       the same, but the perfect participle (PTCP.PRF); kept apart because
+                                an attributive participle is unlikely to be evidential (handoff 003)
 The output holds corpus sentences: it stays in data/derived/ (git-ignored).
 """
 import os
@@ -58,7 +60,10 @@ def rules_for(w, corpus):
             and not any(gloss.parse_gloss(p.text).overt == "TAK" for p, _ in ms):
         hits.append("particle_buollaga")
     if corpus == "evenki" and gloss.has_component(w["ge"], "PRF"):
-        hits.append("evenki_PRF")
+        # Handoff 003: the rule also caught the perfect participle PTCP.PRF. Kept, but under
+        # its own name, so the sample and the annotators can tell the two apart (D-030).
+        ptcp = any({"PTCP", "PRF"} <= set(g.all_components) for g in gloss.glosses(w["ge"]))
+        hits.append("evenki_PTCP_PRF" if ptcp else "evenki_PRF")
     if "quot" in (w["IST"] + " " + w["IST_cover"]).lower():
         hits.append("IST_quot")
     if where < 0 and hits:

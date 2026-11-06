@@ -7,15 +7,14 @@ has a line starting "Status: **frozen" (Gate 3). Running it earlier would let th
 shape the plan.
 
 Outcome per object: ACC versus not ACC, among NOM, ACC and PART objects.
-Unit: the speaker (empirical logit of their ACC share, weighted by their object
-count), regressed on birth year, with a permutation p-value (speaker_test.py).
+Unit: the speaker (their ACC share, weighted by their object count), regressed on
+birth year, with a wild-cluster-bootstrap p-value (speaker_test.py, D-034).
 Pre-specified robustness checks from ANALYSIS_PLAN.md that this script can run:
 native nouns only (no BOR tag), leave one speaker out, each source on its own,
 precise birth years only, and well-aligned glosses only.
 """
 import argparse
 import csv
-import math
 import os
 import random
 import sys
@@ -45,19 +44,19 @@ def by_speaker(rows):
     return [(birth[s], k, n) for s, (k, n) in sorted(d.items())]
 
 
-def run(rows, label, n_perm, rng, min_speakers=5):
+def run(rows, label, n_boot, rng, min_speakers=5):
     data = by_speaker(rows)
     if len(data) < min_speakers:
         return f"| {label} | {len(data)} | {sum(n for *_, n in data)} | too few speakers | |"
-    slope, p = trend_test(data, n_perm, rng)
-    return (f"| {label} | {len(data)} | {sum(n for *_, n in data)} | {math.exp(slope):.2f} | {p:.3f} |")
+    slope, p = trend_test(data, n_boot, rng)
+    return (f"| {label} | {len(data)} | {sum(n for *_, n in data)} | {100 * slope:+.1f} | {p:.3f} |")
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("objects")
     ap.add_argument("out")
-    ap.add_argument("--perm", type=int, default=9999)
+    ap.add_argument("--boot", type=int, default=9999)
     ap.add_argument("--plan", default=PLAN)
     a = ap.parse_args(argv)
     if not plan_is_frozen(a.plan):
@@ -67,23 +66,24 @@ def main(argv=None):
                 and float(r["birth_hi"]) - float(r["birth_lo"]) <= PRECISE]
     rng = random.Random(20261105)
     lines = ["# Study B2 results: accusative share by speaker birth year", "",
-             "Built by `case_change/b2_test.py` after the analysis plan was frozen. The odds ratio is per "
-             "decade of birth year, from a speaker-level weighted regression of the empirical logit; the "
-             f"p-value is from {a.perm} permutations of birth year across speakers.", "",
-             "| Analysis | Speakers | Objects | Odds ratio per decade | p |", "|---|---|---|---|---|"]
-    lines.append(run(rows, "Main: all objects", a.perm, rng))
-    lines.append(run([r for r in rows if r["loan"] == "0"], "Native nouns only", a.perm, rng))
+             "Built by `case_change/b2_test.py` after the analysis plan was frozen. The slope is the "
+             "change in accusative share, in percentage points per decade of birth year, from a "
+             "speaker-level regression weighted by object count; the p-value is from "
+             f"{a.boot} wild-cluster-bootstrap draws (D-034).", "",
+             "| Analysis | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|"]
+    lines.append(run(rows, "Main: all objects", a.boot, rng))
+    lines.append(run([r for r in rows if r["loan"] == "0"], "Native nouns only", a.boot, rng))
     lines.append(run([r for r in rows if r["align_ok"] == "true" and r["unsure_gloss"] == "0"],
-                     "Aligned, no % glosses", a.perm, rng))
+                     "Aligned, no % glosses", a.boot, rng))
     lines.append(run([r for r in rows if r["birth_precision"] in ("year", "date")],
-                     "Exact birth years only", a.perm, rng))
+                     "Exact birth years only", a.boot, rng))
     for src in sorted({r["source_collection"] for r in rows}):
-        lines.append(run([r for r in rows if r["source_collection"] == src], f"Source: {src}", a.perm, rng))
-    lines += ["", "## Leave one speaker out", "", "| Speaker left out | Odds ratio per decade | p |", "|---|---|---|"]
+        lines.append(run([r for r in rows if r["source_collection"] == src], f"Source: {src}", a.boot, rng))
+    lines += ["", "## Leave one speaker out", "", "| Speaker left out | Change per decade (points) | p |", "|---|---|---|"]
     for s in sorted({r["speaker_id"] for r in rows}):
         data = by_speaker([r for r in rows if r["speaker_id"] != s])
-        slope, p = trend_test(data, min(a.perm, 999), rng)
-        lines.append(f"| {s} | {math.exp(slope):.2f} | {p:.3f} |")
+        slope, p = trend_test(data, min(a.boot, 999), rng)
+        lines.append(f"| {s} | {100 * slope:+.1f} | {p:.3f} |")
     with open(a.out, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines[:12]))

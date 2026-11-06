@@ -51,7 +51,7 @@ Both extractors write a `rule_hit` column so that every row can be traced.
 
 Tokens from one speaker are not independent, so every model has speaker structure.
 
-**Primary test (proposed 2026-11-05, decide at Gate 3).** A speaker-level test in `case_change/speaker_test.py`. Each speaker's accusative share (empirical logit, weighted by their object count) is regressed on birth year. The p-value comes from permuting birth years across speakers. Why this is the primary test:
+**Primary test (proposed 2026-11-05, revised the same day as D-034, decide at Gate 3).** A speaker-level test in `case_change/speaker_test.py`. Each speaker's accusative share, weighted by their object count, is regressed on birth year. The statistic is the slope's t-value with a cluster-robust standard error, and the p-value comes from a wild cluster bootstrap with the null imposed (Webb weights). The effect is reported as percentage points of accusative share per decade of birth year. The first version permuted birth years across speakers. In the real design that gave about 9% false positives instead of 5%, because the speakers with the fewest objects are all born last (D-034). Why this is the primary test:
 - It needs no installs: Jude's machine has no R, statsmodels or scipy (handoff 001), so it settles most of D-005.
 - The speaker is the unit by construction (rule 8).
 - With about 30 to 60 speakers, it is easier to defend than a GLMM that may not converge.

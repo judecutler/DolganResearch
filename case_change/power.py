@@ -5,7 +5,7 @@
 Reads only speaker_id and birth_mid from the object table (how many objects each
 speaker with a usable birth year contributes, and when they were born). The case
 column is never read, so this can run before Gate 3. Simulates the speaker-level
-permutation test in speaker_test.py over a grid of effect sizes and between-speaker
+wild-cluster-bootstrap test in speaker_test.py over a grid of effect sizes and between-speaker
 spreads, and reports the power of each.
 
 The baseline accusative share is an input, not a measurement. The default 0.8 is
@@ -55,7 +55,7 @@ def main(argv=None):
              f"and at least {a.min_tokens} objects, and their object counts. The outcome was not read.", "",
              f"Speakers: {len(design)}. Objects: {sum(n for _, n in design)}. Birth years "
              f"{min(births):.0f} to {max(births):.0f}. Baseline accusative share (input): {a.base}. "
-             f"Simulations per cell: {a.sims}, alpha 0.05, two-sided permutation test.", "",
+             f"Simulations per cell: {a.sims}, alpha 0.05, two-sided wild cluster bootstrap (D-034).", "",
              "Effect sizes are odds ratios per decade of birth year. For orientation, an odds ratio of "
              "1.5 per decade over 50 years moves a share of 0.80 to about 0.97 or 0.35, depending on direction.", "",
              "| Odds ratio per decade | Power, speaker SD 0.5 | Power, speaker SD 1.0 |", "|---|---|---|"]
@@ -63,7 +63,9 @@ def main(argv=None):
         b = math.log(orat)
         cells = [power(design, a.base, b, sd, n_sim=a.sims, seed=7) for sd in (0.5, 1.0)]
         lines.append(f"| {orat} | {cells[0]:.2f} | {cells[1]:.2f} |")
-    lines += ["", "Row 1.0 is the false-positive rate and should be near 0.05. Speaker SD is the "
+    lines += ["", "Row 1.0 is the false-positive rate and should be near 0.05. With "
+              f"{a.sims} simulations per cell, a rate within about {2 * math.sqrt(0.0475 / a.sims):.2f} of 0.05 "
+              "is consistent with a correct test. Speaker SD is the "
               "between-speaker spread on the log-odds scale. It is unknown until the outcome is seen, so "
               "both values are shown. Report the smallest odds ratio with power of 0.8 or more in the paper."]
     with open(a.out, "w", encoding="utf-8") as f:

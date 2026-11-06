@@ -15,6 +15,9 @@ from inel import gloss  # noqa: E402
 from inel.load import num, table, write  # noqa: E402
 
 PRECISE = 10  # years; wider birth or recording ranges give no age
+# A clause predicate must be verbal. Handoff 003: 19 of 1,212 SyF "pred" words picked
+# as an object's predicate had another part of speech (e.g. ps "adv").
+VERBAL_PS = ("v", "aux", "cop")
 
 COLUMNS = (
     "token_id", "utt_id", "text_id", "corpus", "speaker_id", "birth_lo", "birth_hi", "birth_mid",
@@ -36,7 +39,8 @@ def objects(tokens, texts, speakers, corpus):
     rows = []
     for utt_id, words in by_utt.items():
         orphan = "#orphan" in utt_id
-        preds = [] if orphan else [i for i, w in enumerate(words) if "pred" in gloss.overt_functions(w["SyF"])]
+        preds = [] if orphan else [i for i, w in enumerate(words)
+                                   if "pred" in gloss.overt_functions(w["SyF"]) and w["ps"] in VERBAL_PS]
         for i, w in enumerate(words):
             if "O" not in gloss.overt_functions(w["SyF"]):
                 continue
