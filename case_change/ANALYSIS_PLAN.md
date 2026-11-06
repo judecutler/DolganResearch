@@ -77,6 +77,7 @@ All in `case_change/b2_test.py`, in this order:
 - **Vetting comes first.** Jude and Dustan code every candidate separately in the B1 sheets. The sheets show the sentence and translation, **not** the speaker's birth year or the recording year, and coders do not look them up. Agreement (kappa) is reported. Only items both accept as a nominal secondary predicate enter the analysis, and disagreements are resolved by discussion before any outcome is computed.
 - **Outcome.** 1 if instrumental, 0 if dative/locative, among accepted items.
 - **Tests.** The same model as B2: birth year, adjusted for genre (source too if it is not redundant); and recording year, adjusted for genre. Both two-sided.
+- **Script.** `case_change/b1_test.py`, on the merged vetting file. A `resolved` column, added while discussing disagreements, overrides the two codes.
 - **Minimum.** At least 30 accepted items from at least 10 speakers with a usable birth year. Below that, B1 is descriptive only: counts by decade of birth and by recording period, with exact binomial intervals, and the statement that the corpus cannot test Siegl's claim.
 
 ## Descriptive tables (not tests)

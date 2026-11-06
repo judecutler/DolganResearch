@@ -154,6 +154,27 @@ class ClauseTypeTest(unittest.TestCase):
                               ("evenki", "irrealis"): 0, ("evenki", "realis"): 0})
 
 
+class B1TestTest(unittest.TestCase):
+    def test_exact_interval_matches_known_values(self):
+        import b1_test
+        lo, hi = b1_test.exact_interval(5, 10)
+        self.assertAlmostEqual(lo, 0.1871, places=3)
+        self.assertAlmostEqual(hi, 0.8129, places=3)
+        self.assertAlmostEqual(b1_test.exact_interval(0, 10)[1], 0.3085, places=3)
+
+    def test_resolved_column_overrides_the_two_codes(self):
+        import b1_test
+        self.assertTrue(b1_test.accepted({"is_secondary_predicate_A": "yes", "is_secondary_predicate_B": "yes"}))
+        self.assertFalse(b1_test.accepted({"is_secondary_predicate_A": "yes", "is_secondary_predicate_B": "no"}))
+        self.assertTrue(b1_test.accepted({"is_secondary_predicate_A": "yes", "is_secondary_predicate_B": "no",
+                                          "resolved": "yes"}))
+
+    def test_b1_refuses_before_the_plan_is_frozen(self):
+        import b1_test
+        with self.assertRaises(SystemExit):
+            b1_test.main(["m.csv", "c.csv", "s.csv", "out.md"])
+
+
 if __name__ == "__main__":
     unittest.main()
 
