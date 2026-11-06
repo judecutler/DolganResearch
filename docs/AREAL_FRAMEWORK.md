@@ -1,0 +1,31 @@
+# Where our studies sit: Dolgan between Sakha, Evenki and Russian
+
+Written by web Claude, 2026-11-06, for the introduction and discussion of the papers. Every source is in `docs/LITERATURE_LEDGER.md` with how it was read. Most were read through automatic text extraction, so check each quote against the original before citing it.
+
+## The setting
+Dolgan is a Turkic language very close to Sakha (Yakut). That Evenki influenced Dolgan grammar is a standard claim (Skribnik and Aikhenvald 2024: 1016; Sheifer and Bolshakova 2023). The history of the Dolgan people, including Evenki groups, is the subject of Stapert (2013), which the paper should summarise from the source itself. Today Russian is dominant, and Dolgan is spoken fluently mainly by older people outside a few villages (Pakendorf and Stapert 2020). So each Dolgan feature can be asked three things: is it Turkic (shared with Sakha), Tungusic (shared with Evenki), or Russian-driven? And is it changing?
+
+The INEL corpora let us answer with counts, for Dolgan and Evenki, on the same annotation scheme. Sakha has no comparable corpus here, so Sakha enters from the literature only.
+
+## Feature by feature
+
+| Feature | Sakha (literature) | Evenki (literature and corpus) | Dolgan (literature) | What our data add | Where |
+|---|---|---|---|---|---|
+| Indirect past *-BIt* / perfect | -BIT is an indirective perfect; particle *ebit* (Efremov 2010, 2017) | The perfect is the indirect form in Tungusic (Malchukov 1999, 2000; listing only, UNVERIFIED). Even: perfect, then inferential, then first-person mirative, then a non-witnessed narrative tense (Greed 2018) | *-BIt* is the indirective past; *-TI* the neutral past (Skribnik and Aikhenvald 2024: 1018); witnessed with possessive, unwitnessed with predicative agreement (Pakendorf and Stapert 2020) | PST2 vs PST1 by genre and person, and by agreement type, from the glosses; your coding says which uses are evidential | Study A, handoff 009 |
+| Inferential *-TAK* | n/a in our sources | n/a | Inferential (Däbritz 2023: 196; Skribnik and Aikhenvald 2024: 1018), but "assertive-presumptive" with mainly emphatic assertion (Pakendorf and Stapert 2020) | The corpus glosses `TAK` as `INFER` 36 times and `COND1` 555 times. Your coding of a sample decides between the two descriptions with numbers | Study A |
+| Evidential copula *e-bit* / *eːt* | *ebit* (Efremov) | `-rkə` glossed EVID 29 times; status disputed (Skribnik and Aikhenvald 2024: 1022, fn. 11) | *e-bit* contracts to *e:t* (Skribnik and Aikhenvald 2024: 1018) | Rates per 1,000 words by genre in both corpora | Study A, handoff 009 |
+| Partitive objects | Partitive for indefinite objects of imperatives (Pakendorf and Stapert 2020); formal analysis in Baker and Vinokurova (2021, not read) | Binary accusative vs indefinite accusative, by object meaning (Sheifer and Bolshakova 2023) | Three-way marking in future, imperative, conditional and modal clauses only (Sheifer and Bolshakova 2023), or also with indicative verbs (Pakendorf and Stapert 2020) | Counts by clause type in both corpora; a direct test of whether Dolgan's choice is clause-driven and Evenki's is not | Study C |
+| Imperative objects as an areal feature | as above | as above | as above | Matić and Nikolaeva (2024: fn. 1) list partitive or ablative imperative objects across north-east Siberia. Study C gives the first counts for two of these languages | Study C |
+| Object case over time | n/a | n/a | No variation reported (Däbritz 2022, 2023; Sheifer and Bolshakova 2023) | First apparent-time and real-time test | Study B2 |
+| Secondary predicates, dative to instrumental | Dative conflates dative, locative and allative (Pakendorf and Stapert 2020) | n/a | Shift to instrumental under Russian influence in the 20th century (Siegl 2015, two examples) | First count, by birth year and recording year | Study B1 |
+| Word order, OV to VO | Russian-Sakha bilingual convergence studied (Grenoble, Khokholova and others; not read) | n/a | Looser order from Russian (Pakendorf and Stapert 2020); no age pattern in five speakers (Stapert 2013, Table 7.3); Udmurt shows a generational shift (Asztalos; Belova and Khomchenkova 2026) | First test with about 25 speakers, controlled for genre and source | Study B3 |
+
+## How the results could fit together
+- **If Study C finds Dolgan's partitive tied to clause type and Evenki's not,** the Dolgan system is not a straight copy of Evenki object marking. That supports a Turkic base (as in Sakha imperatives) extended within Dolgan, possibly with Evenki as a catalyst. If both are clause-driven, the Evenki-contact account gains direct support.
+- **If B2 or B3 find change with birth year that survives the genre and source controls,** that is change in progress, and the direction (toward Russian-like overt accusative, or toward VO) says whether Russian is the driver. If nothing changes, Dolgan grammar has been stable through a century of shift pressure, which is also worth reporting with the power analysis behind it.
+- **Study A** places Dolgan between Sakha and Even on Greed's (2018) path from perfect to narrative tense. A high PST2 share in folklore and a mirative first-person use would put Dolgan's *-BIt* at the narrative-tense end.
+
+## Papers this could become (to decide with D-014)
+1. Study A: a corpus-based quantification of Dolgan evidentials, with Evenki rates (venue ideas in D-009).
+2. Study B (B2 + B3, with B1 if vetting gives enough items): apparent and real time in an endangered-language corpus, with the genre-confound method as a contribution in itself.
+3. Study C: a short paper on clause-driven versus object-driven object marking in two contact languages.
