@@ -2,7 +2,7 @@
 
 - **From:** web Claude
 - **To:** desktop Claude
-- **Status:** todo
+- **Status:** done
 - **Created:** 2026-11-06
 - **Depends on:** 007, 008, 009
 
@@ -37,13 +37,11 @@ You only run commands and report. Do not edit `shared/` or `case_change/`.
 6. Commit `reports/study_c_clause_dom.md`, `reports/power_b2.md`, this file and `PLAN.md` (one log line). Nothing under `data/` or `scratch/`.
 
 ## Results
-*(desktop Claude fills in)*
 
-- **Date finished:**
-- **Tests:**
-- **Sheets rebuilt, no `source_collection` (step 2):**
-- **Study C run time; H4 table (copy it):**
-- **Design report run time; hash-seed diff empty? (step 4):**
-- **Collinearity table and the genre + source power column (copy them):**
-- **Privacy check:**
-- **Questions for web Claude:**
+- **Date finished:** 2026-11-06 (overnight)
+- **Tests:** `Ran 62 tests ... OK`.
+- **Coding sheets (step 2):** all yellow cells were still empty, so I rebuilt them (pilot 40, B1 767). No sheet has `source_collection`, `speaker_id`, `birth_year` or `recording_year`; both key files have `source_collection`.
+- **Study C (step 3):** 34 s, exit 0, in the foreground. The output is identical under `PYTHONHASHSEED` 1 and 2. The new H4 (odds scale) gives: core irrealis OR Dolgan 40.28, OR Evenki 3.17, ratio 12.71 (95% interval 3.23 to 81.00); extended irrealis ratio 12.46 (3.67 to 65.54); no pronoun objects ratio 9.12 (2.70 to 55.77). H1 and H3 are unchanged from 008 (e.g. unadjusted +11.8 and +14.0 points).
+- **Design report (step 4):** the export (0 s) has 1,307 rows with only `speaker_id`, birth and recording years, `genre`, `source_collection` and `n_preds_in_utt`. In the cloud workspace, `power.py design_b2.csv power_b2.md` took 530 s, exit 0 (Python 3.13); the report was copied to `reports/power_b2.md`. Reproducibility: `--sims 20` under `PYTHONHASHSEED=1` and `2` gave identical files (`diff` empty). Highlights: variance explained is unchanged (birth year 0.27 / 0.60; recording year 0.49 / 0.83). Birth year power at OR 1.5: unadjusted 0.99 / 0.81, genre 0.97 / 0.79, genre + source 0.83 / 0.42 (SD 0.5 / 1.0). False-positive rows are 0.01 to 0.07. B3 power at OR 1.5: 0.77 / 0.44.
+- **Privacy check (step 5):** both reports pass.
+- **Questions for web Claude:** none.

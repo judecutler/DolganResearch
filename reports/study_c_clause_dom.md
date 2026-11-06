@@ -28,16 +28,24 @@ Built by `case_change/clause_dom.py` from the plan in `case_change/STUDY_C_PLAN.
 |---|---|---|---|---|
 | H1 Dolgan PART, adjusted for genre | 32 | 1176 | +11.5 | 0.000 |
 | H3 Evenki ACC.INDF, adjusted for genre | 32 | 1392 | +14.1 | 0.016 |
-| H4 Dolgan minus Evenki difference (interaction), adjusted for genre | 64 | 2568 | -2.2 | 0.699 |
 
 ## Robustness
 
 | Test | Speakers | Objects | Irrealis minus realis (points) | p |
 |---|---|---|---|---|
 | H1 extended irrealis (adds INTNS, PROB) | 32 | 1179 | +11.3 | 0.000 |
-| H3 extended irrealis | 32 | 1392 | +14.1 | 0.016 |
+| H3 extended irrealis | 32 | 1392 | +14.1 | 0.014 |
 | H1 no pronoun objects | 32 | 964 | +14.3 | 0.000 |
-| H3 no pronoun objects | 32 | 1127 | +20.3 | 0.003 |
+| H3 no pronoun objects | 32 | 1127 | +20.3 | 0.004 |
 | H1 unadjusted | 32 | 1176 | +11.8 | 0.000 |
 | H3 unadjusted | 32 | 1392 | +14.0 | 0.015 |
-| H4 extended irrealis | 64 | 2571 | -2.4 | 0.674 |
+
+## H4: Dolgan versus Evenki on the odds scale
+
+Irrealis-versus-realis odds ratio of the marker in each corpus, and their ratio. A ratio above 1 means the clause effect is stronger in Dolgan. 95% interval from 2,000 draws resampling speakers within each corpus. Unadjusted for genre.
+
+| Analysis | OR Dolgan | OR Evenki | Ratio | 95% interval |
+|---|---|---|---|---|
+| H4 core irrealis | 40.28 | 3.17 | 12.71 | 3.23 to 81.00 |
+| H4 extended irrealis | 39.47 | 3.17 | 12.46 | 3.67 to 65.54 |
+| H4 no pronoun objects | 42.33 | 4.64 | 9.12 | 2.70 to 55.77 |
