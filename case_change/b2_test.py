@@ -76,6 +76,73 @@ def run(rows, label, n_boot, rng, time="birth", controls=PRIMARY_CONTROLS, targe
     return f"| {label} | {n_spk} | {n_obj} | {100 * slope:+.1f} | {p:.3f} |"
 
 
+# Names sort in time order. D-013 proposal in ANALYSIS_PLAN.md.
+BIRTH_BINS = ((None, 1920, "-1919"), (1920, 1940, "1920-1939"), (1940, 1960, "1940-1959"), (1960, None, "1960-"))
+RECORDING_BINS = ((None, 1980, "-1979"), (1980, 2000, "1980-1999"), (2000, None, "2000-"))
+
+
+def _bin(year, bins):
+    for lo, hi, name in bins:
+        if (lo is None or year >= lo) and (hi is None or year < hi):
+            return name
+    return ""
+
+
+def descriptive(rows):
+    """Case counts by birth bin, recording bin, and birth bin x genre; per-speaker shares."""
+    out = []
+    for title, key in (
+            ("Birth bin", lambda r: _bin(_mid(r["birth_lo"], r["birth_hi"]), BIRTH_BINS)),
+            ("Recording bin", lambda r: _bin(_mid(r["recording_lo"], r["recording_hi"]) or 0, RECORDING_BINS)
+             if _mid(r["recording_lo"], r["recording_hi"]) else "imprecise"),
+            ("Birth bin, genre", lambda r: _bin(_mid(r["birth_lo"], r["birth_hi"]), BIRTH_BINS) + ", " + r["genre"])):
+        c = {}
+        for r in rows:
+            c.setdefault(key(r), dict.fromkeys(OUTCOMES, 0))[r["case"]] += 1
+        out += ["", f"| {title} | " + " | ".join(OUTCOMES) + " | ACC share |", "|---|" + "---|" * (len(OUTCOMES) + 1)]
+        for k in sorted(c):
+            n = sum(c[k].values())
+            out.append(f"| {k} | " + " | ".join(str(c[k][x]) for x in OUTCOMES) + f" | {c[k]['ACC'] / n:.1%} |")
+    return out
+
+
+def speaker_points(rows):
+    """[(speaker, birth year, objects, ACC share)]."""
+    d = {}
+    for r in rows:
+        k, n = d.get(r["speaker_id"], (0, 0))
+        d[r["speaker_id"]] = (k + (r["case"] == "ACC"), n + 1)
+    birth = {r["speaker_id"]: _mid(r["birth_lo"], r["birth_hi"]) for r in rows}
+    return [(s, birth[s], n, k / n) for s, (k, n) in sorted(d.items(), key=lambda x: birth[x[0]])]
+
+
+def svg_plot(points, path):
+    """Each speaker's ACC share against birth year; circle area proportional to object count."""
+    w, h, m = 640, 360, 50
+    xs = [b for _, b, _, _ in points]
+    x0, x1 = min(xs) - 5, max(xs) + 5
+    nmax = max(n for _, _, n, _ in points)
+    sx = lambda b: m + (b - x0) / (x1 - x0) * (w - 2 * m)  # noqa: E731
+    sy = lambda v: h - m - v * (h - 2 * m)  # noqa: E731
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" font-family="sans-serif" '
+             'font-size="12"><rect width="100%" height="100%" fill="white"/>',
+             f'<line x1="{m}" y1="{h - m}" x2="{w - m}" y2="{h - m}" stroke="#444"/>',
+             f'<line x1="{m}" y1="{m}" x2="{m}" y2="{h - m}" stroke="#444"/>']
+    for v in (0, 0.25, 0.5, 0.75, 1):
+        parts.append(f'<text x="{m - 8}" y="{sy(v) + 4:.1f}" text-anchor="end">{v:.0%}</text>')
+    for yr in range(int(x0 // 10 * 10 + 10), int(x1) + 1, 20):
+        parts.append(f'<text x="{sx(yr):.1f}" y="{h - m + 18}" text-anchor="middle">{yr}</text>')
+    for _, b, n, v in points:
+        r = 3 + 12 * (n / nmax) ** 0.5
+        parts.append(f'<circle cx="{sx(b):.1f}" cy="{sy(v):.1f}" r="{r:.1f}" fill="#3a6ea5" fill-opacity="0.55" '
+                     'stroke="#1d3d63"/>')
+    parts += [f'<text x="{w / 2}" y="{h - 12}" text-anchor="middle">Speaker birth year</text>',
+              f'<text x="14" y="{h / 2}" text-anchor="middle" transform="rotate(-90 14 {h / 2})">'
+              'Accusative share of objects</text></svg>']
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(parts) + "\n")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("objects")
@@ -128,6 +195,13 @@ def main(argv=None):
               "| Speaker left out | Speakers | Objects | Change per decade (points) | p |", "|---|---|---|---|---|"]
     for s in sorted({r["speaker_id"] for r in rows}):
         lines.append(run([r for r in rows if r["speaker_id"] != s], s, min(b, 999), rng))
+    points = speaker_points(rows)
+    svg = os.path.splitext(a.out)[0] + "_speakers.svg"
+    svg_plot(points, svg)
+    lines += ["", "## Descriptive tables (not tests)", ""] + descriptive(rows) + [
+        "", f"Per-speaker accusative shares are plotted in `{os.path.basename(svg)}` (circle area = objects).", "",
+        "| Speaker | Birth year | Objects | ACC share |", "|---|---|---|---|"]
+    lines += [f"| {sp} | {b:.0f} | {n} | {v:.1%} |" for sp, b, n, v in points]
     with open(a.out, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines[:16]))
