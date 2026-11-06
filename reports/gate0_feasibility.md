@@ -11,7 +11,7 @@ Built by `shared/gate0.py`. Design counts only; outcomes by cohort stay hidden u
 | At least 200 objects from speakers with a usable birth year | 997 | PASS |
 | Objects come from at least 15 such speakers | 25 | PASS |
 | No speaker gives more than 25% of objects | 11% | PASS |
-| B1: at least 30 candidates from at least 10 speakers (before vetting) | 878 from 67 | PASS |
+| B1: at least 30 candidates from at least 10 speakers (before vetting) | 767 from 67 | PASS |
 
 ## Dolgan
 
@@ -114,23 +114,23 @@ Counts are (speaker, text) pairs. If each cohort sits in one source or genre, a 
 | 2000s | 1 | 8 |
 
 Objects by source (all speakers): TDNT_archive 887, published_folklore 292, fieldwork_2017 87, fieldwork_2007_2010 41.
-Objects by clause TAM group (draft grouping in `config.TAM_GROUPS`): past 524, present_habitual 493, no predicate 99, prospective 84, imperative 81, other 23, inferential 3.
-Objects with a `BOR` value (possible loans, a confounder for zero marking): 298. With no predicate found in the utterance: 95.
+Objects by clause TAM group (draft grouping in `config.TAM_GROUPS`): past 526, present_habitual 495, no predicate 106, prospective 84, imperative 81, other 12, inferential 3.
+Objects with a `BOR` value (possible loans, a confounder for zero marking): 298. With no predicate found in the utterance: 106.
 
 ### Study B1 (secondary predicates): candidates for human vetting
 
-No tag marks secondary predicates (D-021). `case_change/extract_b1.py` applies rules built from Siegl (2015)'s examples. Counts are by rule, source and recording decade only, not by case, because case is the B1 outcome. Candidates: 878, from 67 speakers (55 with a usable birth year).
+No tag marks secondary predicates (D-021). `case_change/extract_b1.py` applies rules built from Siegl (2015)'s examples. Counts are by rule, source and recording decade only, not by case, because case is the B1 outcome. Candidates: 767, from 67 speakers (55 with a usable birth year).
 
 | rule \ source | TDNT_archive | fieldwork_2007_2010 | fieldwork_2017 | published_folklore | total |
 |---|---|---|---|---|---|
-| copula_next | 154 | 79 | 1 | 39 | 273 |
-| ins_nominal | 294 | 154 | 2 | 148 | 598 |
+| copula_next | 82 | 33 | 1 | 19 | 135 |
+| ins_nominal | 308 | 164 | 2 | 151 | 625 |
 | syf_pred | 4 | . | 2 | 1 | 7 |
 
 | rule \ recording decade | 1930s | 1960s | 1970s | 1980s | 1990s | 2000s | 2010s | imprecise | total |
 |---|---|---|---|---|---|---|---|---|---|
-| copula_next | 14 | 24 | 11 | 3 | 85 | 122 | 3 | 11 | 273 |
-| ins_nominal | 33 | 100 | 34 | . | 201 | 185 | 23 | 22 | 598 |
+| copula_next | 6 | 13 | 7 | 3 | 43 | 55 | 2 | 6 | 135 |
+| ins_nominal | 35 | 101 | 35 | . | 212 | 197 | 23 | 22 | 625 |
 | syf_pred | . | 1 | . | . | 3 | 1 | 2 | . | 7 |
 
 ### Study A candidates
@@ -181,9 +181,10 @@ Objects by source: published: written 873, INEL collection: audio 491, archive: 
 |---|---|---|---|---|
 | `ge_EVID` | 1 | 29 | 7 | 0 |
 | `IST_quot` | 2 | 276 | 23 | 0 |
-| `evenki_PRF` | 2 | 277 | 32 | 0 |
+| `evenki_PRF` | 2 | 186 | 25 | 0 |
+| `evenki_PTCP_PRF` | 2 | 91 | 23 | 0 |
 
-By genre: `IST_quot` flk 266; `IST_quot` nar 10; `evenki_PRF` flk 118; `evenki_PRF` misc 2; `evenki_PRF` nar 157; `ge_EVID` flk 5; `ge_EVID` nar 24.
+By genre: `IST_quot` flk 266; `IST_quot` nar 10; `evenki_PRF` flk 67; `evenki_PRF` misc 2; `evenki_PRF` nar 117; `evenki_PTCP_PRF` flk 51; `evenki_PTCP_PRF` nar 40; `ge_EVID` flk 5; `ge_EVID` nar 24.
 
 Corpus-glossed evidentials (tier 1) per 1,000 glossed words, by genre. These are descriptive, and they count the annotators' glosses, not our coding:
 
