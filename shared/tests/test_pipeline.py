@@ -1,8 +1,10 @@
 import csv
 import os
+import random
 import sys
 import tempfile
 import unittest
+from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -248,6 +250,15 @@ class PdfExcerptTest(unittest.TestCase):
         hits, counts = pdf_excerpts.excerpts(pages, ["partitive"], context=1, max_hits=1)
         self.assertEqual(counts["partitive"], {2: 2})
         self.assertEqual(hits, [(2, "partitive", ["a", "the Partitive in imperatives", "b"])])
+
+
+class MainSampleTest(unittest.TestCase):
+    def test_each_corpus_gets_its_own_quota_for_a_shared_rule_name(self):
+        rng = random.Random(1)
+        cands = [{"corpus": c, "tier": "2", "rules": "IST_quot", "speaker_id": f"{c}{i % 5}", "token_id": f"{c}{i}"}
+                 for c in ("dolgan", "evenki") for i in range(100)]
+        picked = workbook.sample(cands, 10, rng)
+        self.assertEqual(Counter(c["corpus"] for c in picked), {"dolgan": 10, "evenki": 10})
 
 
 if __name__ == "__main__":

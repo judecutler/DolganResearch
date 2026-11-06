@@ -74,7 +74,8 @@ def _group(items, key):
 def sample(cands, per_rule, rng):
     """All tier-1 items, plus up to per_rule tier-2 items for each first rule, spread over speakers."""
     keep = [c for c in cands if c["tier"] == "1"]
-    by_rule = _group([c for c in cands if c["tier"] == "2"], lambda c: c["rules"].split()[0])
+    # Corpus and rule together: Dolgan and Evenki both have IST_quot, and each needs its own quota.
+    by_rule = _group([c for c in cands if c["tier"] == "2"], lambda c: (c["corpus"], c["rules"].split()[0]))
     for rule in sorted(by_rule):
         keep += round_robin(_group(by_rule[rule], lambda c: c["speaker_id"]), per_rule, rng)
     return keep
