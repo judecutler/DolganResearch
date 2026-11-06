@@ -281,5 +281,22 @@ class AgreementTest(unittest.TestCase):
         self.assertEqual(ed.agreement({"mc": "v-v:tense"}), "unmarked")
 
 
+class EvidAnalysisTest(unittest.TestCase):
+    def test_final_code_rules(self):
+        import evid_analysis as ea
+        self.assertEqual(ea.final_code({"is_evidential_use_A": "yes", "is_evidential_use_B": "yes"}), "yes")
+        self.assertEqual(ea.final_code({"is_evidential_use_A": "yes", "is_evidential_use_B": "no"}), "disagreement")
+        self.assertEqual(ea.final_code({"is_evidential_use_A": "", "is_evidential_use_B": "no"}), "no")
+        self.assertEqual(ea.final_code({"is_evidential_use_A": "yes", "is_evidential_use_B": "no",
+                                        "resolved_is_evidential_use": "no"}), "no")
+
+    def test_interval_resamples_speakers(self):
+        import evid_analysis as ea
+        items = [{"speaker_id": "a", "_code": "yes"}] * 10 + [{"speaker_id": "b", "_code": "no"}] * 10
+        est, lo, hi = ea.share_with_interval(items, random.Random(1), boot=400)
+        self.assertEqual(est, 0.5)
+        self.assertEqual((lo, hi), (0.0, 1.0))  # two speakers: whole-speaker draws give 0, 0.5 or 1
+
+
 if __name__ == "__main__":
     unittest.main()
