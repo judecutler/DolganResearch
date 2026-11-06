@@ -75,7 +75,7 @@ def main(argv=None):
     p.add_argument("out")
     p.add_argument("--base", type=float, default=0.8)
     p.add_argument("--sims", type=int, default=200)
-    p.add_argument("--min-tokens", type=int, default=3)
+    p.add_argument("--min-tokens", type=int, default=1, help="1 matches b2_test.py, which keeps every speaker")
     p.add_argument("--b3-base", type=float, default=0.2,
                    help="assumed share of verb-before-object order for B3 (an input, not a measurement)")
     a = p.parse_args(argv)

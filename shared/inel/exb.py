@@ -97,6 +97,8 @@ def _assemble(spk, cats, issues):
             # Anything else (e.g. a BOR event inside one word, handoff 006) would be lost: flag it.
             if cat not in SPAN_TIERS or not any(a <= s and e <= b for s, e in word_spans):
                 issues.append(("word_tier_event_without_word", f"{spk} {cat} {(a, b)}"))
+            elif any(s < b and a < e and not (a <= s and e <= b) for s, e in word_spans):
+                issues.append(("span_event_cuts_a_word", f"{spk} {cat} {(a, b)}"))
 
     multi = {cat: [(a, b, v) for a, b, v in cats.get(cat, []) if (a, b) not in word_spans]
              for cat in SPAN_TIERS}

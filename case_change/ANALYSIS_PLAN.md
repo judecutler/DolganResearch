@@ -43,7 +43,7 @@ No direction is predicted for B2. The literature gives no prediction, and Russia
 - **Model.** Linear probability model at the object level: outcome on birth year (decades) plus genre and source dummies. Standard errors are clustered by speaker. The p-value comes from a wild cluster bootstrap with the null imposed and Webb weights, 9,999 draws, seed 20261105 (`speaker_test.adjusted_test`, D-034, D-037). A control level that adds nothing is dropped automatically.
 - **Estimate.** Change in accusative share, in percentage points per decade of birth year.
 - **Why adjusted.** In a simulated design with the same tangle, an unadjusted test reported a birth-year trend 50 to 70% of the time when only genre had an effect. The adjusted test stayed at 4 to 5% (D-037).
-- **Decision rule, fixed now and applied from the design report only.** If the collinearity of birth year with genre + source is 0.90 or more, or `b2_test.py` reports "not separable", the primary test is the genre-only adjustment. If that is also 0.90 or more, B2 has no confirmatory test: the paper reports the descriptive tables and says the corpus cannot separate generation from genre.
+- **Decision rule, fixed now, applied by `b2_test.py` itself.** The script computes, on the analysis set and from the design only, the share of birth-year variance explained by genre + source. If it is 0.90 or more (1.0 when a control duplicates birth year), the primary test adjusts for genre only. If that is also 0.90 or more, B2 has no confirmatory test: the script labels the row "NOT CONFIRMATORY" and the paper reports the descriptive tables and says the corpus cannot separate generation from genre. The same rule applies to B3. The power report (`power_b2.md`, `--min-tokens 1`) shows the same numbers in advance.
 - **What counts as support for change.** The primary p is below 0.05, **and** the estimate has the same sign in every robustness check that can be run (rows with "too few speakers" do not count), **and** the leave-one-speaker-out estimates keep that sign. If p is below 0.05 but a robustness check reverses the sign, the paper reports a fragile result, not change.
 - **What a null result means.** Report the estimate and the smallest odds ratio with power 0.8 from `reports/power_b2.md`, and say that effects smaller than that cannot be ruled out.
 
@@ -62,7 +62,7 @@ All in `case_change/b2_test.py`, in this order:
 4. Exact birth years only (precision `year` or `date`).
 5. Without Anabar texts (D-019).
 6. Each source on its own, adjusted for genre (sources with fewer than 5 speakers are skipped).
-7. Leave one speaker out, for every speaker.
+7. Leave one speaker out, for every speaker (999 bootstrap draws each).
 
 ## B3, word order (added 2026-11-06, before any word-order output)
 - **Question.** Does the share of objects that follow their verb (VO) change with birth year? Stapert (2013: 257-258, Table 7.3) compared OV and VO across three age groups of one or two speakers each and found no age pattern. Pakendorf and Stapert (2020) attribute Dolgan's looser word order to Russian. Udmurt shows a generational shift toward VO under Russian contact (Asztalos, Benjamins IMPACT 50; Belova and Khomchenkova 2026). Ledger: B3.

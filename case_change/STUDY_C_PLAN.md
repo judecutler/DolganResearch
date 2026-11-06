@@ -28,10 +28,10 @@ The extended definition adds INTNS and PROB to irrealis. Their meaning in the IN
 - **H1, Dolgan.** The partitive share is higher in irrealis clauses than in realis clauses.
 - **H2, Dolgan, descriptive.** In realis clauses the partitive is rare. Reported as counts, and as the number of speakers who use it there at all. No test.
 - **H3, Evenki.** The `ACC.INDF` share does not differ between irrealis and realis clauses. A non-significant result does not show equality, so the estimate is reported next to the Dolgan one.
-- **H4, both.** The irrealis-minus-realis difference is larger in Dolgan than in Evenki (the interaction term in a pooled model).
+- **H4, both.** The clause-type effect is stronger in Dolgan than in Evenki, on the odds scale: the ratio of the two irrealis-versus-realis odds ratios is above 1, with a 95% interval from resampling speakers within each corpus that excludes 1. (Changed before data, see below.)
 
 ## Test
-The same speaker-clustered wild bootstrap as Study B (`speaker_test.adjusted_test`, D-034, D-037), with a 0/1 clause predictor instead of birth year (`scale=1`). The estimate is the difference in percentage points. Each test is adjusted for genre. H4 pools the two corpora, with language, clause type and genre as controls, and tests the term "irrealis and Dolgan". 9,999 bootstrap draws. Speakers are the clusters; Evenki speakers have no usable birth years, but they have IDs.
+The same speaker-clustered wild bootstrap as Study B (`speaker_test.adjusted_test`, D-034, D-037), with a 0/1 clause predictor instead of birth year (`scale=1`). The estimate is the difference in percentage points. Each test is adjusted for genre. H4 is not a regression test (see "Changes before data"). 9,999 bootstrap draws for H1 and H3. Speakers are the clusters; Evenki speakers have no usable birth years, but they have IDs.
 
 ## Robustness (fixed in advance)
 1. Extended irrealis definition.
@@ -42,6 +42,9 @@ The same speaker-clustered wild bootstrap as Study B (`speaker_test.adjusted_tes
 - The corpus glosses are the annotators' analyses, not ours. A clause type with almost no partitive could reflect glossing practice.
 - Specificity, which drives the choice in both descriptions, is not annotated. Clause type is only its proxy here, as in Sheifer and Bolshakova's account.
 - The Dolgan partitive is rare (111 `PART` tokens in the whole corpus, handoff 002), so H1 may have low power. The script reports the counts so this is visible.
+
+## Changes before data
+- **2026-11-06, H4 moved from percentage points to odds ratios.** An independent review simulated equal clause effects on the log-odds scale in both languages with Dolgan's marker rarer than Evenki's. The pooled percentage-point interaction test then rejected in 300 of 300 runs: it measured the different base rates, not a different system. H4 is now the ratio of the two odds ratios, with a speaker-resampling interval, and robustness rows for the extended definition and without pronoun objects. No Study C output existed (handoff 008 still `todo`).
 
 ## Changes after data
 (none)
