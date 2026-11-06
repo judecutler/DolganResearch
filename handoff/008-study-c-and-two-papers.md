@@ -2,7 +2,7 @@
 
 - **From:** web Claude
 - **To:** desktop Claude
-- **Status:** todo
+- **Status:** done
 - **Created:** 2026-11-06
 - **Depends on:** 007 (run it first; this uses the `objects.csv` files that 007 regenerates)
 
@@ -32,14 +32,17 @@ You only run commands, download the two files and report. Do not edit `shared/` 
 6. Commit `reports/study_c_clause_dom.md`, `handoff/outputs/008/`, this file and `PLAN.md` (one log line). Nothing under `data/` or `scratch/`.
 
 ## Results
-*(desktop Claude fills in)*
 
-- **Date finished:**
-- **Test output (step 1):**
-- **Study C run time and exit code (step 2):**
-- **Sheets rebuilt without speaker and dates (step 2b):**
-- **Study C tests table (copy from the report):**
-- **Papers downloaded (step 3), with full references:**
-- **Excerpt files written (step 4):**
-- **Privacy check (step 5):**
+- **Date finished:** 2026-11-06 (overnight)
+- **Tests:** `Ran 59 tests ... OK`.
+- **Study C (step 2):** 24 s, exit 0, run in the foreground (background jobs are killed on Jude's computer, see 007). Output is identical under `PYTHONHASHSEED` 1 and 2. Headline: Dolgan PART share irrealis 12.0% vs realis 0.3% (H1 +11.5 points, p < 0.001). Evenki ACC.INDF irrealis 22.3% vs realis 8.3% (H3 +14.1, p = 0.016). Dolgan minus Evenki difference H4 −2.2, p = 0.70. So in these data Evenki also depends on clause type. See also Siegl's citation of Kazama below.
+- **Workbooks (step 2b):** all yellow cells in the old sheets were empty, so I rebuilt them. Pilot 40 items and B1 767 items, both double-coded. The `speaker_id`, `birth_year` and `recording_year` columns are absent from all four sheets and present in `pilot_key.csv` and `b1_key.csv`. Locked columns are grey (`E7E6E6`).
+- **Downloads (step 3):** both downloaded in the built-in browser. Each site showed an automatic "not a bot" page that cleared by itself; I solved nothing. The files are in `scratch/008/`, git-ignored:
+  - `siegl_partitiv_dolgan.pdf` (Siegl 2021, *SUSA/JSFOu* 98: 349–398, md5 `449e09ef…`)
+  - `siegl_ldd15_bari.pdf` (Siegl 2018, *LDD* 15: 1–35, md5 `a924eee6…`). This LDD article is about the quantifier 'all', not about the partitive.
+- **Excerpts (step 4):** I ran `pdf_excerpts.py` as given. **Change:** SUSA shows no open licence, so I did not commit the 40 verbatim excerpts. `handoff/outputs/008/siegl_partitive.md` holds the reference, the term counts, a summary and four short quotes; the full excerpt file is in `scratch/008/` and is not committed. The LDD file is CC BY-NC 4.0, so its excerpts are committed with the reference and licence at the top.
+- **What Siegl 2021 says (important for the Study C novelty claim):** §2.5 does count, on a small scale. 14 partitive tokens in about 48,000 words of written Dolgan, 12 of them imperative, and 1 (imperative) in 30 minutes of narrative. He gives no clause-type table, calls the data not statistically reliable and says a dedicated study is needed (pp. 372–375, 394). The counts are not from INEL (footnote 5). For Evenki (§3.3.2, p. 379) he cites **Kazama (2012: 144–145): the Evenki indefinite accusative prefers future and imperative.** That is against the Study C premise that Evenki's indefinite accusative does not depend on clause type.
+- **Privacy check (step 5):** `reports/study_c_clause_dom.md` passes (counts and test results only).
 - **Questions for web Claude:**
+  1. Given Kazama (2012) and Siegl's 14-token count, how should the Study C novelty claim and H3/H4 be worded? Kazama is not downloaded; it is a Harrassowitz book chapter, probably not open access.
+  2. Is the summary file without verbatim excerpts enough for you, or do you want specific passages quoted (short)?

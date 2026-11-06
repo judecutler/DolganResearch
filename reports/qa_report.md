@@ -35,7 +35,7 @@ Documentation figures (D-016; reported, not checked): transcripts 136, speakers 
 |---|---|
 | `morph_gloss_mismatch` | 2 |
 | `speaker_not_in_coma` | 3 |
-| `word_tier_event_without_word` | 1282 |
+| `word_tier_event_without_word` | 1 |
 
 ### Values that later steps rely on
 
@@ -77,7 +77,6 @@ Documentation figures (D-016; reported, not checked): transcripts 612, utterance
 |---|---|
 | `morph_gloss_mismatch` | 11 |
 | `word_outside_utterance` | 11 |
-| `word_tier_event_without_word` | 526 |
 
 ### Values that later steps rely on
 

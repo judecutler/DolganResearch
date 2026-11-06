@@ -83,6 +83,17 @@ Counts are (speaker, text) pairs. If each cohort sits in one source or genre, a 
 | 1990s | . | . | . | . | . | 5 | . | . | 5 |
 | 2000s | . | . | . | . | . | 4 | . | . | 4 |
 
+### Speakers recorded at times at least 10 years apart (real-time panel)
+
+Only these speakers can show whether a person's own usage changed over their life. Objects are listed per recording year, oldest first (design counts, not case).
+
+| Speaker | Birth decade | Recorded | Recording years | Objects per recording year |
+|---|---|---|---|---|
+| AkEE | 1930s | 1982 to 1994 | 3 | 1, 47, 0 |
+| BeES | 1930s | 1997 to 2010 | 2 | 77, 0 |
+| KiMN | 1910s | 1975 to 1990 | 2 | 0, 61 |
+| PoNA | 1920s | 1970 to 2004 | 6 | 0, 0, 62, 35, 17, 0 |
+
 ### `SyF` coverage (Study B needs it to find objects)
 
 `SyF` is non-empty in 50 of 136 texts. Speakers in those texts: 34, of whom 25 have a usable birth year.
