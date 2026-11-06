@@ -94,7 +94,7 @@ def _redundant(cols, ws, j, kept):
     return resid <= 1e-9 * max(total, 1e-12)
 
 
-def design_rows(cells, controls=True):
+def design_rows(cells, controls=True, scale=10):
     """cells: list of (cluster, time_in_years, control_labels, successes, n).
 
     Builds an intercept, time in decades, and one dummy per control level after the
@@ -104,7 +104,7 @@ def design_rows(cells, controls=True):
     """
     width = len(cells[0][2]) if controls else 0
     levels = [sorted({c[2][j] for c in cells}) for j in range(width)]
-    cols = [[1.0] * len(cells), [t / 10 for _, t, *_ in cells]]
+    cols = [[1.0] * len(cells), [t / scale for _, t, *_ in cells]]
     for j in range(width):
         cols += [[1.0 if c[2][j] == lv else 0.0 for c in cells] for lv in levels[j][1:]]
     ws = [c[4] for c in cells]
@@ -115,16 +115,17 @@ def design_rows(cells, controls=True):
     return [(c[0], [cols[j][r] for j in kept], c[4]) for r, c in enumerate(cells)]
 
 
-def adjusted_test(cells, n_boot=999, rng=None, controls=True):
+def adjusted_test(cells, n_boot=999, rng=None, controls=True, scale=10):
     """Wild-cluster-bootstrap test of the time coefficient.
 
     cells: list of (cluster, time_in_years, control_labels, successes, n); control_labels is a
     tuple such as (genre, source), the same length in every cell.
     Returns (slope, p): the change in share per decade (0.05 = five percentage points) and the
     two-sided p-value, or (None, None) if time cannot be told apart from the controls.
+    scale=1 tests any other numeric predictor, such as a 0/1 clause-type indicator.
     """
     rng = rng or random.Random(0)
-    rows = design_rows(cells, controls)
+    rows = design_rows(cells, controls, scale)
     ks = [c[3] for c in cells]
     obs = _t_first(rows, ks)
     if obs is None:
