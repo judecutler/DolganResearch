@@ -1,6 +1,6 @@
 # Study B analysis plan: case change across speaker generations
 
-Status: Still pending for now (unfrozen), no tests were run, minor changes to the age groupings. 
+Status: **Frozen (2026-11-06) by Jude**
 
 Owner: web Claude wrote it (2026-11-06); Jude and Dustan decide.
 
