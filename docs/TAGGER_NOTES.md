@@ -114,6 +114,17 @@ These texts were also used while tuning the glosser, so treat the figures as sli
 | Ambiguous forms seen in training | 35% | 75.3% (73.8%) | | |
 | Unseen forms | 20% (34%) | 16.5% (17.1%) | | 54.8% (47.3%) |
 
+**From raw transcription to tags** (`eval_pipeline.py`, held-out texts, glosses produced automatically):
+
+| | Dolgan, hand glosses | Dolgan, automatic glosses | Evenki, hand glosses | Evenki, automatic glosses |
+|---|---|---|---|---|
+| Role macro-F1 | 74.9 | 62.7 | 83.1 | 68.1 |
+| Unmarked objects found | 10 of 32 | 5 of 32 | | |
+
+- **Retraining doesn't close the gap.** A tagger trained on automatic glosses (each training text glossed by a glosser that never saw it) gets 62.9; a character-based part-of-speech guesser for unseen words gets 63.2.
+- **The bottleneck is the glosses.** Automatic part of speech agrees with the hand glosses on 85% of words, case on 91.5%.
+- **So, for brand-new texts:** the glosses need human correction (at least every word not marked "known") before tagging, or a better glosser (PolyGloss fine-tuned on INEL) has to close the gap first. `pipeline.py` produces the draft glosses and a review queue, but the role review alone is not enough for new texts.
+
 Most exact-match errors on ambiguous forms are particles (*da*: "and", EMPH or INDEF) and near-synonym lemma glosses (*house* or *tent*), not grammar. **PolyGloss** (Ginn et al. 2026), a pretrained multilingual glossing model with open weights, is the obvious next step for unseen words. It could not be downloaded tonight: neither the cloud workspace nor the shell on Jude's computer can reach HuggingFace. To use it, run it on Colab, fine-tuned (LoRA) on INEL Dolgan, and compare its unseen-word accuracy with the numbers above. INEL's licence terms for model training must be checked first (D-004).
 
 ## Scaling this to a general fieldwork parser

@@ -37,8 +37,9 @@ def _gl(ge):
 
 
 class Glosser:
-    def __init__(self, strategy="ending"):
+    def __init__(self, strategy="ending", ps_model=None):
         self.strategy = strategy
+        self.ps_model = ps_model  # optional model.LinearModel over char_features (train_ps_model)
         self.forms = defaultdict(Counter)        # form -> Counter((mb, ge, ps))
         self.bigram = defaultdict(Counter)       # (form, next form) -> Counter(analysis)
         self.prevgram = defaultdict(Counter)     # (previous form, form) -> Counter(analysis)
@@ -136,6 +137,9 @@ class Glosser:
             else:
                 s = self._split(f) if f else None
                 e = self._by_ending(f) if f else None
+                if e and self.ps_model is not None:
+                    p = self.ps_model.proba(char_features(f))
+                    e = (e[0], e[1], max(p, key=p.get))
                 if self.strategy == "ending" and e:
                     out.append((*e, "ending"))
                 elif s:
@@ -147,6 +151,25 @@ class Glosser:
         return out
 
 
+def char_features(f):
+    """Word-shape features for guessing the part of speech of an unseen form."""
+    x = {"len=" + str(min(len(f), 12)): 1}
+    for k in range(1, 7):
+        if len(f) > k:
+            x["suf%d=%s" % (k, f[-k:])] = 1
+    for k in range(1, 4):
+        if len(f) > k:
+            x["pre%d=%s" % (k, f[:k])] = 1
+    return x
+
+
+def train_ps_model(rows, C=1.0, min_count=2):
+    """Part-of-speech guesser for unseen forms (needs scikit-learn; predicts without it)."""
+    from model import _fit
+    rows = [r for r in rows if r.get("ge") and r.get("ps") and norm(r["tx"])]
+    return _fit([char_features(norm(r["tx"])) for r in rows], [r["ps"] for r in rows], C, min_count)
+
+
 def _utts(rows):
     by = defaultdict(list)
     for r in rows:
@@ -156,13 +179,14 @@ def _utts(rows):
     return by
 
 
-def evaluate(derived, share=0.2, seed=20261107, strategy="ending"):
+def evaluate(derived, share=0.2, seed=20261107, strategy="ending", ps_model=False):
     with open(os.path.join(derived, "tokens.csv"), encoding="utf-8") as f:
         rows = [r for r in csv.DictReader(f)]
     texts = sorted({r["text_id"] for r in rows})
     random.Random(seed).shuffle(texts)
     test = set(texts[:int(round(share * len(texts)))])
-    g = Glosser(strategy).train([r for r in rows if r["text_id"] not in test])
+    train = [r for r in rows if r["text_id"] not in test]
+    g = Glosser(strategy, train_ps_model(train) if ps_model else None).train(train)
     stats = defaultdict(Counter)
     case_re = re.compile(r"\b(NOM|ACC|PART|DAT/LOC|DAT|LOC|ABL|INSTR|COM|PROPR|CAR|GEN|COMP|ALL|LAT|PROL)\b")
     for u, ws in _utts([r for r in rows if r["text_id"] in test]).items():

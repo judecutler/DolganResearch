@@ -55,7 +55,7 @@ def synth_corpus(root, n_tagged=12, n_untagged=4, seed=1):
                 words = [(ps, ge, ("0.3.h:S v:pred" if syf == "v:pred" else syf)) for ps, ge, syf in words]
             for i, (ps, ge, syf) in enumerate(words, 1):
                 toks.append({"token_id": f"{uid}.{i}", "utt_id": uid, "text_id": tid, "speaker_id": f"SP{t % 5}",
-                             "idx": str(i), "tx": ge.split("-")[0].split(".")[0], "ge": ge, "ps": ps,
+                             "idx": str(i), "tx": ge.split("-")[0].split(".")[0], "ge": ge, "mb": ge.lower(), "ps": ps,
                              "SyF": syf if tagged else "", "SyF_cover": ""})
             utts.append({"utt_id": uid, "fe": "synthetic translation"})
     speakers = [{"speaker_id": f"SP{i}", "birth_lo": str(1920 + 10 * i), "birth_hi": str(1920 + 10 * i)}
@@ -220,3 +220,33 @@ class GlosserTest(unittest.TestCase):
         self.assertEqual(out[0][3], "known")
         self.assertTrue(out[1][1].endswith("-ACC"))   # unseen stem, known ending
         self.assertEqual(out[1][3], "ending")
+
+
+@unittest.skipUnless(HAVE_SK, "training needs scikit-learn")
+class PipelineTest(unittest.TestCase):
+    def test_raw_text_to_queue(self):
+        from data import load
+        from model import Tagger
+        import pipeline
+        with tempfile.TemporaryDirectory() as root:
+            synth_corpus(os.path.join(root, "train"))
+            Tagger.train(load(os.path.join(root, "train"), "synth")).to_json(os.path.join(root, "m.json"))
+            with open(os.path.join(root, "train", "tokens.csv"), encoding="utf-8") as f:
+                toks = [r for r in csv.DictReader(f) if r["text_id"] == "T15"]
+            utts = {}
+            for t in toks:
+                utts.setdefault(t["utt_id"], []).append(t["tx"])
+            path = os.path.join(root, "new.csv")
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f, lineterminator="\n")
+                w.writerow(["utt_id", "text_id", "speaker_id", "tx", "fe"])
+                for u, ws in utts.items():
+                    w.writerow([u, "NEW1", "X", " ".join(ws), "t"])
+            info = pipeline.run(os.path.join(root, "train"), path, os.path.join(root, "out"))
+            self.assertEqual(info["words"], len(toks))
+            c = info["gloss_confidence"]
+            self.assertGreater(c.get("known", 0) + c.get("ambiguous", 0), 0.8 * len(toks))
+            import apply
+            q = apply.build(os.path.join(root, "m.json"), os.path.join(root, "out"), os.path.join(root, "out", "review"),
+                            "synth", 0.99, 0.05, 0.1, "x")
+            self.assertEqual(q["words"], len(toks))
