@@ -167,16 +167,18 @@ function start(text){
   const rows=parseCSV(text);
   items=rows.filter(r=>r.coder==="both"||r.coder===coder).map(r=>({...r, words:JSON.parse(r.words)}));
   if(!items.length){ alert("No items for this coder in that file."); return; }
-  storeKey="igt-review:"+coder+":"+items.length+":"+items[0].item;
+  storeKey="igt-review:"+coder;  // state is keyed by item id, so a regenerated queue keeps old decisions
   state=load();
   $("empty").hidden=true; $("ui").hidden=false; $("export").disabled=false;
   const j=items.findIndex(x=>!st(x).done); goto(j>=0?j:0);
 }
 function exportCSV(){
-  const out=[["item","word","tx","label","model_suggestion","flagged","changed","note","coder","decided_at"]];
-  for(const it of items){ const s=st(it); if(!s.done) continue;
-    it.words.forEach((w,i)=>{ const L=labelOf(it,i), m=MODEL_TO_L[w.suggest]||"N";
-      out.push([it.item,i,w.tx,L,m,w.flag?1:0,L!==m?1:0,s.note||"",coder,s.t||""]); }); }
+  // Every word of every item the coder has touched. "decided" = the coder set this word's
+  // label (flagged words must be decided before "Done"); other words carry the model's label.
+  const out=[["item","word","tx","label","decided","model_suggestion","flagged","changed","item_done","note","coder","decided_at"]];
+  for(const it of items){ const s=state[it.item]; if(!s || (!s.done && !Object.keys(s.labels).length)) continue;
+    it.words.forEach((w,i)=>{ const L=labelOf(it,i), m=MODEL_TO_L[w.suggest]||"N", d=s.labels[i]!==undefined;
+      out.push([it.item,i,w.tx,L,d?1:0,m,w.flag?1:0,L!==m?1:0,s.done?1:0,s.note||"",coder,s.t||""]); }); }
   const csv=out.map(r=>r.map(v=>{v=String(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(",")).join("\n");
   const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download=`review_${coder}_${new Date().toISOString().slice(0,10)}.csv`; a.click();

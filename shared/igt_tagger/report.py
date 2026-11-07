@@ -1,6 +1,6 @@
 """Markdown report from train_eval.py's JSON (numbers only, no corpus text).
 
-    python3 shared/igt_tagger/report.py EVAL.json reports/tagger_eval.md [--glosser GLOSS.json]
+    python3 shared/igt_tagger/report.py EVAL.json reports/tagger_eval.md [--speaker SPK.json] [--glosser GLOSS.json]
 """
 import json
 import sys
@@ -63,8 +63,9 @@ def main(argv):
                 for b, s in x["by_birth_bin"].items():
                     L.append(f"| {b} | {s['speakers']} | {pct(s['S']['f1'])} | {pct(s['O']['f1'])} | "
                              f"{s['NOM_O_found']}/{s['NOM_O_n']} |")
+        cal_src = "dev CV" if "dev_cv" in r else "held-out texts"
         cal = r.get("dev_cv", r["test"])["calibration_O"]
-        L += ["", "**Calibration of P(object)** on nominals (dev CV): mean predicted vs observed share of objects.", "",
+        L += ["", f"**Calibration of P(object)** on nominals ({cal_src}): mean predicted vs observed share of objects.", "",
               "| P(O) bin | Words | Mean predicted | Observed |", "|---|---|---|---|"]
         L += [f"| {k} | {v['n']} | {v['mean_p']:.2f} | {v['observed']:.2f} |" for k, v in cal.items()]
         for name in ("dev_cv", "test"):
@@ -96,8 +97,24 @@ def main(argv):
             a, n = m("alone")
             L.append(f"| {lang} | {frac} | {n} | {pct(a)} | {pct(m('+other plain')[0])} | "
                      f"{pct(m('+other augmented')[0])} |")
-    if len(argv) > 3 and argv[2] == "--glosser":
-        g = json.load(open(argv[3], encoding="utf-8"))
+    opts = dict(zip(argv[2::2], argv[3::2]))
+    if "--speaker" in opts:
+        sp = json.load(open(opts["--speaker"], encoding="utf-8"))["speaker_cv"]
+        L += ["", "## Unseen speakers (speaker-disjoint 5-fold CV on all tagged texts, C = 0.3)", "",
+              "No speaker is in both training and test. The held-out texts above share speakers with training.", "",
+              "| Language | S (P/R/F1) | O (P/R/F1) | Role macro-F1 | Predicate F1 | Zero-subject macro-F1 |",
+              "|---|---|---|---|---|---|"]
+        for lang, r in sp.items():
+            s_ = r["scores"]
+            L.append(f"| {lang} | {prf(s_['role'], 'S')} | {prf(s_['role'], 'O')} | {pct(s_['role']['macro_f1'])} | "
+                     f"{pct(s_['pred']['macro_f1'])} | {pct(s_['zero']['macro_f1'])} |")
+        b = sp["dolgan"]["by_birth_bin"]
+        L += ["", "**Dolgan, unseen speakers, by birth group:**", "",
+              "| Birth group | Speakers | S F1 | O F1 | Unmarked objects found |", "|---|---|---|---|---|"]
+        L += [f"| {k} | {v['speakers']} | {pct(v['S']['f1'])} | {pct(v['O']['f1'])} | {v['NOM_O_found']}/{v['NOM_O_n']} |"
+              for k, v in b.items()]
+    if "--glosser" in opts:
+        g = json.load(open(opts["--glosser"], encoding="utf-8"))
         L += ["", "## Glosser (held-out texts)", "", "| Language | Words | Kind | Share | Exact gloss | Part of speech | Case |",
               "|---|---|---|---|---|---|---|"]
         for lang, (r, _) in g.items():

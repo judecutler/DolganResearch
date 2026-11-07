@@ -137,7 +137,7 @@ def routing(d, out):
             final = [d["role"][i] if fl[i] else pred[i] for i in range(len(pred))]
             sc = f1s(d["role"], final, POS["role"])
             rows.append({"threshold": thr, "floor": floor,
-                         "flagged_words": sum(fl), "flagged_share_of_nominals": sum(fl) / len(nominal),
+                         "flagged_words": sum(fl), "flagged_share_of_nominals": sum(fl) / max(1, len(nominal)),
                          "utterances_to_review": sum(1 for ii in utts.values() if any(fl[i] for i in ii)),
                          "utterances_total": len(utts),
                          "S_f1": sc["S"]["f1"], "O_f1": sc["O"]["f1"], "O_p": sc["O"]["p"], "O_r": sc["O"]["r"],
@@ -177,12 +177,28 @@ def details(d, out):
             "majority": f1s(d["role"], ["-"] * len(pred), POS["role"])}
 
 
+def speaker_cv(d, C=0.3, folds=5):
+    """Speaker-disjoint 5-fold CV on all tagged texts: no speaker is in both training and
+    test. Tests whether the scores (and the by-birth-group check) hold for unseen speakers."""
+    from sklearn.model_selection import GroupKFold
+    n = len(d["X"])
+    out = {"pred": [0.0] * n, "sub": [0.0] * n, "role": [None] * n, "zero": [None] * n}
+    for tr, te in GroupKFold(n_splits=folds).split(d["X"], d["role"], d["speaker"]):
+        o = train(subset(d, tr), C).predict(subset(d, te))
+        for t in out:
+            for j, i in enumerate(te):
+                out[t][i] = o[t][j]
+    return {"scores": score(d, out), **details(d, out)}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("derived")
     ap.add_argument("out")
     ap.add_argument("--models", help="folder to write the final trained models (JSON)")
     ap.add_argument("--skip-nested", action="store_true")
+    ap.add_argument("--speaker-cv-only", action="store_true",
+                    help="only run speaker-disjoint CV and write it to OUT.json")
     a = ap.parse_args(argv)
     t0 = time.time()
     log = lambda s: print(f"[{time.time() - t0:6.0f}s] {s}", flush=True)  # noqa: E731
@@ -200,6 +216,15 @@ def main(argv=None):
                                   "S": x["role"].count("S"), "O": x["role"].count("O")}
                               for s, x in (("dev", dev[lang]), ("test", test[lang]))}
         log(f"{lang}: {res['sizes'][lang]}")
+    if a.speaker_cv_only:
+        res["speaker_cv"] = {}
+        for lang in LANGS:
+            full = {k: dev[lang][k] + test[lang][k] for k in dev[lang]}
+            res["speaker_cv"][lang] = speaker_cv(full)
+            log(f"{lang} speaker-disjoint role macro F1 {res['speaker_cv'][lang]['scores']['role']['macro_f1']:.3f}")
+        with open(a.out, "w", encoding="utf-8") as f:
+            json.dump(res, f, indent=1)
+        return
     final_C = {}
     for lang in LANGS:
         r = res[lang] = {}

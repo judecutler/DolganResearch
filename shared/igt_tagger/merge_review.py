@@ -46,6 +46,8 @@ def merge(review_dir, exports):
     decisions = {}  # (item, word) -> {coder: label}
     for path in exports:
         for r in _read(path):
+            if r.get("decided", "1") != "1":
+                continue  # word the coder did not decide: it carries the model's label, not a human one
             decisions.setdefault((r["item"], int(r["word"])), {})[r["coder"]] = MAP[r["label"]]
     utt_item = {v["utt_id"]: k for k, v in key.items()}
     pairs, vs_model, counts, out = [], {}, Counter(), []
@@ -103,7 +105,10 @@ def compare_gold(review_dir, exports):
     for path in exports:
         for r in _read(path):
             k = (r["item"], int(r["word"]))
-            if queue.get(r["item"]) and queue[r["item"]][k[1]]["flag"]:
+            if r.get("decided", "1") != "1":
+                continue
+            words = queue.get(r["item"]) or []
+            if k[1] < len(words) and words[k[1]]["flag"]:
                 by.setdefault(r["coder"], {})[k] = MAP[r["label"]]
     lines = ["# Calibration against INEL's tags", ""]
     for c, labs in sorted(by.items()):

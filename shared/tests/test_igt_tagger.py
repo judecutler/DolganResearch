@@ -84,6 +84,7 @@ class GlossTest(unittest.TestCase):
         self.assertEqual(labels("pro:O"), ("O", "-", "-"))
         self.assertEqual(labels("0.1.h:S v:pred"), ("-", "pred", "0.1"))
         self.assertEqual(labels("cop"), ("-", "pred", "-"))
+        self.assertEqual(labels("0.3:O v:pred"), ("-", "pred", "-"))  # zero object is not an overt O
         self.assertEqual(labels(""), ("-", "-", "-"))
 
 
@@ -151,14 +152,15 @@ class EndToEndTest(unittest.TestCase):
             for coder in ("A", "B"):
                 with open(os.path.join(root, f"rev_{coder}.csv"), "w", newline="", encoding="utf-8") as f:
                     w = csv.writer(f, lineterminator="\n")
-                    w.writerow(["item", "word", "tx", "label", "model_suggestion", "flagged", "changed", "note",
-                                "coder", "decided_at"])
+                    w.writerow(["item", "word", "tx", "label", "decided", "model_suggestion", "flagged", "changed",
+                                "item_done", "note", "coder", "decided_at"])
                     for r in q:
                         if r["coder"] not in ("both", coder):
                             continue
                         for i, word in enumerate(json.loads(r["words"])):
                             lab = {"S": "S", "O": "O", "-": "N"}[word["suggest"]]
-                            w.writerow([r["item"], i, word["tx"], lab, lab, int(word["flag"]), 0, "", coder, ""])
+                            w.writerow([r["item"], i, word["tx"], lab, int(word["flag"]), lab, int(word["flag"]), 0, 1,
+                                        "", coder, ""])
             counts, k = merge_review.merge(rd, [os.path.join(root, "rev_A.csv"), os.path.join(root, "rev_B.csv")])
             self.assertGreater(counts["agreed"], 0)
             self.assertEqual(counts["disputed"], 0)
@@ -167,6 +169,9 @@ class EndToEndTest(unittest.TestCase):
             import to_syf
             n = to_syf.expand(root, rd, os.path.join(root, "expanded"))
             self.assertGreater(n["human"], 0)
+            with open(os.path.join(rd, "queue.csv"), encoding="utf-8") as f:
+                n_flag = sum(int(r["n_flagged"]) for r in csv.DictReader(f))
+            self.assertLessEqual(n["human"], n_flag)  # only words a coder decided count as human
             self.assertGreater(n["inel"], 0)
             with open(os.path.join(root, "expanded", "texts.csv"), encoding="utf-8") as f:
                 self.assertTrue(all(t["has_SyF"] == "1" for t in csv.DictReader(f)))

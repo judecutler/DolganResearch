@@ -89,6 +89,8 @@ def labels(syf):
         if func == "S" and form.startswith("0"):
             p = form.split(".")[1] if "." in form else "x"
             zero = "0." + (p if p in ("1", "2", "3") else "x")
+        elif form.startswith("0"):
+            continue  # zero object (e.g. 0.3:O) sits on the verb: not an overt argument
         elif func in ("S", "O") and role == "-":
             role = func
         elif func == "pred" or form == "cop":
