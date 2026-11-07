@@ -65,7 +65,7 @@ def main(argv=None):
     lines = ["# Study B: would the expansion add power? (design only)", "",
              "Built by `case_change/power_expansion.py`. Expected new objects per speaker and text = sum of the "
              "tagger's P(object) over nominals in the untagged texts (the model is calibrated). No case value was "
-             f"read. Test: birth year adjusted for genre and source (genre only within one genre); baseline accusative "
+             f"read. Test: birth year adjusted for genre and source (source only within one genre); baseline accusative "
              f"share 0.8 (an input); {a.sims} simulations per cell; wild cluster bootstrap by speaker.", "",
              "| Design | Speakers with a birth year | Objects | Birth-year variance explained by controls | "
              "Power OR 1.5, SD 0.5 | OR 1.5, SD 1.0 | OR 2.0, SD 0.5 | OR 2.0, SD 1.0 |", "|---|---|---|---|---|---|---|---|"]

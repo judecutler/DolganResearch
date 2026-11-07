@@ -47,7 +47,19 @@ All use the B2 test unchanged: a speaker-clustered linear probability model, a w
 - **B1 is unchanged.** It depends on the vetting of secondary-predicate candidates.
 
 ## Power (design only)
-Filled from `reports/power_expansion.md` (expected objects from the tagger's calibrated probabilities; no case read). See the "Design facts" section added after that run.
+From `reports/power_expansion.md`, 2026-11-07. Expected objects come from the tagger's calibrated probabilities; no case value was read. Power is for the B2-type test at alpha 0.05, base accusative share 0.8, 200 simulations per cell.
+
+| Design | Speakers | Objects | Variance explained by controls | Power at OR 1.5, speaker SD 0.5 / 1.0 | Power at OR 2.0, SD 0.5 / 1.0 |
+|---|---|---|---|---|---|
+| First round (B2), all genres | 25 | 997 | 0.60 | 0.83 / 0.42 | 0.98 / 0.80 |
+| Narrative only, current texts | 10 | 294 | 0.71 | 0.28 / 0.17 | 0.51 / 0.27 |
+| **Narrative only, expanded (B2x primary)** | **33** | **1,497** | **0.41** | **0.95 / 0.58** | **1.00 / 0.91** |
+| Conversation only, expanded | 19 | 741 | 0.18 | 0.68 / 0.34 | 0.94 / 0.64 |
+| All genres, expanded | 59 | 3,569 | 0.57 | 1.00 / 0.88 | 1.00 / 0.99 |
+
+- **The first round could not test generation within a genre:** 10 speakers in narrative, power 0.28.
+- **The expansion makes the within-genre test the strongest design available:** 33 narrative speakers, and source explains only 0.41 of birth-year variance there.
+- **These counts are estimates until the review confirms them.**
 
 ## Limits, stated now
 - **The coders see case endings while they review.** They decide by meaning, and they cannot see speaker or date, but their judgement of unmarked objects is the hardest part. The label-source control and the human-only robustness row are there for this.
