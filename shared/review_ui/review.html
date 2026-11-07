@@ -124,7 +124,7 @@ function load(){ try{ return JSON.parse(localStorage.getItem(storeKey)||"{}"); }
 function cur(){ return items[pos]; }
 function st(it){ return state[it.item] || (state[it.item]={labels:{},note:"",done:false}); }
 function flaggedIdx(it){ return it.words.map((w,i)=>w.flag?i:-1).filter(i=>i>=0); }
-function labelOf(it,i){ const s=st(it).labels[i]; return s!==undefined? s : MODEL_TO_L[it.words[i].suggest]||"N"; }
+function labelOf(it,i){ const s=st(it).labels[i]; return s!==undefined? s : MODEL_TO_L[it.words[i].suggest]||"N"; } // no suggestion (calibration queue): defaults to neither
 function allDecided(it){ return flaggedIdx(it).every(i=>st(it).labels[i]!==undefined); }
 
 function render(){
@@ -137,7 +137,7 @@ function render(){
     d.className="w"+(w.flag?" flag":"")+(i===focus?" focus":"");
     d.innerHTML=`<div class="tx"></div><div class="ge"></div><div class="ps"></div>`+
       (w.flag||decided||L!=="N" ? `<span class="tag ${L}">${LABEL[L]}</span>`:"")+
-      (w.flag?`<div class="sugg">model: ${LABEL[MODEL_TO_L[w.suggest]||"N"]} (S ${w.S}, O ${w.O})</div>`:"");
+      (w.flag&&w.suggest?`<div class="sugg">model: ${LABEL[MODEL_TO_L[w.suggest]||"N"]} (S ${w.S}, O ${w.O})</div>`:"");
     d.querySelector(".tx").textContent=w.tx; d.querySelector(".ge").textContent=w.ge; d.querySelector(".ps").textContent=w.ps||"";
     d.onclick=()=>{focus=i;render();};
     box.appendChild(d);

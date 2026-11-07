@@ -105,6 +105,45 @@ def build(model_path, derived_dir, out_dir, language, threshold, nom_floor, over
             "overlap_items": n_overlap}
 
 
+def build_calibration(derived_dir, out_dir, language, text_ids, salt="calibration-1"):
+    """A queue from texts INEL already tagged: every nominal flagged, no model suggestions,
+    both coders do every item. Merging it against INEL's tags gives each coder's agreement
+    with the original annotators (merge_review.py, then compare final_roles with INEL)."""
+    d = load(derived_dir, language, tagged=True)
+    keep = set(text_ids)
+    ii = [i for i, t in enumerate(d["text"]) if t in keep]
+    toks = {(r["utt_id"], r["idx"]): r for r in _read(os.path.join(derived_dir, "tokens.csv"))}
+    utts = {u["utt_id"]: u for u in _read(os.path.join(derived_dir, "utterances.csv"))}
+    by_utt = {}
+    for i in ii:
+        by_utt.setdefault(d["utt_id"][i], []).append(i)
+    queue, key, gold = [], [], []
+    for u, idx in by_utt.items():
+        words = []
+        for k, i in enumerate(idx):
+            t = toks[(u, d["idx"][i])]
+            flag = d["ps"][i] in NOMINAL_PS
+            words.append({"tx": t["tx"], "ge": t["ge"], "ps": t["ps"], "case": d["case"][i], "pred": "",
+                          "S": "", "O": "", "flag": flag, "suggest": ""})
+            gold.append({"item": item_id(u, salt), "word": k, "inel_role": d["role"][i]})
+        if not any(w["flag"] for w in words):
+            continue
+        iid = item_id(u, salt)
+        queue.append({"item": iid, "coder": "both", "n_flagged": sum(w["flag"] for w in words),
+                      "translation": utts.get(u, {}).get("fe", ""), "words": json.dumps(words, ensure_ascii=False)})
+        key.append({"item": iid, "utt_id": u, "text_id": d["text"][idx[0]], "speaker_id": d["speaker"][idx[0]]})
+    queue.sort(key=lambda q: q["item"])
+    os.makedirs(out_dir, exist_ok=True)
+    for name, rows, cols in (("queue.csv", queue, ["item", "coder", "n_flagged", "translation", "words"]),
+                             ("key.csv", key, ["item", "utt_id", "text_id", "speaker_id"]),
+                             ("inel_gold.csv", gold, ["item", "word", "inel_role"])):
+        with open(os.path.join(out_dir, name), "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=cols, lineterminator="\n")
+            w.writeheader()
+            w.writerows(rows)
+    return {"items": len(queue), "words_to_code": sum(q["n_flagged"] for q in queue)}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("model")

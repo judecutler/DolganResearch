@@ -94,7 +94,41 @@ def merge(review_dir, exports):
     return counts, k
 
 
+def compare_gold(review_dir, exports):
+    """Calibration queue: each coder's agreement with INEL's tags (inel_gold.csv), and with
+    each other, on the words they coded. Writes calibration.md to review_dir."""
+    gold = {(r["item"], int(r["word"])): r["inel_role"] for r in _read(os.path.join(review_dir, "inel_gold.csv"))}
+    queue = {r["item"]: json.loads(r["words"]) for r in _read(os.path.join(review_dir, "queue.csv"))}
+    by = {}
+    for path in exports:
+        for r in _read(path):
+            k = (r["item"], int(r["word"]))
+            if queue.get(r["item"]) and queue[r["item"]][k[1]]["flag"]:
+                by.setdefault(r["coder"], {})[k] = MAP[r["label"]]
+    lines = ["# Calibration against INEL's tags", ""]
+    for c, labs in sorted(by.items()):
+        pr = [(v, gold[k]) for k, v in labs.items() if k in gold and v != "?"]
+        conf = Counter(pr)
+        lines += [f"## Coder {c}", "", f"- Words: {len(pr)}; agreement with INEL {sum(a == b for a, b in pr) / max(1, len(pr)):.1%}; "
+                  f"kappa {kappa(pr):.3f}" if pr else "- no words", "",
+                  "| Coder \\ INEL | S | O | - |", "|---|---|---|---|"]
+        for a in ("S", "O", "-"):
+            lines.append(f"| {a} | " + " | ".join(str(conf[(a, b)]) for b in ("S", "O", "-")) + " |")
+        lines.append("")
+    if len(by) == 2:
+        a, b = sorted(by)
+        pr = [(by[a][k], by[b][k]) for k in by[a] if k in by[b]]
+        lines.append(f"Coders {a} and {b}: {len(pr)} shared words, kappa {kappa(pr):.3f}" if pr else "no shared words")
+    with open(os.path.join(review_dir, "calibration.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    return by
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         sys.exit(__doc__)
-    print(merge(sys.argv[1], sys.argv[2:]))
+    if os.path.exists(os.path.join(sys.argv[1], "inel_gold.csv")):
+        compare_gold(sys.argv[1], sys.argv[2:])
+        print("wrote", os.path.join(sys.argv[1], "calibration.md"))
+    else:
+        print(merge(sys.argv[1], sys.argv[2:]))

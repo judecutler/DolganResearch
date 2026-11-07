@@ -163,7 +163,53 @@ class EndToEndTest(unittest.TestCase):
             self.assertGreater(counts["agreed"], 0)
             self.assertEqual(counts["disputed"], 0)
             self.assertTrue(os.path.exists(os.path.join(rd, "final_roles.csv")))
+            # write back as SyF: the study scripts then read the expanded corpus unchanged
+            import to_syf
+            n = to_syf.expand(root, rd, os.path.join(root, "expanded"))
+            self.assertGreater(n["human"], 0)
+            self.assertGreater(n["inel"], 0)
+            with open(os.path.join(root, "expanded", "texts.csv"), encoding="utf-8") as f:
+                self.assertTrue(all(t["has_SyF"] == "1" for t in csv.DictReader(f)))
+            self.assertEqual(to_syf.syf_tag("v", "-", 0.9, "0.3"), "0.3:S v:pred")
+            self.assertEqual(to_syf.syf_tag("pers", "S", 0.1, "-"), "pro:S")
+            # calibration queue against INEL's own tags
+            cd = os.path.join(root, "calib")
+            info = apply_mod.build_calibration(root, cd, "synth", ["T0"])
+            self.assertGreater(info["items"], 0)
+            with open(os.path.join(cd, "queue.csv"), encoding="utf-8") as f:
+                cq = list(csv.DictReader(f))
+            gold = {}
+            with open(os.path.join(cd, "inel_gold.csv"), encoding="utf-8") as f:
+                for r in csv.DictReader(f):
+                    gold[(r["item"], int(r["word"]))] = r["inel_role"]
+            self.assertTrue(all(w["suggest"] == "" for r in cq for w in json.loads(r["words"])))
+            ex = os.path.join(root, "calA.csv")
+            with open(ex, "w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f, lineterminator="\n")
+                w.writerow(["item", "word", "label", "coder"])
+                for (item, word), g in gold.items():
+                    w.writerow([item, word, {"S": "S", "O": "O", "-": "N"}[g], "A"])
+            by = merge_review.compare_gold(cd, [ex])
+            with open(os.path.join(cd, "calibration.md"), encoding="utf-8") as f:
+                self.assertIn("100.0%", f.read())
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class GlosserTest(unittest.TestCase):
+    def test_known_and_unseen_forms(self):
+        from glosser import Glosser
+        rows = []
+        for k, (tx, mb, ge, ps) in enumerate([
+                ("balɨgɨ", "balɨk-ɨ", "fish-ACC", "n"), ("ete", "e-t-e", "be-PST1-3SG", "cop"),
+                ("tabanɨ", "taba-nɨ", "reindeer-ACC", "n"), ("balɨk", "balɨk", "fish.[NOM]", "n"),
+                ("kihini", "kihi-ni", "person-ACC", "n"), ("dʼi͡eni", "dʼi͡e-ni", "house-ACC", "n")] * 3):
+            rows.append({"utt_id": f"u{k}", "idx": "1", "tx": tx, "mb": mb, "ge": ge, "ps": ps})
+        g = Glosser().train(rows)
+        out = g.gloss(["Balɨgɨ", "ogoni"])
+        self.assertEqual(out[0][:3], ("balɨk-ɨ", "fish-ACC", "n"))
+        self.assertEqual(out[0][3], "known")
+        self.assertTrue(out[1][1].endswith("-ACC"))   # unseen stem, known ending
+        self.assertEqual(out[1][3], "ending")
