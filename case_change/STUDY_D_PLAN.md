@@ -58,5 +58,12 @@ Share and count by birth bin (the B2 bins); per-speaker share against birth year
 - **Publication.** Published folklore may have been edited toward a written norm.
 - **The positive control is not a hypothesis.** A Russian-word increase is expected and is not a discovery by itself, but its size is useful context.
 
+## Run history
+- 2026-11-06 ~19:35 Pacific, run once from commit 2cb6a8d (plan committed first), 77 s, in the cloud workspace on staged copies of the tables (deleted afterwards). No hypothesis supported: D1 -2.07 points per decade (Holm p 0.31), D2 +0.28 (0.82), D3 +0.93 (0.31). **The positive control failed too:** Russian-word share +0.11 (p 0.71) adjusted, although unadjusted it rises +1.36 per decade (p 0.0004; 2.8% for speakers born before 1920, 10-12% after). The difference sits between published folklore by the oldest speakers and everything else, and the genre and source controls absorb it.
+
+## Interpretation notes after the run (not changes to the plan)
+- Because the positive control is null, the adjusted design cannot show that it would detect a Russian-driven generational difference in this corpus. Nulls in B2, B3 and D1-D3 are therefore weak evidence of stability: within comparable genres and sources, the speakers mostly span births from about 1920 to 1970, and the oldest speakers are mostly in one source and genre.
+- The unadjusted rows for D2 (-3.55, p 0.006), D3 (-0.86, p 0.02) and PC show the raw generational differences that genre and source explain.
+
 ## Changes after data
 (none)
