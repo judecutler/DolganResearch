@@ -2,7 +2,8 @@
 
     python3 shared/igt_tagger/merge_review.py REVIEW_DIR review_A.csv review_B.csv
 
-REVIEW_DIR is the folder apply.py wrote (predictions.csv, queue.csv, key.csv). Writes there:
+REVIEW_DIR is the folder apply.py wrote (queue.csv; predictions.csv and key.csv are in
+REVIEW_DIR_key). Writes final_roles.csv to REVIEW_DIR_key and agreement.md to REVIEW_DIR:
 - final_roles.csv   every word: utt_id, idx, role (S/O/-), source (model, coder, agreed,
                     disputed, unsure), plus the coders' labels;
 - agreement.md      Cohen's kappa between the coders on the words both decided, agreement
@@ -15,6 +16,14 @@ import csv
 import json
 import os
 import sys
+
+
+def _find(review_dir, name):
+    """Files coders must not see live in REVIEW_DIR_key; the queue and outputs in REVIEW_DIR."""
+    for d in (review_dir + "_key", review_dir):
+        if os.path.exists(os.path.join(d, name)):
+            return os.path.join(d, name)
+    return os.path.join(review_dir + "_key", name)
 from collections import Counter
 
 MAP = {"S": "S", "O": "O", "N": "-", "U": "?"}
@@ -37,7 +46,7 @@ def kappa(pairs):
 
 
 def merge(review_dir, exports):
-    key = {r["item"]: r for r in _read(os.path.join(review_dir, "key.csv"))}
+    key = {r["item"]: r for r in _read(_find(review_dir, "key.csv"))}
     queue = {r["item"]: json.loads(r["words"]) for r in _read(os.path.join(review_dir, "queue.csv"))}
     resolved = {}
     rp = os.path.join(review_dir, "resolved.csv")
@@ -52,7 +61,7 @@ def merge(review_dir, exports):
     utt_item = {v["utt_id"]: k for k, v in key.items()}
     pairs, vs_model, counts, out = [], {}, Counter(), []
     pos = Counter()  # word position inside a queue item = order of the utterance's words
-    for p in _read(os.path.join(review_dir, "predictions.csv")):
+    for p in _read(_find(review_dir, "predictions.csv")):
         item = utt_item.get(p["utt_id"])
         role, source, labs = p["role"], "model", {}
         if item is not None:
@@ -78,7 +87,7 @@ def merge(review_dir, exports):
         counts[source] += 1
         out.append({"utt_id": p["utt_id"], "idx": p["idx"], "role": role, "source": source,
                     "model_role": p["role"], "coder_A": labs.get("A", ""), "coder_B": labs.get("B", "")})
-    with open(os.path.join(review_dir, "final_roles.csv"), "w", newline="", encoding="utf-8") as f:
+    with open(os.path.join(review_dir + "_key", "final_roles.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(out[0]), lineterminator="\n")
         w.writeheader()
         w.writerows(out)
@@ -99,7 +108,7 @@ def merge(review_dir, exports):
 def compare_gold(review_dir, exports):
     """Calibration queue: each coder's agreement with INEL's tags (inel_gold.csv), and with
     each other, on the words they coded. Writes calibration.md to review_dir."""
-    gold = {(r["item"], int(r["word"])): r["inel_role"] for r in _read(os.path.join(review_dir, "inel_gold.csv"))}
+    gold = {(r["item"], int(r["word"])): r["inel_role"] for r in _read(_find(review_dir, "inel_gold.csv"))}
     queue = {r["item"]: json.loads(r["words"]) for r in _read(os.path.join(review_dir, "queue.csv"))}
     by = {}
     for path in exports:
@@ -132,7 +141,7 @@ def compare_gold(review_dir, exports):
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         sys.exit(__doc__)
-    if os.path.exists(os.path.join(sys.argv[1], "inel_gold.csv")):
+    if os.path.exists(_find(sys.argv[1], "inel_gold.csv")):
         compare_gold(sys.argv[1], sys.argv[2:])
         print("wrote", os.path.join(sys.argv[1], "calibration.md"))
     else:

@@ -26,7 +26,11 @@ The tagger (`shared/igt_tagger/`) adds subject, object and predicate tags to the
    - Claude runs the merge again.
 4. **Before any analysis of the expanded corpus,** Claude writes a pre-specified plan (as for Study D), and you confirm it.
 
-Speaker, date and text are hidden in both queues on purpose. Do not look them up while coding.
+Speaker, date and text are hidden in both queues on purpose. Do not look them up while coding, and do not open the `review_key` and `review_calibration_key` folders: they hold the key and, for calibration, INEL's answers.
+
+**Files on Jude's computer, under `data/derived/dolgan/`:**
+- `review_calibration/` holds the calibration queue (112 utterances, 298 words) and a copy of `review.html`.
+- `review/` holds the main queue (6,085 utterances, 11,051 flagged words; batch 1 of 3,756 utterances comes first). Each of you sees about 3,000 utterances.
 
 ## Results
 *(fill in: date, items done by each coder, kappa, notes)*

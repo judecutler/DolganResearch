@@ -50,9 +50,10 @@ def syf_tag(ps, role, p_pred, zero):
 
 def expand(derived, review_dir, out):
     os.makedirs(out, exist_ok=True)
-    pred = {(r["utt_id"], r["idx"]): r for r in _read(os.path.join(review_dir, "predictions.csv"))}
+    kd = review_dir + "_key" if os.path.isdir(review_dir + "_key") else review_dir
+    pred = {(r["utt_id"], r["idx"]): r for r in _read(os.path.join(kd, "predictions.csv"))}
     final = {}
-    fp = os.path.join(review_dir, "final_roles.csv")
+    fp = os.path.join(kd, "final_roles.csv")
     if os.path.exists(fp):
         final = {(r["utt_id"], r["idx"]): r for r in _read(fp)}
     tokens = _read(os.path.join(derived, "tokens.csv"))

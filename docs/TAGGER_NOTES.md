@@ -45,12 +45,51 @@ Today these layers exist only in the 50 of 136 Dolgan texts that INEL tagged by 
 None of these changes is clearly better. The trees are less portable and less well calibrated, so the linear model stays. Pooling and augmentation should matter most when a language has little tagged text; the learning curve in the report tests that.
 
 ## Results
-See `reports/tagger_eval.md`. All numbers are on texts not used for training. "Held-out" means 20% of each language's tagged texts, set aside before development started and used once.
+Full tables are in `reports/tagger_eval.md`. All numbers are on texts not used for training. "Held-out" means 20% of each language's tagged texts (10 Dolgan, 26 Evenki), set aside before development started.
+
+**Role tagging** (macro-F1 over S and O):
+- **Dolgan:** 75.3 on held-out texts, 74.3 on speakers never seen in training, against 57.2 for a rule from case alone.
+- **Evenki:** 83.1 held-out, 81.4 for unseen speakers, against 64.2 for the rule.
+- **Other layers, Dolgan:** predicates 87.5, zero subjects 77.4, subordinate-clause membership 67.7 (the hardest layer).
+
+**Objects by case (Dolgan, held-out):**
+- Accusative objects: 87% found.
+- Partitive: 4 of 5.
+- **Unmarked objects: 31% found** (dev CV: 36%). The model alone misses most of them, which is why every unmarked nominal with P(O) ≥ 0.05 goes to a human.
+
+**No age bias found.** For speakers never seen in training, recall of unmarked objects is similar across birth groups: 44% (before 1920), 39% (1920–1939), 45% (1940–1959), 48% (1960 and later). O F1 is 76–84% in every group. Small groups, so this rules out large bias only.
+
+**Calibration.** The probabilities mean what they say: in every 0.1-wide bin of P(O), the observed share of objects is within about 0.05 of the predicted one.
+
+**Routing.** With threshold 0.9 and floor 0.05, a human checks:
+- 37% of nominals, in about 60% of utterances;
+- after correction, S F1 is about 95–96 and O F1 about 96;
+- 91% (development) to 100% (held-out) of unmarked objects are found.
+
+Lower thresholds halve the work but leave 10–30% of unmarked objects unfound, which is too risky for B2.
+
+**Transfer with no target data:**
+- Evenki → Dolgan: 62.9.
+- Dolgan → Evenki: 69.9.
+- Both beat the case rule in the target language (57.2 and 64.2): the shared-gloss features carry real information across a Turkic–Tungusic boundary.
+
+**Pooling helps when data is scarce:**
+- With 10% of the texts (4 Dolgan texts), adding the other language raises Dolgan from 63.9 to 66.5–66.7 and Evenki from 72.2 to 73.3–74.6.
+- With 25% or more, it adds nothing.
+- With full data, augmented pooling gives Dolgan 75.5, against 75.3 alone and 74.2 for plain pooling.
+
+These comparisons were all scored on the same held-out texts, so differences under about 1.5 points are noise. The final Dolgan model is Dolgan-only.
+
+**Workload for the 86 untagged Dolgan texts** (67,073 words):
+- 11,051 flagged words in 6,085 utterances.
+- Batch 1 (narrative and conversation from speakers with a birth year, the texts that matter for comparing generations) is 3,756 utterances with 7,015 flagged words, and comes first in the queue.
+- Each coder sees about 3,000 utterances, including the 10% both do.
+- The time per item will be known after calibration (the screen stores timestamps).
 
 ## How to use it (Jude and Dustan)
 1. Open `shared/review_ui/review.html` in a browser (double-click it).
 2. Choose your coder letter (A or B).
-3. Open `data/derived/dolgan/review/queue.csv`.
+3. Open `data/derived/dolgan/review/queue.csv`. Do not open the `review_key` folder: it holds the speaker key and the model's full output.
 4. For each utterance, decide the orange words with the keys S (subject), O (object), N (neither) or U (unsure), then press Enter.
    - Read the "Coding guide" at the bottom first.
    - Decide by meaning, not by the ending.

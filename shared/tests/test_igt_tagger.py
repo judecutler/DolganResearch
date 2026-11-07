@@ -164,7 +164,8 @@ class EndToEndTest(unittest.TestCase):
             counts, k = merge_review.merge(rd, [os.path.join(root, "rev_A.csv"), os.path.join(root, "rev_B.csv")])
             self.assertGreater(counts["agreed"], 0)
             self.assertEqual(counts["disputed"], 0)
-            self.assertTrue(os.path.exists(os.path.join(rd, "final_roles.csv")))
+            self.assertTrue(os.path.exists(os.path.join(rd + "_key", "final_roles.csv")))
+            self.assertEqual(sorted(os.listdir(rd)), ["agreement.md", "queue.csv"])  # nothing coders must not see
             # write back as SyF: the study scripts then read the expanded corpus unchanged
             import to_syf
             n = to_syf.expand(root, rd, os.path.join(root, "expanded"))
@@ -184,7 +185,8 @@ class EndToEndTest(unittest.TestCase):
             with open(os.path.join(cd, "queue.csv"), encoding="utf-8") as f:
                 cq = list(csv.DictReader(f))
             gold = {}
-            with open(os.path.join(cd, "inel_gold.csv"), encoding="utf-8") as f:
+            self.assertEqual(os.listdir(cd), ["queue.csv"])
+            with open(os.path.join(cd + "_key", "inel_gold.csv"), encoding="utf-8") as f:
                 for r in csv.DictReader(f):
                     gold[(r["item"], int(r["word"]))] = r["inel_role"]
             self.assertTrue(all(w["suggest"] == "" for r in cq for w in json.loads(r["words"])))
