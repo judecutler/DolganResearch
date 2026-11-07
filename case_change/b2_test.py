@@ -35,9 +35,10 @@ LOO_BOOT = 999
 
 
 def plan_is_frozen(path=PLAN):
-    """True only if a line of the plan starts with "Status: **frozen" (prose mentioning it does not count)."""
+    """True only if a line of the plan starts with "Status: **frozen", in any letter case
+    (prose mentioning it does not count)."""
     with open(path, encoding="utf-8") as f:
-        return any(line.startswith("Status: **frozen") for line in f)
+        return any(line.lower().startswith("status: **frozen") for line in f)
 
 
 def _mid(lo, hi):

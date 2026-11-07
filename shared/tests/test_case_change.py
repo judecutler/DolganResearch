@@ -85,11 +85,26 @@ class SpeakerTestTest(unittest.TestCase):
 
 
 class FreezeGateTest(unittest.TestCase):
+    """Uses temporary plan files: the real plan was frozen on 2026-11-06."""
+
+    def _plan(self, d, status):
+        path = os.path.join(d, "plan.md")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("# Plan\n\n" + status + "\n\nProse: replace it with Status: **frozen ...**\n")
+        return path
+
+    def test_freeze_line_is_recognised_in_any_case(self):
+        import b2_test
+        with tempfile.TemporaryDirectory() as d:
+            self.assertFalse(b2_test.plan_is_frozen(self._plan(d, "Status: **draft, ready to freeze.**")))
+            self.assertTrue(b2_test.plan_is_frozen(self._plan(d, "Status: **frozen 2026-11-06 by Jude and Dustan**")))
+            self.assertTrue(b2_test.plan_is_frozen(self._plan(d, "Status: **Frozen (2026-11-06) by Jude**")))
+
     def test_b2_test_refuses_before_the_plan_is_frozen(self):
         import b2_test
-        self.assertFalse(b2_test.plan_is_frozen())
-        with self.assertRaises(SystemExit):
-            b2_test.main(["unused.csv", "unused.md"])
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(SystemExit):
+                b2_test.main(["unused.csv", "unused.md", "--plan", self._plan(d, "Status: **draft**")])
 
 
 def _tok(i, tx, ps, ge="", case="", syf="", ser=""):
@@ -176,8 +191,12 @@ class B1TestTest(unittest.TestCase):
 
     def test_b1_refuses_before_the_plan_is_frozen(self):
         import b1_test
-        with self.assertRaises(SystemExit):
-            b1_test.main(["m.csv", "c.csv", "s.csv", "out.md"])
+        with tempfile.TemporaryDirectory() as d:
+            plan = os.path.join(d, "plan.md")
+            with open(plan, "w", encoding="utf-8") as f:
+                f.write("Status: **draft**\n")
+            with self.assertRaises(SystemExit):
+                b1_test.main(["m.csv", "c.csv", "s.csv", "out.md", "--plan", plan])
 
 
 class CollinearTimeTest(unittest.TestCase):
