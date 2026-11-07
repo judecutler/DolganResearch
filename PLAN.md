@@ -1,6 +1,6 @@
 # PLAN: living status page
 
-Update this at the end of every work session. Last updated: 2026-11-06 evening by Claude (after the B2 run).
+Update this at the end of every work session. Last updated: 2026-11-07 early morning by Claude (overnight tagger build).
 
 ## Current phase
 **Analysis code ready; first results in; waiting on human decisions (Gate 3 freeze, pilot coding, B1 vetting).** Handoffs 007 to 009 are done: design report (birth year 0.60 explained by genre + source, so the adjusted test stays primary; power 0.82 / 0.41 at OR 1.5), Study C (Dolgan partitive 12.0% irrealis vs 0.3% realis; Evenki indefinite accusative 22.3% vs 8.3%), Study A gloss descriptives (PST2 78% of pasts in folklore, 43% in conversation). Handoffs 001 to 006 are `done`; Stapert (2013) does not count case by age (005). Overnight, web Claude added a genre- and source-adjusted B2 test (D-037), a design report, a freeze-ready analysis plan (B1, B2 and new B3 word order, D-040), blind coding sheets (D-039), Study C on clause-driven object marking in Dolgan vs Evenki (D-038, pre-specified), Study A gloss descriptives and a main-round proposal, and analysis scripts for B1 and Study A that wait for coding. Desktop runs 007, 008 and 009 next.
@@ -14,6 +14,7 @@ Update this at the end of every work session. Last updated: 2026-11-06 evening b
 | 4 | Jude, Dustan | After 008 rebuilds the sheets: code the 40-item pilot separately (Gate 2); then decide on `docs/STUDY_A_MAIN_ROUND.md` | `handoff/004`, item 5 |
 | 5 | Jude, Dustan | Vet the B1 sheets (no birth year shown, D-039) | `data/derived/workbooks/b1_sheet_*.xlsx` |
 | 6 | Jude | Add Dustan as a collaborator on the GitHub repo | GitHub, Settings, Collaborators |
+| 0 | Jude, Dustan | **New:** handoff 012. Calibrate on two INEL-tagged texts (about 1 hour each), then review the tagger's uncertain words for the 86 untagged texts | `handoff/012-review-tagger-output.md`, `shared/review_ui/review.html` |
 | 7 | web Claude | Read 007, 008, 009; check the Siegl and LDD excerpts for Study C; fix anything the runs show | `reports/`, `handoff/outputs/` |
 
 ## Gates
@@ -32,6 +33,7 @@ See `docs/DECISIONS.md`. Currently open: D-004 licensing, D-005 stats stack, D-0
 **D-008 caveat from the Gate 0 crosstabs (counts only, no outcome seen).** The counts pass, but birth cohort is tangled with source and genre. Speakers born before 1920 appear almost only in `published_folklore` and genre `flk`. Speakers born after 1950 appear only in fieldwork and the archive, mostly `nar` and `conv`. For B2, the speakers born after 1970 give 4 to 8 objects each, one speaker per decade, so B2 in practice compares births from the 1890s to the 1960s. Genre and source must be in the model or the robustness checks, and the paper must say this.
 
 ## Log (newest first)
+- 2026-11-07 overnight: built the IGT argument tagger (D-042, `shared/igt_tagger/`): two-stage logistic model from glosses with language profiles; held-out role macro-F1 Dolgan 0.753, Evenki 0.831; unseen speakers 0.743 / 0.814. Review screen (`shared/review_ui/review.html`), calibration and main review queues, merge and write-back to SyF so all study scripts run on the expanded corpus. Memory-based glosser (71.5% exact, 82% case on held-out Dolgan). Independent code review: no leakage; three review-path bugs fixed. Report `reports/tagger_eval.md`, notes `docs/TAGGER_NOTES.md`.
 - 2026-11-06 evening: Study D (D-041) pre-specified (2cb6a8d) and run once: overt pronoun subjects, PST2 share and converb share show no birth-year change after genre and source (Holm p 0.31, 0.82, 0.31). Positive control (Russian-word share) also null when adjusted (+0.11, p 0.71) although +1.36 per decade unadjusted (p 0.0004): this design cannot separate generation from genre and source well enough to show Russian-driven change. Report `reports/study_d_russian_shift.md`.
 - 2026-11-06 evening: Jude froze the B2/B3 plan (83ccf88). Gate fixed to accept `Frozen` (7cd7129). Handoff 011 run once: B2 primary +0.7 points per decade (p = 0.80, 25 speakers, 985 objects), B3 primary -1.3 (p = 0.43). No change detected; power 0.8 only for OR 1.5 (speaker SD 0.5) to 2.0 (SD 1.0) per decade. Report `reports/b2_results.md`.
 - 2026-11-06: Handoff 010 done. Study C H4 on the odds scale: clause effect 12.7 times stronger in Dolgan than Evenki (95% interval 3.2 to 81.0). Design report reproducible; primary power 0.83 / 0.42 at OR 1.5. Sheets rebuilt without source.
