@@ -144,3 +144,17 @@ Resolved in this session: ISTINA record 261724568 is the Wagner-Nagy and Arkhipo
 
 **Verdict: PARTIAL.** The question was asked for Dolgan with five speakers (Stapert 2013). A corpus test with about 25 speakers, speaker clustering and genre and source controls is not found.
 
+
+## Study D: Russian-driven change by birth year (pronoun subjects, PST2, converbs)
+
+Searched 2026-11-06 by Claude, before any Study D output. Web queries (6: 4 English, 2 Russian): `Dolgan Russian contact pro-drop overt pronoun subjects`; `Dolgan Russian loanwords code-switching speaker age corpus Stapert`; `Sakha Russian bilingual converbs evidential past decline younger speakers contact`; `INEL Dolgan corpus language contact Russian borrowing BOR annotation study`; `долганский язык русское влияние деепричастия конверб утрата молодое поколение`; `долганский язык личные местоимения подлежащее русский язык влияние`. In addition: a full-text search of Stapert (2013) (local PDF from handoff 005) for paragraphs that combine an age term with converb, conjunction, pronoun, subject, evidential, *-BIt*, loanword, code-switching or borrowing (96 paragraphs read in extract).
+
+| Work | What it covers | Why it does not fill the gap | How read |
+|---|---|---|---|
+| Stapert (2013), ch. 8, p. 293 | Russian coordinators (*i*, *a*, *ili*, *no*) are 17.8% of Dolgan coordinators; "used by all age groups" | No counts by age; the positive control (PC) tests the age claim on Russian words in general | full-text extract |
+| Stapert (2013), ch. 8, p. 317 | Dolgan discourse has "less converbal and relative clauses than Sakha" "on the surface"; either ongoing shift and attrition, or an older lingua-franca style | Impressionistic, no counts, no age comparison. **D3 tests between her two explanations** | full-text extract |
+| Stapert (2013), p. 310 | Sakha is pro-drop (in a passage on relative clauses) | Not about change or Dolgan subject use | full-text extract |
+| Stapert (2013), pp. 263-264, Table 7.4 | Over 70: Dolgan-dominant; under 40: Russian-dominant | The sociolinguistic basis for D1-D3; no counts of these features | handoff 005 |
+| Grenoble, Khokholova and others, "Evidence of syntactic convergence among Russian-Sakha bilinguals", *Suvremena lingvistika* 45 (87) | Experiments with 30 Sakha-Russian bilinguals, word order | Sakha, experimental, word order only | abstract (NSF PAR page) |
+
+**Verdict: OPEN, provisional.** No count of overt pronoun subjects, PST2 share or converb share by speaker age or birth year was found for Dolgan. Not searched: Russian-language journals beyond the web results (e.g. *Сибирский филологический журнал*), Däbritz's grammar on these points, Sakha studies of pro-drop under contact. Check these before claiming novelty in a paper.
