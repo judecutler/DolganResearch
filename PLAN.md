@@ -1,6 +1,6 @@
 # PLAN: living status page
 
-Update this at the end of every work session. Last updated: 2026-11-06 by web Claude (overnight run 2).
+Update this at the end of every work session. Last updated: 2026-11-06 evening by Claude (after the B2 run).
 
 ## Current phase
 **Analysis code ready; first results in; waiting on human decisions (Gate 3 freeze, pilot coding, B1 vetting).** Handoffs 007 to 009 are done: design report (birth year 0.60 explained by genre + source, so the adjusted test stays primary; power 0.82 / 0.41 at OR 1.5), Study C (Dolgan partitive 12.0% irrealis vs 0.3% realis; Evenki indefinite accusative 22.3% vs 8.3%), Study A gloss descriptives (PST2 78% of pasts in folklore, 43% in conversation). Handoffs 001 to 006 are `done`; Stapert (2013) does not count case by age (005). Overnight, web Claude added a genre- and source-adjusted B2 test (D-037), a design report, a freeze-ready analysis plan (B1, B2 and new B3 word order, D-040), blind coding sheets (D-039), Study C on clause-driven object marking in Dolgan vs Evenki (D-038, pre-specified), Study A gloss descriptives and a main-round proposal, and analysis scripts for B1 and Study A that wait for coding. Desktop runs 007, 008 and 009 next.
@@ -22,7 +22,7 @@ Update this at the end of every work session. Last updated: 2026-11-06 by web Cl
 | G0 | Is there enough data of the right kind for each design? (speakers by birth year, SyF coverage, counts) | passed on counts (003); D-008 still needs a human call, see below |
 | G1 | Has the literature been re-checked and the closest authors contacted before we commit? | re-checked for A, B, B3, C (ledger); Artem'ev 1999, Siegl's partitive article and LDD 1188 unread; no authors contacted |
 | G2 | Is the evidentiality codebook stable (pilot agreement acceptable)? | not started |
-| G3 | Is the analysis plan frozen before outcomes are examined? | plan ready to freeze, blanks wait for 007 |
+| G3 | Is the analysis plan frozen before outcomes are examined? | **passed**: frozen by Jude 2026-11-06 18:37 (commit 83ccf88); B2/B3 run once afterwards (handoff 011) |
 
 Criteria for each gate are in `docs/ROADMAP_CLAUDE_WEB.md` and `docs/ROADMAP_HUMAN.md`.
 
@@ -32,6 +32,7 @@ See `docs/DECISIONS.md`. Currently open: D-004 licensing, D-005 stats stack, D-0
 **D-008 caveat from the Gate 0 crosstabs (counts only, no outcome seen).** The counts pass, but birth cohort is tangled with source and genre. Speakers born before 1920 appear almost only in `published_folklore` and genre `flk`. Speakers born after 1950 appear only in fieldwork and the archive, mostly `nar` and `conv`. For B2, the speakers born after 1970 give 4 to 8 objects each, one speaker per decade, so B2 in practice compares births from the 1890s to the 1960s. Genre and source must be in the model or the robustness checks, and the paper must say this.
 
 ## Log (newest first)
+- 2026-11-06 evening: Jude froze the B2/B3 plan (83ccf88). Gate fixed to accept `Frozen` (7cd7129). Handoff 011 run once: B2 primary +0.7 points per decade (p = 0.80, 25 speakers, 985 objects), B3 primary -1.3 (p = 0.43). No change detected; power 0.8 only for OR 1.5 (speaker SD 0.5) to 2.0 (SD 1.0) per decade. Report `reports/b2_results.md`.
 - 2026-11-06: Handoff 010 done. Study C H4 on the odds scale: clause effect 12.7 times stronger in Dolgan than Evenki (95% interval 3.2 to 81.0). Design report reproducible; primary power 0.83 / 0.42 at OR 1.5. Sheets rebuilt without source.
 - 2026-11-06 (overnight): Handoff 010 done. 62 tests OK; sheets rebuilt without source_collection; Study C H4 (odds scale) ratio 12.71 (3.23 to 81.00); design report rerun in the cloud workspace from the design export, now identical under hash seeds 1 and 2.
 - 2026-11-06: Desktop ran 007-009 (on code before the review fixes). Web Claude: plan blanks filled; hash-seed bug fixed (sorted speakers, test under three seeds); power simulation made opt-in and exportable on design columns only (Jude's computer kills jobs over 180 s); Study C graded PARTIAL with a stated gap (Siegl 2021 counted 14 tokens and calls for a dedicated study; Kazama 2012 on Evenki, unread); H3 premise contradicted; real-time panel table added to the B2 script; handoff 010 written.

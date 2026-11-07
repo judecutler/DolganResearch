@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" font-family="sans-serif" font-size="12"><rect width="100%" height="100%" fill="white"/>
+<line x1="50" y1="310" x2="590" y2="310" stroke="#444"/>
+<line x1="50" y1="50" x2="50" y2="310" stroke="#444"/>
+<text x="42" y="314.0" text-anchor="end">0%</text>
+<text x="42" y="249.0" text-anchor="end">25%</text>
+<text x="42" y="184.0" text-anchor="end">50%</text>
+<text x="42" y="119.0" text-anchor="end">75%</text>
+<text x="42" y="54.0" text-anchor="end">100%</text>
+<text x="76.9" y="328" text-anchor="middle">1900</text>
+<text x="174.6" y="328" text-anchor="middle">1920</text>
+<text x="272.4" y="328" text-anchor="middle">1940</text>
+<text x="370.1" y="328" text-anchor="middle">1960</text>
+<text x="467.8" y="328" text-anchor="middle">1980</text>
+<text x="565.6" y="328" text-anchor="middle">2000</text>
+<circle cx="74.4" cy="98.4" r="10.4" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="74.4" cy="79.5" r="10.5" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="145.3" cy="85.5" r="8.3" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="147.7" cy="50.0" r="6.9" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="150.2" cy="88.4" r="11.9" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="174.6" cy="50.0" r="8.7" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="189.3" cy="91.6" r="8.7" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="196.6" cy="135.0" r="11.2" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="218.6" cy="73.2" r="15.0" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="233.3" cy="152.9" r="10.9" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="243.0" cy="159.5" r="7.9" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="247.9" cy="160.9" r="12.8" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="252.8" cy="80.0" r="14.6" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="257.7" cy="103.2" r="10.5" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="262.6" cy="78.9" r="8.9" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="267.5" cy="119.3" r="9.2" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="272.4" cy="65.3" r="9.6" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="313.9" cy="87.1" r="8.2" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="340.8" cy="117.1" r="9.3" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="370.1" cy="76.9" r="9.1" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="394.5" cy="79.4" r="11.3" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="404.3" cy="127.0" r="11.3" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="462.9" cy="115.0" r="6.2" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="555.8" cy="245.0" r="5.3" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<circle cx="565.6" cy="115.0" r="6.2" fill="#3a6ea5" fill-opacity="0.55" stroke="#1d3d63"/>
+<text x="320.0" y="348" text-anchor="middle">Speaker birth year</text>
+<text x="14" y="180.0" text-anchor="middle" transform="rotate(-90 14 180.0)">Accusative share of objects</text></svg>
