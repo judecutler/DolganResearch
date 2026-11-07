@@ -41,6 +41,7 @@ class Glosser:
         self.strategy = strategy
         self.forms = defaultdict(Counter)        # form -> Counter((mb, ge, ps))
         self.bigram = defaultdict(Counter)       # (form, next form) -> Counter(analysis)
+        self.prevgram = defaultdict(Counter)     # (previous form, form) -> Counter(analysis)
         self.stems = defaultdict(Counter)        # stem surface -> Counter((stem gloss, ps))
         self.suffix = defaultdict(Counter)       # suffix surface -> Counter(gloss)
         self.chains = Counter()                  # tuple of suffix glosses -> count
@@ -56,6 +57,8 @@ class Glosser:
             self.forms[f][a] += 1
             nxt = norm(rows[k + 1]["tx"]) if k + 1 < len(rows) and rows[k + 1].get("utt_id") == r.get("utt_id") else ""
             self.bigram[(f, nxt)][a] += 1
+            prv = norm(rows[k - 1]["tx"]) if k > 0 and rows[k - 1].get("utt_id") == r.get("utt_id") else ""
+            self.prevgram[(prv, f)][a] += 1
             ms, gs = _morphs(r["mb"]), _gl(r["ge"])
             if len(ms) != len(gs) or not ms:
                 continue
@@ -118,8 +121,16 @@ class Glosser:
             if f in self.forms:
                 c = self.forms[f]
                 nxt = fs[k + 1] if k + 1 < len(fs) else ""
-                b = self.bigram.get((f, nxt))
-                a = (b or c).most_common(1)[0][0]
+                prv = fs[k - 1] if k > 0 else ""
+                votes = Counter()
+                for a_, n_ in c.items():
+                    votes[a_] = n_ / sum(c.values())
+                for ctx in (self.bigram.get((f, nxt)), self.prevgram.get((prv, f))):
+                    if ctx:
+                        tot = sum(ctx.values())
+                        for a_, n_ in ctx.items():
+                            votes[a_] += 2 * n_ / tot
+                a = votes.most_common(1)[0][0]
                 share = c[a] / sum(c.values())
                 out.append((*a, "known" if share >= 0.9 else "ambiguous"))
             else:

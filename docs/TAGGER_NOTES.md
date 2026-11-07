@@ -63,16 +63,17 @@ About 10% of items go to both of you (marked "both"); that overlap gives the kap
 
 ## Glossing new texts
 `shared/igt_tagger/glosser.py` is a memory-based glosser trained on INEL's glossed words.
-- **Word forms seen in training** get their most frequent analysis, disambiguated by the next word.
+- **Word forms seen in training** get their most frequent analysis, re-weighted by what was seen next to the same neighbours.
 - **Unseen forms** get the suffix analysis of the longest matching word ending seen in training.
 
-Results on held-out texts (Dolgan; Evenki in brackets):
+These texts were also used while tuning the glosser, so treat the figures as slightly optimistic. Results on 20% of texts kept out of training (Dolgan; Evenki in brackets):
 
-| Words | Share of held-out words | Exact gloss | Part of speech | Case |
+| Words | Share of words | Exact gloss | Part of speech | Case |
 |---|---|---|---|---|
-| All | — | 70.7% (65.8%) | 86.4% (84.4%) | 81.8% (79.9%) |
-| Unambiguous forms seen in training | 44% | 93.8% (95.2%) | | 97.2% (97.9%) |
-| Unseen forms | 20% | 16.5% | | 54.8% |
+| All | — | 71.5% (66.0%) | 87.1% (84.5%) | 82.0% (80.0%) |
+| Unambiguous forms seen in training | 44% | 93.8% (95.3%) | | 97.3% (98.0%) |
+| Ambiguous forms seen in training | 35% | 75.3% (73.8%) | | |
+| Unseen forms | 20% (34%) | 16.5% (17.1%) | | 54.8% (47.3%) |
 
 Most exact-match errors on ambiguous forms are particles (*da*: "and", EMPH or INDEF) and near-synonym lemma glosses (*house* or *tent*), not grammar. **PolyGloss** (Ginn et al. 2026), a pretrained multilingual glossing model with open weights, is the obvious next step for unseen words. It could not be downloaded tonight: neither the cloud workspace nor the shell on Jude's computer can reach HuggingFace. To use it, run it on Colab, fine-tuned (LoRA) on INEL Dolgan, and compare its unseen-word accuracy with the numbers above. INEL's licence terms for model training must be checked first (D-004).
 
