@@ -1,6 +1,6 @@
 # Study B analysis plan: case change across speaker generations
 
-Status: **draft, ready to freeze.** To freeze it, Jude and Dustan read it, change what they disagree with, and replace this line with `Status: **frozen YYYY-MM-DD by Jude and Dustan**`, then commit. `case_change/b2_test.py` refuses to read the outcome until that line exists. After freezing, every change needs a dated entry under "Changes after freezing" and in `docs/DECISIONS.md`.
+Status: **frozen 2026-11-06 by Jude**
 
 Owner: web Claude wrote it (2026-11-06); Jude and Dustan decide.
 
