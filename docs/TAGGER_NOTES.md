@@ -90,7 +90,7 @@ These comparisons were all scored on the same held-out texts, so differences und
 1. Open `shared/review_ui/review.html` in a browser (double-click it).
 2. Choose your coder letter (A or B).
 3. Open `data/derived/dolgan/review/queue.csv`. Do not open the `review_key` folder: it holds the speaker key and the model's full output.
-4. For each utterance, decide the orange words with the keys S (subject), O (object), N (neither) or U (unsure), then press Enter.
+4. For each utterance, decide the orange words with the keys S (subject), O (object), N (neither) or U (unsure), then press Enter. The model's guesses are hidden by default; H shows or hides them.
    - Read the "Coding guide" at the bottom first.
    - Decide by meaning, not by the ending.
    - Words inside subordinate clauses are N.
